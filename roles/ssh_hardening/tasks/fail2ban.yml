@@ -28,7 +28,7 @@
       group: root
       mode: "0640"
   when:
-      - ssh_hardening_rv_fail2ban_filterd_path is defined
+      - ssh_hardening_rv_fail2ban_filterd_path is ansible.builtin.defined
   notify:
       - SSHD Hardening | fail2ban | Restart fail2ban
 
@@ -94,7 +94,7 @@
       state: touch
       mode: "0640"
   when:
-      - __ssh_hardening_rv_fail2ban_auth.stat.exists is defined
+      - __ssh_hardening_rv_fail2ban_auth.stat.exists is ansible.builtin.defined
       - not __ssh_hardening_rv_fail2ban_auth.stat.exists
 
 - name: SSHD Hardening | Fail2ban | Start And Enable Fail2ban

@@ -2,7 +2,7 @@
 - name: Application User | Checking Mandatory Variables | Checking Username Is Defined
   ansible.builtin.assert:
       that:
-          - user_add_rv_username is defined
+          - user_add_rv_username is ansible.builtin.defined
           - user_add_rv_username != None
       success_msg: "user_add_rv_username is defined."
       fail_msg: "user_add_rv_username is not defined. Username is required to create a user."

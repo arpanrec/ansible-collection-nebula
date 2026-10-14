@@ -10,7 +10,7 @@
 - name: Application User | Adding User | Generate Password Hash
   ansible.builtin.set_fact:
       __user_add_rv_password_hash_tmp: "{{ user_add_rv_password | ansible.builtin.password_hash(hashtype='sha512') }}"
-  when: user_add_rv_password is defined and user_add_rv_password | ansible.builtin.length > 0
+  when: user_add_rv_password is ansible.builtin.defined and user_add_rv_password | ansible.builtin.length > 0
 
 - name: Application User | Adding User | Adding The User
   ansible.builtin.user:
@@ -29,7 +29,7 @@
       home: "{{ user_add_rv_user_home_dir | ansible.builtin.default(default_value=omit, boolean=True) }}"
       expires: -1
       password: "{{ __user_add_rv_password_hash_tmp | ansible.builtin.default(default_value=omit) }}"
-      update_password: "{{ (__user_add_rv_password_hash_tmp is defined
+      update_password: "{{ (__user_add_rv_password_hash_tmp is ansible.builtin.defined
           and __user_add_rv_password_hash_tmp | ansible.builtin.length > 0)
           | ansible.builtin.ternary(true_val='always', false_val=omit) }}"
 

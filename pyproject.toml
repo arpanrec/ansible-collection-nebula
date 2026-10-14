@@ -69,7 +69,7 @@ description = "common ansible resources"
 readme = "README.md"
 requires-python = ">=3.12.0"
 dependencies = [
-    "ansible==14.4.0",
+    "ansible==14.5.0",
     "cachier==4.2.0",
     "passlib==1.7.4",
     "httpx==0.28.1",
@@ -82,18 +82,18 @@ email = "me@arpanrec.com"
 
 [dependency-groups]
 dev = [
-    "black==26.5.1",
+    "black==26.10.1",
     "docker==7.2.0",
-    "isort==9.0.1",
-    "molecule==26.9.0",
-    "molecule-plugins==26.7.15",
-    "mypy==2.3.1",
+    "isort==9.0.2",
+    "molecule==26.10.0",
+    "molecule-plugins==26.10.12",
+    "mypy==2.4.0",
     "neovim==0.3.1",
-    "pylint==4.0.9",
+    "pylint==4.1.3",
     "pyright==1.1.414",
-    "ruff==0.16.9",
+    "ruff==0.17.0",
     "types-pyyaml==6.0.12.20260906",
     "yamllint==1.38.0",
-    "ansible-lint==26.9.0",
+    "ansible-lint==26.10.1",
     "antsibull-docs==2.27.0",
 ]

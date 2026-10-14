@@ -9,7 +9,7 @@
 
 - name: Application User | Adding User | Generate Password Hash
   ansible.builtin.set_fact:
-      __user_add_rv_password_hash_tmp: "{{ user_add_rv_password | community.general.password_hash(hashtype='sha512') }}"
+      __user_add_rv_password_hash_tmp: "{{ user_add_rv_password | ansible.builtin.password_hash(hashtype='sha512') }}"
   when: user_add_rv_password is defined and user_add_rv_password | ansible.builtin.length > 0
 
 - name: Application User | Adding User | Adding The User

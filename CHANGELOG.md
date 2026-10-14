@@ -1,3 +1,10 @@
+## [1.19.3](https://github.com/arpanrec/ansible-collection-nebula/compare/1.19.2...1.19.3) (2026-10-14)
+
+
+### Bug Fixes
+
+* **user_add:** use ansible.builtin.password_hash for password hashing ([d22b1b7](https://github.com/arpanrec/ansible-collection-nebula/commit/d22b1b74ed9088510ca95952591107dee5af07d6))
+
 ## [1.19.2](https://github.com/arpanrec/ansible-collection-nebula/compare/1.19.1...1.19.2) (2026-10-01)
 
 

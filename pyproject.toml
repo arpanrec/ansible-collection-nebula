@@ -64,7 +64,7 @@ typeCheckingMode = "strict"
 
 [project]
 name = "arpanrec-nebula"
-version = "1.19.2"
+version = "1.19.3"
 description = "common ansible resources"
 readme = "README.md"
 requires-python = ">=3.12.0"

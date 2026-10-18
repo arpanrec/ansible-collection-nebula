@@ -1,3 +1,10 @@
+# [1.20.0](https://github.com/arpanrec/ansible-collection-nebula/compare/1.19.3...1.20.0) (2026-10-18)
+
+
+### Features
+
+* Install rclone in user apps. ([#99](https://github.com/arpanrec/ansible-collection-nebula/issues/99)) ([f22acdd](https://github.com/arpanrec/ansible-collection-nebula/commit/f22acddc5bfa03a2a9ce920d95e5a9ae92b3ff9b))
+
 ## [1.19.3](https://github.com/arpanrec/ansible-collection-nebula/compare/1.19.2...1.19.3) (2026-10-14)
 
 

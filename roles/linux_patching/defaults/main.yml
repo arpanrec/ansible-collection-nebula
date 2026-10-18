@@ -14,8 +14,6 @@ linux_patching_rv_devel_packages:
     - htop
     - tmux
     - tree
-    - neovim
-    - python3-neovim
     - luarocks
     - build-essential
     - ninja-build
@@ -29,10 +27,6 @@ linux_patching_rv_devel_packages:
     - python3-pip
     - python3-venv
     - python3-dev
-    - python3-pynvim
-    - fd-find
-    - ripgrep
-    - rclone
     - zip
     - unzip
     - tar

@@ -21,6 +21,7 @@ Classes Details:
             - HADOLINT: Represents the 'hadolint' application.
             - GITLEAKS: Represents the 'gitleaks' application.
             - UV: Represents the 'uv' application.
+            - RCLONE: Represents the 'rclone' application.
 
     VersionDetails:
         A dictionary to store version details of an application.
@@ -76,6 +77,7 @@ class SupportedApps(enum.Enum):
     HADOLINT = "hadolint"
     GITLEAKS = "gitleaks"
     UV = "uv"
+    RCLONE = "rclone"
 
 
 class VersionDetails(dict[str, Any]):

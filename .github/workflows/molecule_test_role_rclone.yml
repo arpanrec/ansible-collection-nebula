@@ -1,0 +1,74 @@
+---
+name: Molecule Test Role rclone
+
+"on":
+    workflow_dispatch:
+    pull_request:
+        paths:
+            - "!roles/rclone/README.md"
+            - ".github/workflows/molecule_test_role_rclone.yml"
+            - "meta/**"
+            - "molecule/role.rclone.docker/**"
+            - "plugins/lookup/version_db.py"
+            - "plugins/module_utils/__init__.py"
+            - "plugins/module_utils/py.typed"
+            - "plugins/module_utils/version_db/__init__.py"
+            - "plugins/module_utils/version_db/rclone.py"
+            - "plugins/module_utils/version_db/models.py"
+            - "plugins/module_utils/version_db/py.typed"
+            - "requirements.yml"
+            - "roles/rclone/**"
+            - "uv.lock"
+            - "pyproject.toml"
+
+permissions:
+    contents: read
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    UV_MANAGED_PYTHON: "true"
+    UV_LOCKED: "true"
+
+jobs:
+    molecule_test_role_rclone:
+        timeout-minutes: 60
+        runs-on: ubuntu-26.04
+        strategy:
+            fail-fast: false
+            matrix:
+                python-version: ["3.12.14", "3.13.16", "3.14.8"]
+        steps:
+            - name: Checkout
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+            - name: Install uv 0.13.1
+              uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+              with:
+                  version: 0.13.1
+                  python-version: "${{ matrix.python-version }}"
+                  enable-cache: true
+                  cache-suffix: python-${{ matrix.python-version }}
+                  cache-dependency-glob: |
+                      **/uv.lock
+
+            - name: Cache ansible
+              uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+              with:
+                  path: |
+                      ~/.ansible
+                      ~/.cache/ansible-*
+                  key: ansible-cache-py.${{ matrix.python-version }}-${{ hashFiles('**/requirements.yml') }}
+
+            - name: Install dependencies
+              run: uv sync --all-extras --all-packages --no-progress
+              env:
+                  UV_PYTHON: ${{ matrix.python-version }}
+
+            - name: Run Molecule Test
+              run: uv --offline run --no-sync --no-progress molecule test -s role.rclone.docker
+              env:
+                  UV_PYTHON: ${{ matrix.python-version }}

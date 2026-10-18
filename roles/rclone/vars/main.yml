@@ -1,0 +1,4 @@
+---
+__rclone_rv_zip_download_path: "{{ rclone_rv_tmp_download_dir }}\
+    /rclone-{{ __rclone_version_details.version }}.zip"
+__rclone_rv_tmp_unarchive_dir: "{{ rclone_rv_tmp_download_dir }}-{{ __rclone_version_details.version }}"

@@ -95,6 +95,11 @@ def get_version(app_name: str, *args, **kwargs) -> VersionDetails:  # type: igno
 
             app_details = Uv(*args, **kwargs)  # type: ignore
 
+        case SupportedApps.RCLONE.value:
+            from .rclone import Rclone  # pylint: disable=import-outside-toplevel
+
+            app_details = Rclone(*args, **kwargs)  # type: ignore
+
         case _:
             raise ValueError(f"Unsupported app: {app_name}")
 

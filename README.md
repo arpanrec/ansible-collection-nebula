@@ -21,6 +21,7 @@ This collection provides a set of roles to deploy and manage various services.
 - [Hadolint (hadolint)](/roles/hadolint/README.md)
 - [Gitleaks (gitleaks)](/roles/gitleaks/README.md)
 - [Uv (uv)](/roles/uv/README.md)
+- [Rclone (rclone)](/roles/rclone/README.md)
 
 ## Playbooks
 

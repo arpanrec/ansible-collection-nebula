@@ -1,0 +1,4 @@
+---
+rclone_rv_executable_bin_path: "{{ ansible_facts.user_dir }}/.local/bin/rclone"
+rclone_rv_tmp_download_dir: "{{ ansible_facts.user_dir }}/.cache/rclone"
+rclone_rv_version: "fetch_latest_version"

@@ -26,3 +26,4 @@ Extra variables will be applied to the original role.
 - [Hadolint](../roles/hadolint/README.md) -> hadolint
 - [gitleaks](../roles/gitleaks/README.md) -> gitleaks
 - [Uv](../roles/uv/README.md) -> uv
+- [Rclone](../roles/rclone/README.md) -> rclone

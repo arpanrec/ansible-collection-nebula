@@ -101,3 +101,13 @@
             apply:
                 tags:
                     - uv
+
+      - name: Server Workspace | Include Role | User Apps | Rclone
+        ansible.builtin.include_role:
+            name: arpanrec.nebula.rclone
+        tags:
+            - rclone
+        args:
+            apply:
+                tags:
+                    - rclone

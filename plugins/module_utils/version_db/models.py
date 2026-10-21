@@ -22,6 +22,7 @@ Classes Details:
             - GITLEAKS: Represents the 'gitleaks' application.
             - UV: Represents the 'uv' application.
             - RCLONE: Represents the 'rclone' application.
+            - BUN: Represents the 'bun' application.
 
     VersionDetails:
         A dictionary to store version details of an application.
@@ -78,6 +79,7 @@ class SupportedApps(enum.Enum):
     GITLEAKS = "gitleaks"
     UV = "uv"
     RCLONE = "rclone"
+    BUN = "bun"
 
 
 class VersionDetails(dict[str, Any]):

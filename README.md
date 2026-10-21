@@ -22,6 +22,7 @@ This collection provides a set of roles to deploy and manage various services.
 - [Gitleaks (gitleaks)](/roles/gitleaks/README.md)
 - [Uv (uv)](/roles/uv/README.md)
 - [Rclone (rclone)](/roles/rclone/README.md)
+- [Bun (bun)](/roles/bun/README.md)
 
 ## Playbooks
 

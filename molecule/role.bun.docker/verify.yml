@@ -1,0 +1,48 @@
+---
+- name: Bun | Molecule | Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+      - name: Bun | Molecule | Verify | Import Roles For Variables
+        ansible.builtin.import_role:
+            name: arpanrec.nebula.bun
+            tasks_from: prerequisites
+
+      - name: Bun | Molecule | Verify | Get Release
+        ansible.builtin.set_fact:
+            __bun_version_details: "{{ lookup('arpanrec.nebula.version_db', 'bun',
+                bun_rv_version=bun_rv_version) | ansible.builtin.from_json }}"
+
+      - name: Bun | Molecule | Verify | Get Bun Version From Shell
+        ansible.builtin.command:
+            argv:
+                - bun
+                - --version
+        environment:
+            PATH: "{{ bun_rv_executable_bin_path | ansible.builtin.dirname }}:{{ ansible_facts.env.PATH }}"
+        register: __bun_rv_version_shell_result
+        changed_when: false
+
+      - name: Bun | Molecule | Verify | Fail If Bun Version Is Not Present
+        ansible.builtin.assert:
+            that: __bun_version_details.version == __bun_rv_version_shell_result.stdout_lines[0]
+            success_msg: Bun Version {{ __bun_version_details.version }} is installed
+            fail_msg: Bun Version {{ __bun_version_details.version }} is not installed,
+                Shell result {{ __bun_rv_version_shell_result.stdout }}
+
+      - name: Bun | Molecule | Verify | Get Bunx Version From Shell
+        ansible.builtin.command:
+            argv:
+                - bunx
+                - --version
+        environment:
+            PATH: "{{ bun_rv_executable_bin_path | ansible.builtin.dirname }}:{{ ansible_facts.env.PATH }}"
+        register: __bun_rv_bunx_version_shell_result
+        changed_when: false
+
+      - name: Bun | Molecule | Verify | Fail If Bunx Version Is Not Present
+        ansible.builtin.assert:
+            that: __bun_version_details.version == __bun_rv_bunx_version_shell_result.stdout_lines[0]
+            success_msg: Bunx Version {{ __bun_version_details.version }} is installed
+            fail_msg: Bunx Version {{ __bun_version_details.version }} is not installed,
+                Shell result {{ __bun_rv_bunx_version_shell_result.stdout }}

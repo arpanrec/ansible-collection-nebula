@@ -12,7 +12,7 @@ collections:
     - name: community.crypto
       source: https://github.com/ansible-collections/community.crypto.git
       type: git
-      version: 3.5.0
+      version: 3.5.1
     - name: ansible.posix
       source: https://github.com/ansible-collections/ansible.posix.git
       type: git

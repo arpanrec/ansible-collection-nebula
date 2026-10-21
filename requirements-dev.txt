@@ -35,7 +35,7 @@ ansible-core==2.21.5
 ansible-lint==26.10.1
 ansible-pygments==0.1.2
     # via antsibull-docs
-antsibull-changelog==0.35.1
+antsibull-changelog==0.35.2
     # via antsibull-docs
 antsibull-core==3.6.0
     # via antsibull-docs
@@ -78,7 +78,7 @@ build==1.6.1
     # via antsibull-core
 cachier==4.2.0
     # via arpanrec-nebula
-certifi==2026.7.22
+certifi==2026.10.19
     # via
     #   httpcore
     #   httpx
@@ -108,7 +108,14 @@ dill==0.4.1
 distro==1.9.0
     # via ansible-lint
 docker==7.2.0
-docutils==0.22.4
+docutils==0.22.4 ; python_full_version < '3.13'
+    # via
+    #   antsibull-changelog
+    #   antsibull-docs
+    #   antsibull-docutils
+    #   rstcheck-core
+    #   sphinx
+docutils==0.23 ; python_full_version >= '3.13'
     # via
     #   antsibull-changelog
     #   antsibull-docs
@@ -117,7 +124,7 @@ docutils==0.22.4
     #   sphinx
 enrich==1.2.7
     # via molecule
-filelock==4.2.2
+filelock==4.2.4
     # via ansible-lint
 frozenlist==1.8.0
     # via
@@ -204,7 +211,7 @@ pathspec==1.1.1
     #   yamllint
 perky==0.10
     # via antsibull-core
-platformdirs==4.13.4
+platformdirs==4.13.5
     # via
     #   black
     #   pylint
@@ -296,7 +303,9 @@ six==1.17.0
     # via twiggy
 snowballstemmer==3.1.1
     # via sphinx
-sphinx==9.1.0
+sphinx==9.1.1 ; python_full_version < '3.13'
+    # via antsibull-docs
+sphinx==9.2.0 ; python_full_version >= '3.13'
     # via antsibull-docs
 sphinxcontrib-applehelp==2.0.0
     # via sphinx
@@ -304,7 +313,7 @@ sphinxcontrib-devhelp==2.0.0
     # via sphinx
 sphinxcontrib-htmlhelp==2.1.0
     # via sphinx
-sphinxcontrib-jsmath==1.0.1
+sphinxcontrib-jsmath==2.0.0
     # via sphinx
 sphinxcontrib-qthelp==2.0.0
     # via sphinx

@@ -1,3 +1,10 @@
+# [1.21.0](https://github.com/arpanrec/ansible-collection-nebula/compare/1.20.0...1.21.0) (2026-10-21)
+
+
+### Features
+
+* **bun:** Add Bun role for installation and management ([#100](https://github.com/arpanrec/ansible-collection-nebula/issues/100)) ([0d2ee37](https://github.com/arpanrec/ansible-collection-nebula/commit/0d2ee37500aeb607ff5689f646294679751f18e9))
+
 # [1.20.0](https://github.com/arpanrec/ansible-collection-nebula/compare/1.19.3...1.20.0) (2026-10-18)
 
 

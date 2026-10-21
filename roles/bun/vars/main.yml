@@ -1,0 +1,5 @@
+---
+__bun_rv_zip_download_path: "{{ bun_rv_tmp_download_dir }}\
+    /bun-{{ __bun_version_details.version }}.zip"
+__bun_rv_tmp_unarchive_dir: "{{ bun_rv_tmp_download_dir }}-{{ __bun_version_details.version }}"
+__bun_rv_bunx_bin_path: "{{ bun_rv_executable_bin_path | ansible.builtin.dirname }}/bunx"

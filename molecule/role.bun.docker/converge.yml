@@ -1,0 +1,10 @@
+---
+- name: Bun | Molecule | Converge
+  hosts: all
+  gather_facts: false
+  any_errors_fatal: true
+  become: false
+  tasks:
+      - name: Bun | Molecule | Converge | Include Bun Role
+        ansible.builtin.import_role:
+            name: arpanrec.nebula.bun

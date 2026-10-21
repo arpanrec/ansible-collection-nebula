@@ -111,3 +111,13 @@
             apply:
                 tags:
                     - rclone
+
+      - name: Server Workspace | Include Role | User Apps | Bun
+        ansible.builtin.include_role:
+            name: arpanrec.nebula.bun
+        tags:
+            - bun
+        args:
+            apply:
+                tags:
+                    - bun

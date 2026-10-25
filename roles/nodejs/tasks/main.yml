@@ -116,3 +116,13 @@
   loop:
       - pnpm
       - yarn
+
+- name: NodeJS | Download Pnpm Native Binary
+  ansible.builtin.command:
+      argv:
+          - "{{ nodejs_rv_install_path }}/bin/pnpm"
+          - --version
+  register: __nodejs_pnpm_native_binary_download
+  changed_when: "'Downloading the pnpm' in __nodejs_pnpm_native_binary_download.stderr"
+  environment:
+      PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"

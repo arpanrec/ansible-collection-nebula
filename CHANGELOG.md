@@ -1,3 +1,10 @@
+# [1.22.0](https://github.com/arpanrec/ansible-collection-nebula/compare/1.21.1...1.22.0) (2026-10-25)
+
+
+### Features
+
+* **nodejs:** Add task to download Pnpm native binary and check version ([a3c4626](https://github.com/arpanrec/ansible-collection-nebula/commit/a3c46260af6cf43b542420eb254771be78269007))
+
 ## [1.21.1](https://github.com/arpanrec/ansible-collection-nebula/compare/1.21.0...1.21.1) (2026-10-25)
 
 

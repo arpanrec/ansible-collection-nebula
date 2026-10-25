@@ -93,6 +93,17 @@
       - pnpm
       - yarn
 
+- name: NodeJS | Prepare And Activate Corepack Pnpm
+  ansible.builtin.command:
+      argv:
+          - "{{ nodejs_rv_install_path }}/bin/corepack"
+          - prepare
+          - pnpm@latest
+          - --activate
+  changed_when: false
+  environment:
+      PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
+
 - name: NodeJS | Enable Corepack Package Managers Pnpm & Yarn
   ansible.builtin.command:
       argv:

@@ -1,3 +1,10 @@
+# [1.23.0](https://github.com/arpanrec/ansible-collection-nebula/compare/1.22.0...1.23.0) (2026-10-25)
+
+
+### Features
+
+* **nodejs:** Enhance Corepack management and version handling ([9577b9a](https://github.com/arpanrec/ansible-collection-nebula/commit/9577b9a9186957923123919755be01cc91fa1c2e))
+
 # [1.22.0](https://github.com/arpanrec/ansible-collection-nebula/compare/1.21.1...1.22.0) (2026-10-25)
 
 

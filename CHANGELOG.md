@@ -1,3 +1,10 @@
+## [1.21.1](https://github.com/arpanrec/ansible-collection-nebula/compare/1.21.0...1.21.1) (2026-10-25)
+
+
+### Bug Fixes
+
+* **nodejs:** Add task to prepare and activate Corepack for Pnpm ([e769df9](https://github.com/arpanrec/ansible-collection-nebula/commit/e769df9d4598c0dc35dc62750bd5e80804d41ab9))
+
 # [1.21.0](https://github.com/arpanrec/ansible-collection-nebula/compare/1.20.0...1.21.0) (2026-10-21)
 
 

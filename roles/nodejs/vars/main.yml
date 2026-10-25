@@ -1,3 +1,6 @@
 ---
 __nodejs_rv_tarball_download_path: "{{ nodejs_rv_tmp_install_cache_dir }}/node-linux-{{
     ansible_facts.architecture }}-{{ __nodejs_version_details.version }}.tar.gz"
+__nodejs_rv_corepack_home: "{{ ansible_facts.env.COREPACK_HOME | ansible.builtin.default(default_value=(
+    ansible_facts.env.XDG_CACHE_HOME | ansible.builtin.default(default_value=ansible_facts.user_dir ~ '/.cache'))
+    ~ '/node/corepack') }}"

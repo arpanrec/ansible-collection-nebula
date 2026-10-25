@@ -34,7 +34,6 @@
         ansible.builtin.file:
             path: "{{ nodejs_rv_install_path }}"
             state: absent
-
   rescue:
       - name: NodeJS | New Download | Fail | Cleanup
         ansible.builtin.file:
@@ -57,6 +56,7 @@
       dest: "{{ nodejs_rv_install_path }}"
       extra_opts: [--strip-components=1]
       remote_src: true
+  changed_when: false
 
 - name: NodeJS | Remove Node.js Npm Global Pnpm And Yarn
   community.general.npm:
@@ -69,6 +69,35 @@
       - yarn
   environment:
       PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
+
+- name: NodeJS | Remove Bundled Corepack
+  ansible.builtin.file:
+      path: "{{ nodejs_rv_install_path }}/{{ item }}"
+      state: absent
+  loop:
+      - lib/node_modules/corepack
+      - bin/corepack
+      - bin/pnpm
+      - bin/pnpx
+      - bin/yarn
+      - bin/yarnpkg
+  changed_when: false
+
+- name: NodeJS | Install Latest Corepack
+  community.general.npm:
+      name: corepack
+      global: true
+      state: latest
+      executable: "{{ nodejs_rv_install_path }}/bin/npm"
+  changed_when: false
+  environment:
+      PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
+
+- name: NodeJS | Remove Corepack Pnpm Cache
+  ansible.builtin.file:
+      path: "{{ __nodejs_rv_corepack_home }}/v1/pnpm"
+      state: absent
+  changed_when: false
 
 - name: NodeJS | Install Node.js Package Globally
   community.general.npm:
@@ -111,6 +140,7 @@
           - enable
           - "{{ item }}"
       creates: "{{ nodejs_rv_install_path }}/bin/{{ item }}"
+  changed_when: false
   environment:
       PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
   loop:
@@ -122,7 +152,11 @@
       argv:
           - "{{ nodejs_rv_install_path }}/bin/pnpm"
           - --version
-  register: __nodejs_pnpm_native_binary_download
-  changed_when: "'Downloading the pnpm' in __nodejs_pnpm_native_binary_download.stderr"
+  register: __nodejs_rv_pnpm_version
+  changed_when: false
   environment:
       PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
+
+- name: NodeJS | Print Pnpm Version
+  ansible.builtin.debug:
+      msg: "{{ __nodejs_rv_pnpm_version.stdout }}"

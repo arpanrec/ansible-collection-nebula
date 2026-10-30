@@ -1,0 +1,15 @@
+---
+- name: Betterleaks | Prerequisites | Fail If Root User
+  ansible.builtin.command: whoami
+  register: __rl_sw_current_shelluser_shell_result
+  failed_when: __rl_sw_current_shelluser_shell_result.stdout == "root"
+  changed_when: false
+
+- name: Betterleaks | Prerequisites | Packages Are Present
+  ansible.builtin.shell: "command -v {{ item }} >/dev/null 2>&1"
+  changed_when: false
+  with_items:
+      - tar
+
+- name: Betterleaks | Prerequisites | Gather Facts
+  ansible.builtin.setup:

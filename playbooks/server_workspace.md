@@ -28,3 +28,4 @@ Extra variables will be applied to the original role.
 - [Uv](../roles/uv/README.md) -> uv
 - [Rclone](../roles/rclone/README.md) -> rclone
 - [Bun](../roles/bun/README.md) -> bun
+- [Betterleaks](../roles/betterleaks/README.md) -> betterleaks

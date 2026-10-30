@@ -1,0 +1,78 @@
+---
+- name: Betterleaks | Prerequisites
+  ansible.builtin.import_tasks: prerequisites.yml
+
+- name: Betterleaks | Create Install Directory
+  ansible.builtin.file:
+      path: "{{ betterleaks_rv_executable_bin_path | ansible.builtin.dirname }}"
+      state: directory
+      mode: "0700"
+
+- name: Betterleaks | Get Release
+  ansible.builtin.set_fact:
+      __betterleaks_version_details: "{{ lookup('arpanrec.nebula.version_db', 'betterleaks',
+          betterleaks_rv_version=betterleaks_rv_version) | ansible.builtin.from_json }}"
+
+- name: Betterleaks | Get Downloaded File Stat
+  ansible.builtin.stat:
+      path: "{{ __betterleaks_rv_tarball_download_path }}"
+  register: __betterleaks_rv_tmp_downloaded_file_stat
+
+- name: Betterleaks | New Download
+  when: not __betterleaks_rv_tmp_downloaded_file_stat.stat.exists
+  block:
+      - name: Betterleaks | New Download | Create Download Directory
+        ansible.builtin.file:
+            path: "{{ betterleaks_rv_tmp_download_dir }}"
+            state: directory
+            mode: "0700"
+
+      - name: "Betterleaks | New Download | Download Tarball"
+        ansible.builtin.get_url:
+            url: "{{ __betterleaks_version_details.download_link }}"
+            checksum: "{{ __betterleaks_version_details.checksum | ansible.builtin.default(default_value=omit) }}"
+            dest: "{{ __betterleaks_rv_tarball_download_path }}"
+            mode: "0700"
+
+  rescue:
+      - name: Betterleaks | New Download | Fail | Cleanup
+        ansible.builtin.file:
+            path: "{{ __betterleaks_rv_tarball_download_path }}"
+            state: absent
+
+      - name: Betterleaks | New Download | Fail | Fail
+        ansible.builtin.fail:
+            msg: Something went wrong, check the errors above
+
+- name: Betterleaks | Install
+  block:
+      - name: Betterleaks | Install | Create Temporary Unarchive Directory
+        ansible.builtin.tempfile:
+            state: directory
+            prefix: betterleaks-
+        register: __betterleaks_rv_tmp_unarchive_dir
+        changed_when: false
+
+      - name: Betterleaks | Install | Unarchive Binary
+        ansible.builtin.unarchive:
+            src: "{{ __betterleaks_rv_tarball_download_path }}"
+            dest: "{{ __betterleaks_rv_tmp_unarchive_dir.path }}"
+            include:
+                - betterleaks
+            remote_src: true
+        changed_when: false
+
+      - name: Betterleaks | Install | Copy Bin To Dest
+        ansible.builtin.copy:
+            src: "{{ __betterleaks_rv_tmp_unarchive_dir.path }}/betterleaks"
+            dest: "{{ betterleaks_rv_executable_bin_path }}"
+            mode: "0755"
+            remote_src: true
+
+  always:
+      - name: Betterleaks | Install | Remove Temporary Unarchive Directory
+        ansible.builtin.file:
+            path: "{{ __betterleaks_rv_tmp_unarchive_dir.path }}"
+            state: absent
+        when: __betterleaks_rv_tmp_unarchive_dir.path is ansible.builtin.defined
+        changed_when: false

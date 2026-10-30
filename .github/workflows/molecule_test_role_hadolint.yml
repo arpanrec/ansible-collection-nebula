@@ -14,12 +14,16 @@ name: Molecule Test Role hadolint
             - "plugins/module_utils/py.typed"
             - "plugins/module_utils/version_db/__init__.py"
             - "plugins/module_utils/version_db/hadolint.py"
+            - "plugins/module_utils/version_db/grs.py"
             - "plugins/module_utils/version_db/models.py"
             - "plugins/module_utils/version_db/py.typed"
             - "requirements.yml"
             - "roles/hadolint/**"
             - "uv.lock"
             - "pyproject.toml"
+
+permissions:
+    contents: read
 
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}

@@ -105,6 +105,11 @@ def get_version(app_name: str, *args, **kwargs) -> VersionDetails:  # type: igno
 
             app_details = Bun(*args, **kwargs)  # type: ignore
 
+        case SupportedApps.BETTERLEAKS.value:
+            from .betterleaks import Betterleaks  # pylint: disable=import-outside-toplevel
+
+            app_details = Betterleaks(*args, **kwargs)  # type: ignore
+
         case _:
             raise ValueError(f"Unsupported app: {app_name}")
 

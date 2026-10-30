@@ -23,6 +23,7 @@ This collection provides a set of roles to deploy and manage various services.
 - [Uv (uv)](/roles/uv/README.md)
 - [Rclone (rclone)](/roles/rclone/README.md)
 - [Bun (bun)](/roles/bun/README.md)
+- [Betterleaks (betterleaks)](/roles/betterleaks/README.md)
 
 ## Playbooks
 

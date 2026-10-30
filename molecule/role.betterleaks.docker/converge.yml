@@ -1,0 +1,10 @@
+---
+- name: Betterleaks | Molecule | Converge
+  hosts: all
+  gather_facts: false
+  any_errors_fatal: true
+  become: false
+  tasks:
+      - name: Betterleaks | Molecule | Converge | Include Betterleaks Role
+        ansible.builtin.import_role:
+            name: arpanrec.nebula.betterleaks

@@ -21,6 +21,9 @@ name: Molecule Test Role Pulimi
             - "roles/pulumi/**"
             - "uv.lock"
             - "pyproject.toml"
+permissions:
+    contents: read
+
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
     cancel-in-progress: true

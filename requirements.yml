@@ -20,4 +20,4 @@ collections:
     - name: community.postgresql
       source: https://github.com/ansible-collections/community.postgresql.git
       type: git
-      version: 5.0.0
+      version: 5.1.0

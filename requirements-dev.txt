@@ -35,7 +35,7 @@ ansible-core==2.21.5
 ansible-lint==26.10.1
 ansible-pygments==0.1.2
     # via antsibull-docs
-antsibull-changelog==0.35.2
+antsibull-changelog==0.36.0
     # via antsibull-docs
 antsibull-core==3.6.0
     # via antsibull-docs

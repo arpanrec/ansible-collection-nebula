@@ -3,6 +3,9 @@ name: Release
 "on":
     push:
 
+permissions:
+    contents: read
+
 env:
     UV_MANAGED_PYTHON: "true"
     UV_PYTHON: "3.14.0"

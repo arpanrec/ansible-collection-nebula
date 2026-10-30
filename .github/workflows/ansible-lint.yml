@@ -6,6 +6,9 @@ name: Ansible Lint
     pull_request:
     push:
 
+permissions:
+    contents: read
+
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
     cancel-in-progress: true

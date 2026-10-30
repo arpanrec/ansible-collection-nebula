@@ -1,0 +1,23 @@
+ansible==14.5.0
+ansible-core==2.21.5
+anyio==4.15.1
+cachier==4.2.0
+certifi==2026.10.23
+cffi==2.1.1 ; platform_python_implementation != 'PyPy'
+cryptography==50.0.2
+h11==0.16.0
+httpcore==1.0.9
+httpx==0.28.1
+idna==3.20
+jinja2==3.1.6
+markupsafe==3.0.4
+packaging==26.3
+passlib==1.7.4
+portalocker==4.4.2
+pycparser==3.12 ; implementation_name != 'PyPy' and platform_python_implementation != 'PyPy'
+pympler==1.1
+pywin32==312 ; sys_platform == 'win32'
+pyyaml==6.0.3
+resolvelib==1.2.1
+typing-extensions==4.16.0
+watchdog==6.0.0

@@ -1,3 +1,10 @@
+# [1.24.0](https://github.com/arpanrec/ansible-collection-nebula/compare/1.23.0...1.24.0) (2026-10-30)
+
+
+### Features
+
+* **betterleaks:** add betterleaks role and skip pre-releases in version_db ([#105](https://github.com/arpanrec/ansible-collection-nebula/issues/105)) ([cf12f06](https://github.com/arpanrec/ansible-collection-nebula/commit/cf12f0665c648cef58f85fa7ba9c517ced10cd66))
+
 # [1.23.0](https://github.com/arpanrec/ansible-collection-nebula/compare/1.22.0...1.23.0) (2026-10-25)
 
 

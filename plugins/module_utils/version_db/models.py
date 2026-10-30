@@ -23,6 +23,7 @@ Classes Details:
             - UV: Represents the 'uv' application.
             - RCLONE: Represents the 'rclone' application.
             - BUN: Represents the 'bun' application.
+            - BETTERLEAKS: Represents the 'betterleaks' application.
 
     VersionDetails:
         A dictionary to store version details of an application.
@@ -80,6 +81,7 @@ class SupportedApps(enum.Enum):
     UV = "uv"
     RCLONE = "rclone"
     BUN = "bun"
+    BETTERLEAKS = "betterleaks"
 
 
 class VersionDetails(dict[str, Any]):

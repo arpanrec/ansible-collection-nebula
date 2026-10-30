@@ -25,7 +25,8 @@ short_description: Get download and version details for a supported application.
 description:
     - Resolve the version, download link, checksum and any extra details for a supported application.
     - One of V(bws), V(terraform), V(vault), V(go), V(java), V(nodejs), V(pulumi), V(gitea),
-      V(hadolint), V(gitleaks), V(uv), V(rclone) or V(bun) must be supplied as the single term.
+      V(hadolint), V(gitleaks), V(uv), V(rclone), V(bun) or V(betterleaks) must be supplied as the
+      single term.
     - The result is returned as a one-element list containing a JSON encoded object.
 notes:
     - This lookup reads C(ansible_architecture) from the host variables to build architecture

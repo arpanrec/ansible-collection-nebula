@@ -121,3 +121,13 @@
             apply:
                 tags:
                     - bun
+
+      - name: Server Workspace | Include Role | User Apps | Betterleaks
+        ansible.builtin.include_role:
+            name: arpanrec.nebula.betterleaks
+        tags:
+            - betterleaks
+        args:
+            apply:
+                tags:
+                    - betterleaks

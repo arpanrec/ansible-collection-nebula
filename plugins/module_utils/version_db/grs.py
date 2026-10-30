@@ -6,11 +6,29 @@ Module to search GitHub repository releases for the latest matching release tag.
 from __future__ import annotations
 
 import os
+import re
 
 import httpx
 from ansible.utils.display import Display  # type: ignore
 
 display = Display()
+
+# A hyphen right after a digit starts a semver pre-release suffix, e.g. "v2.0.0-rc.1" or "v27.0.0-alpha.0".
+# Prefix hyphens such as "bws-v1.0.0" or "bun-v1.2.3" don't follow a digit, so they don't match.
+_PRE_RELEASE_SUFFIX_PATTERN = re.compile(r"\d-[0-9A-Za-z]")
+
+
+def has_pre_release_suffix(version_tag: str) -> bool:
+    """
+    Check if a version tag carries a semver pre-release suffix (alpha, beta, rc, nightly, etc.).
+
+    Args:
+        version_tag (str): The version tag to check.
+
+    Returns:
+        bool: True if the tag has a pre-release suffix.
+    """
+    return bool(_PRE_RELEASE_SUFFIX_PATTERN.search(version_tag))
 
 
 # pylint: disable=R0912,R0913,R0914,R0915
@@ -27,6 +45,8 @@ def github_release_tag_search(
 ) -> str:
     """
     Search for the latest release in a GitHub repository.
+
+    Releases flagged as pre-release on GitHub, and tags with a semver pre-release suffix, are skipped.
 
     Args:
         github_release_tag_search_repo (str): The GitHub repository to search.
@@ -106,6 +126,10 @@ def github_release_tag_search(
             tag_name = release.get("tag_name")
 
             if tag_name:
+                if has_pre_release_suffix(tag_name):
+                    display.vvv(f"github_release_tag_search: Skipping pre-release tag: {tag_name}")
+                    continue
+
                 if github_release_tag_search_prefix and not tag_name.startswith(github_release_tag_search_prefix):
                     continue
 

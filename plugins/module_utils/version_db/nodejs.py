@@ -20,6 +20,8 @@ from __future__ import annotations
 import httpx
 from ansible.utils.display import Display  # type: ignore
 
+from .grs import has_pre_release_suffix
+
 # pylint: disable=E0401,E0611
 from .models import AppDetails  # type: ignore
 
@@ -50,7 +52,17 @@ class NodeJS(AppDetails):
             if _nodejs_version_tags_res.status_code != 200:
                 raise ValueError(f"Failed to fetch NodeJS version details: {_nodejs_version_tags_res.text}")
 
-            _nodejs_version_tag = _nodejs_version_tags_res.json()[0]["version"]
+            _nodejs_version_tag = next(
+                (
+                    release["version"]
+                    for release in _nodejs_version_tags_res.json()
+                    if not has_pre_release_suffix(release["version"])
+                ),
+                None,
+            )
+
+            if not _nodejs_version_tag:
+                raise ValueError(f"No stable NodeJS release found in {self.__node_dist_url}")
 
         else:
             display.vvv(f"AppDetails NodeJS: Using provided NodeJS version tag: {_nodejs_version_tag}")

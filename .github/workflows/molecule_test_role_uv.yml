@@ -14,6 +14,7 @@ name: Molecule Test Role uv
             - "plugins/module_utils/py.typed"
             - "plugins/module_utils/version_db/__init__.py"
             - "plugins/module_utils/version_db/uv.py"
+            - "plugins/module_utils/version_db/grs.py"
             - "plugins/module_utils/version_db/models.py"
             - "plugins/module_utils/version_db/py.typed"
             - "requirements.yml"

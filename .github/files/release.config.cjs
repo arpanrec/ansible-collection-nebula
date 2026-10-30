@@ -30,8 +30,8 @@ module.exports = {
                     "sed -i 's/^version:.*/version: ${nextRelease.version}/g' galaxy.yml",
                     "sed -i 's/^export NEBULA_VERSION=.*/export NEBULA_VERSION=${nextRelease.version}/g' README.md",
                     'uv version ${nextRelease.version}',
-                    'uv export --format requirements.txt --no-hashes --no-group dev -o requirements.txt',
-                    'uv export --format requirements.txt --no-hashes -o requirements-dev.txt',
+                    'uv export --format requirements-txt --no-hashes --no-annotate --no-header --no-emit-project --no-progress --no-group dev -o requirements.txt',
+                    'uv export --format requirements-txt --no-hashes --no-annotate --no-header --no-emit-project --no-progress -o requirements-dev.txt',
                     'uv --offline run --no-sync --no-progress ansible-galaxy collection build',
                 ].join(' && '),
                 successCmd:

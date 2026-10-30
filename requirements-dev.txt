@@ -72,7 +72,7 @@ big==0.14
     # via perky
 black==26.10.1
     # via ansible-lint
-bracex==3.1
+bracex==3.2
     # via wcmatch
 build==1.6.1
     # via antsibull-core

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Ansible Module for Search for the latest release in a GitHub repository.
+Lookup plugin that resolves version, download link and checksum details for a supported application.
 """
 
 from __future__ import annotations

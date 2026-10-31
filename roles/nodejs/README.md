@@ -7,7 +7,7 @@ This role installs Node.js runtime environment in user space along with popular 
 **Features:**
 
 - Latest Node.js version installation with automatic detection
-- Global package management (npm/yarn/pnpm)
+- Global npm packages, plus pnpm and yarn managed through Corepack
 - Essential development tools (Bitwarden CLI, Neovim support, etc.)
 - User-space installation (no root privileges required)
 - Configurable package list for team consistency

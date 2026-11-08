@@ -1,3 +1,10 @@
+# [1.25.0](https://github.com/arpanrec/ansible-collection-nebula/compare/1.24.0...1.25.0) (2026-11-08)
+
+
+### Features
+
+* **pnpm:** add pnpm role and stop nodejs role from installing pnpm ([#106](https://github.com/arpanrec/ansible-collection-nebula/issues/106)) ([8d81702](https://github.com/arpanrec/ansible-collection-nebula/commit/8d81702631547d2939881e15aa735875c5120b9d))
+
 # [1.24.0](https://github.com/arpanrec/ansible-collection-nebula/compare/1.23.0...1.24.0) (2026-10-30)
 
 

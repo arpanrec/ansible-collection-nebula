@@ -29,3 +29,4 @@ Extra variables will be applied to the original role.
 - [Rclone](../roles/rclone/README.md) -> rclone
 - [Bun](../roles/bun/README.md) -> bun
 - [Betterleaks](../roles/betterleaks/README.md) -> betterleaks
+- [Pnpm](../roles/pnpm/README.md) -> pnpm

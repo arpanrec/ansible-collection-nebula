@@ -131,3 +131,13 @@
             apply:
                 tags:
                     - betterleaks
+
+      - name: Server Workspace | Include Role | User Apps | Pnpm
+        ansible.builtin.include_role:
+            name: arpanrec.nebula.pnpm
+        tags:
+            - pnpm
+        args:
+            apply:
+                tags:
+                    - pnpm

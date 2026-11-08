@@ -1,0 +1,82 @@
+---
+- name: Pnpm | Prerequisites
+  ansible.builtin.import_tasks: prerequisites.yml
+
+- name: Pnpm | Get Release
+  ansible.builtin.set_fact:
+      __pnpm_version_details: "{{ lookup('arpanrec.nebula.version_db', 'pnpm',
+          pnpm_rv_version=pnpm_rv_version) | ansible.builtin.from_json }}"
+
+- name: Pnpm | Get Downloaded File Stat
+  ansible.builtin.stat:
+      path: "{{ __pnpm_rv_tarball_download_path }}"
+  register: __pnpm_rv_tmp_downloaded_file_stat
+
+- name: Pnpm | New Download
+  when: not __pnpm_rv_tmp_downloaded_file_stat.stat.exists
+  block:
+      - name: Pnpm | New Download | Create Download Directory
+        ansible.builtin.file:
+            path: "{{ pnpm_rv_tmp_download_dir }}"
+            state: directory
+            mode: "0700"
+
+      - name: Pnpm | New Download | Download Tarball
+        ansible.builtin.get_url:
+            url: "{{ __pnpm_version_details.download_link }}"
+            checksum: "{{ __pnpm_version_details.checksum | ansible.builtin.default(default_value=omit) }}"
+            dest: "{{ __pnpm_rv_tarball_download_path }}"
+            mode: "0700"
+            timeout: 300
+
+  rescue:
+      - name: Pnpm | New Download | Fail | Cleanup
+        ansible.builtin.file:
+            path: "{{ __pnpm_rv_tarball_download_path }}"
+            state: absent
+
+      - name: Pnpm | New Download | Fail | Fail
+        ansible.builtin.fail:
+            msg: Something went wrong, check the errors above
+
+- name: Pnpm | Get Installed Version
+  ansible.builtin.command:
+      argv:
+          - "{{ pnpm_rv_install_path }}/pnpm"
+          - --version
+  register: __pnpm_rv_installed_version
+  changed_when: false
+  failed_when: false
+
+- name: Pnpm | Install
+  when: __pnpm_rv_installed_version.rc != 0 or __pnpm_rv_installed_version.stdout != __pnpm_version_details.version
+  block:
+      - name: Pnpm | Install | Remove Old Install Directory
+        ansible.builtin.file:
+            path: "{{ pnpm_rv_install_path }}"
+            state: absent
+
+      - name: Pnpm | Install | Create Install Directory
+        ansible.builtin.file:
+            path: "{{ pnpm_rv_install_path }}"
+            state: directory
+            mode: "0700"
+
+      - name: Pnpm | Install | Unarchive Tarball
+        ansible.builtin.unarchive:
+            src: "{{ __pnpm_rv_tarball_download_path }}"
+            dest: "{{ pnpm_rv_install_path }}"
+            remote_src: true
+
+- name: Pnpm | Create Bin Directory
+  ansible.builtin.file:
+      path: "{{ pnpm_rv_executable_bin_path | ansible.builtin.dirname }}"
+      state: directory
+      mode: "0700"
+
+- name: Pnpm | Link Executable
+  ansible.builtin.file:
+      src: "{{ pnpm_rv_install_path }}/pnpm"
+      dest: "{{ pnpm_rv_executable_bin_path }}"
+      state: link
+      force: true

@@ -1,0 +1,32 @@
+---
+- name: Pnpm | Molecule | Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+      - name: Pnpm | Molecule | Verify | Import Roles For Variables
+        ansible.builtin.import_role:
+            name: arpanrec.nebula.pnpm
+            tasks_from: prerequisites
+
+      - name: Pnpm | Molecule | Get Release
+        ansible.builtin.set_fact:
+            __pnpm_version_details: "{{ lookup('arpanrec.nebula.version_db', 'pnpm',
+                pnpm_rv_version=pnpm_rv_version) | ansible.builtin.from_json }}"
+
+      - name: Pnpm | Molecule | Verify | Get Pnpm Version From Shell
+        ansible.builtin.command:
+            argv:
+                - pnpm
+                - --version
+        environment:
+            PATH: "{{ pnpm_rv_executable_bin_path | ansible.builtin.dirname }}:{{ ansible_facts.env.PATH }}"
+        register: __pnpm_rv_version_shell_result
+        changed_when: false
+
+      - name: Pnpm | Molecule | Verify | Fail If Pnpm Version Is Not Present
+        ansible.builtin.assert:
+            that: "__pnpm_version_details.version == __pnpm_rv_version_shell_result.stdout_lines[0] \
+                | ansible.builtin.split | ansible.builtin.last"
+            success_msg: Pnpm Version {{ __pnpm_version_details.version }} is installed
+            fail_msg: Pnpm Version {{ __pnpm_version_details.version }} is not installed,
+                Shell result {{ __pnpm_rv_version_shell_result.stdout }}

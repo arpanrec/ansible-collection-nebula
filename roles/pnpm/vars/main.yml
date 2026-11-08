@@ -1,0 +1,2 @@
+---
+__pnpm_rv_tarball_download_path: "{{ pnpm_rv_tmp_download_dir }}/pnpm-{{ __pnpm_version_details.version }}.tar.gz"

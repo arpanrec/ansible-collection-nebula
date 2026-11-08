@@ -58,6 +58,11 @@
       remote_src: true
   changed_when: false
 
+- name: NodeJS | Assert Pnpm Is Not In Global Packages
+  ansible.builtin.assert:
+      that: "'pnpm' not in nodejs_rv_global_packages"
+      fail_msg: pnpm is installed by the arpanrec.nebula.pnpm role, remove it from nodejs_rv_global_packages
+
 - name: NodeJS | Remove Node.js Npm Global Pnpm And Yarn
   community.general.npm:
       name: "{{ item }}"
@@ -108,55 +113,47 @@
   environment:
       PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
 
-- name: NodeJS | Install Corepack Package Managers Pnpm & Yarn
+- name: NodeJS | Install Corepack Package Manager Yarn
   ansible.builtin.command:
       argv:
           - "{{ nodejs_rv_install_path }}/bin/corepack"
           - install
           - -g
-          - "{{ item }}@latest"
-  changed_when: false
-  environment:
-      PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
-  loop:
-      - pnpm
-      - yarn
-
-- name: NodeJS | Prepare And Activate Corepack Pnpm
-  ansible.builtin.command:
-      argv:
-          - "{{ nodejs_rv_install_path }}/bin/corepack"
-          - prepare
-          - pnpm@latest
-          - --activate
+          - yarn@latest
   changed_when: false
   environment:
       PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
 
-- name: NodeJS | Enable Corepack Package Managers Pnpm & Yarn
+- name: NodeJS | Enable Corepack Package Manager Yarn
   ansible.builtin.command:
       argv:
           - "{{ nodejs_rv_install_path }}/bin/corepack"
           - enable
-          - "{{ item }}"
-      creates: "{{ nodejs_rv_install_path }}/bin/{{ item }}"
+          - yarn
+      creates: "{{ nodejs_rv_install_path }}/bin/yarn"
   changed_when: false
   environment:
       PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
+
+- name: NodeJS | Remove Pnpm Shims Added By The Corepack Package
+  ansible.builtin.file:
+      path: "{{ nodejs_rv_install_path }}/bin/{{ item }}"
+      state: absent
   loop:
       - pnpm
-      - yarn
+      - pnpx
+  changed_when: false
 
-- name: NodeJS | Download Pnpm Native Binary
+- name: NodeJS | Get Yarn Version
   ansible.builtin.command:
       argv:
-          - "{{ nodejs_rv_install_path }}/bin/pnpm"
+          - "{{ nodejs_rv_install_path }}/bin/yarn"
           - --version
-  register: __nodejs_rv_pnpm_version
+  register: __nodejs_rv_yarn_version
   changed_when: false
   environment:
       PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
 
-- name: NodeJS | Print Pnpm Version
+- name: NodeJS | Print Yarn Version
   ansible.builtin.debug:
-      msg: "{{ __nodejs_rv_pnpm_version.stdout }}"
+      msg: "{{ __nodejs_rv_yarn_version.stdout }}"

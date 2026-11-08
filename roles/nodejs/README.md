@@ -7,7 +7,8 @@ This role installs Node.js runtime environment in user space along with popular 
 **Features:**
 
 - Latest Node.js version installation with automatic detection
-- Global npm packages, plus pnpm and yarn managed through Corepack
+- Global npm packages, plus yarn managed through Corepack
+- pnpm is never installed by this role: it is removed from the global npm packages and from Corepack, and `pnpm` must not be listed in `nodejs_rv_global_packages`. Use the `arpanrec.nebula.pnpm` role instead.
 - Essential development tools (Bitwarden CLI, Neovim support, etc.)
 - User-space installation (no root privileges required)
 - Configurable package list for team consistency

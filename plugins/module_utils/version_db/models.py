@@ -24,6 +24,7 @@ Classes Details:
             - RCLONE: Represents the 'rclone' application.
             - BUN: Represents the 'bun' application.
             - BETTERLEAKS: Represents the 'betterleaks' application.
+            - PNPM: Represents the 'pnpm' application.
 
     VersionDetails:
         A dictionary to store version details of an application.
@@ -82,6 +83,7 @@ class SupportedApps(enum.Enum):
     RCLONE = "rclone"
     BUN = "bun"
     BETTERLEAKS = "betterleaks"
+    PNPM = "pnpm"
 
 
 class VersionDetails(dict[str, Any]):

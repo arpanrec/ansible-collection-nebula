@@ -1,0 +1,31 @@
+---
+- name: Rclone | Molecule | Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+      - name: Rclone | Molecule | Verify | Import Roles For Variables
+        ansible.builtin.import_role:
+            name: arpanrec.nebula.rclone
+            tasks_from: prerequisites
+
+      - name: Rclone | Molecule | Verify | Get Release
+        ansible.builtin.set_fact:
+            __rclone_version_details: "{{ lookup('arpanrec.nebula.version_db', 'rclone',
+                rclone_rv_version=rclone_rv_version) | ansible.builtin.from_json }}"
+
+      - name: Rclone | Molecule | Verify | Get Rclone Version From Shell
+        ansible.builtin.command:
+            argv:
+                - rclone
+                - version
+        environment:
+            PATH: "{{ rclone_rv_executable_bin_path | ansible.builtin.dirname }}:{{ ansible_facts.env.PATH }}"
+        register: __rclone_rv_version_shell_result
+        changed_when: false
+
+      - name: Rclone | Molecule | Verify | Fail If Rclone Version Is Not Present
+        ansible.builtin.assert:
+            that: "'rclone v' + __rclone_version_details.version == __rclone_rv_version_shell_result.stdout_lines[0]"
+            success_msg: Rclone Version {{ __rclone_version_details.version }} is installed
+            fail_msg: Rclone Version {{ __rclone_version_details.version }} is not installed,
+                Shell result {{ __rclone_rv_version_shell_result.stdout }}

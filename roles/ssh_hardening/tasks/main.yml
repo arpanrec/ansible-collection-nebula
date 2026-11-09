@@ -1,30 +1,30 @@
 ---
-- name: SSHD Hardening | Install python3 and procps
+- name: SSHD Hardening | Install Python3 And Procps
   ansible.builtin.raw: DEBIAN_FRONTEND=noninteractive apt-get update
       && DEBIAN_FRONTEND=noninteractive apt-get install -y python3 procps
-  register: ssh_hardening_rv_install_python_procps_result_raw
+  register: __ssh_hardening_rv_install_python_procps_result_raw
   changed_when: "'0 upgraded, 0 newly installed' not in
-      ssh_hardening_rv_install_python_procps_result_raw.stdout_lines | last"
+      __ssh_hardening_rv_install_python_procps_result_raw.stdout_lines | ansible.builtin.last"
 
 - name: SSHD Hardening | Gathering Facts
   ansible.builtin.setup:
 
-- name: SSHD Hardening | Include Asserts | Checking platform compatibility
+- name: SSHD Hardening | Include Asserts | Checking Platform Compatibility
   ansible.builtin.fail:
       msg: "{{ ansible_facts.system }} is not supported by this role"
   when: ansible_facts.os_family not in ['Debian']
 
-- name: SSHD Hardening | Prerequisite | Get system 1 PID Details
+- name: SSHD Hardening | Prerequisite | Get System 1 PID Details
   ansible.builtin.command: ps -p 1
-  register: ssh_hardening_rv_tmp_one_pid_shell_result
+  register: __ssh_hardening_rv_tmp_one_pid_shell_result
   changed_when: false
 
-- name: SSHD Hardening | Prerequisite | Assume system is not in systemd
+- name: SSHD Hardening | Prerequisite | Assume System Is Not In Systemd
   ansible.builtin.set_fact:
-      ssh_hardening_rv_init_system_systemd: "{{ ssh_hardening_rv_tmp_one_pid_shell_result.stdout_lines[1] \
-          | split(' ') | last == 'systemd' }}"
+      __ssh_hardening_rv_init_system_systemd: "{{ __ssh_hardening_rv_tmp_one_pid_shell_result.stdout_lines[1] \
+          | ansible.builtin.split(sep=' ') | ansible.builtin.last == 'systemd' }}"
 
-- name: SSHD Hardening | Install Packages | Install openssh server
+- name: SSHD Hardening | Install Packages | Install Openssh Server
   ansible.builtin.apt:
       name:
           - openssh-server
@@ -43,7 +43,7 @@
   environment:
       PATH: /sbin:{{ ansible_facts.env.PATH }}
 
-- name: SSHD Hardening | Create config directory
+- name: SSHD Hardening | Create Config Directory
   ansible.builtin.file:
       path: /etc/ssh/sshd_config.d
       state: directory
@@ -53,7 +53,7 @@
   notify:
       - SSH Hardening | Restart openssh server
 
-- name: SSHD Hardening | Place config file
+- name: SSHD Hardening | Place Config File
   ansible.builtin.template:
       src: templates/010-ssh-ansible.conf.j2
       dest: /etc/ssh/sshd_config.d/010-ssh-ansible.conf
@@ -63,17 +63,17 @@
   notify:
       - SSH Hardening | Restart openssh server
 
-- name: SSHD Hardening | Start and enable sshd
+- name: SSHD Hardening | Start And Enable SSHD
   ansible.builtin.systemd_service:
       name: sshd
       state: started
       enabled: true
-  register: ssh_hardening_rv_tmp_start_sshd
+  register: __ssh_hardening_rv_tmp_start_sshd
   failed_when: >
-      ssh_hardening_rv_init_system_systemd
+      __ssh_hardening_rv_init_system_systemd
       and
-      ssh_hardening_rv_tmp_start_sshd.failed
+      __ssh_hardening_rv_tmp_start_sshd.failed
 
-- name: SSHD Hardening | Include fail2ban
+- name: SSHD Hardening | Include Fail2ban
   ansible.builtin.import_tasks:
       file: fail2ban.yml

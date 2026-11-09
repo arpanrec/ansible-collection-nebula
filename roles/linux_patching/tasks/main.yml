@@ -1,15 +1,15 @@
 ---
-- name: Linux Patching | Install python3 and procps
+- name: Linux Patching | Install Python3 And Procps
   ansible.builtin.raw: DEBIAN_FRONTEND=noninteractive apt-get update
       && DEBIAN_FRONTEND=noninteractive apt-get install -y python3 procps
-  register: linux_patching_rv_install_python_pip_result_raw
+  register: __linux_patching_rv_install_python_pip_result_raw
   changed_when: "'0 upgraded, 0 newly installed' not in
-      linux_patching_rv_install_python_pip_result_raw.stdout_lines | last"
+      __linux_patching_rv_install_python_pip_result_raw.stdout_lines | ansible.builtin.last"
 
 - name: Linux Patching | Gathering Facts
   ansible.builtin.setup:
 
-- name: Linux Patching | Install packages
+- name: Linux Patching | Install Packages
   ansible.builtin.import_tasks: packages.yml
 
 - name: Linux Patching | Date Time
@@ -18,5 +18,5 @@
 - name: Linux Patching | Setup Host Network Information
   ansible.builtin.import_tasks: network.yml
 
-- name: Linux Patching | Setup admin users
+- name: Linux Patching | Setup Admin Users
   ansible.builtin.import_tasks: user.yml

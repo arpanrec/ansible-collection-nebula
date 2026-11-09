@@ -1,8 +1,8 @@
 ---
-- name: Postgresql | Install Client | Add repository | Gather facts.
+- name: PostgreSQL | Install Client | Add Repository | Gather Facts
   ansible.builtin.setup:
 
-- name: Postgresql | Install Client | Add repository | Install required packages.
+- name: PostgreSQL | Install Client | Add Repository | Install Required Packages
   ansible.builtin.apt:
       package:
           - curl
@@ -14,7 +14,7 @@
       state: present
       update_cache: true
 
-- name: Postgresql | Install Client | Add repository | Remove default postgresql package is exists.
+- name: PostgreSQL | Install Client | Add Repository | Remove Default PostgreSQL Package Is Exists
   ansible.builtin.apt:
       name:
           - postgresql
@@ -23,7 +23,7 @@
       state: absent
       purge: true
 
-- name: Postgresql | Install Client | Add repository | Create postgresql-common directory.
+- name: PostgreSQL | Install Client | Add Repository | Create PostgreSQL-Common Directory
   when: false
   ansible.builtin.file:
       path: /usr/share/postgresql-common/pgdg
@@ -32,7 +32,7 @@
       group: root
       mode: "0755"
 
-- name: Postgresql | Install Client | Add repository | Download GPG key.
+- name: PostgreSQL | Install Client | Add Repository | Download GPG Key
   when: false
   ansible.builtin.get_url:
       url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
@@ -42,20 +42,20 @@
       owner: root
       group: root
 
-- name: Postgresql | Install Client | Add repository | Get system architecture from dpkg.
+- name: PostgreSQL | Install Client | Add Repository | Get System Architecture From Dpkg
   ansible.builtin.command:
       argv:
           - dpkg
           - --print-architecture
-  register: postgresql_machine_architecture_shell
+  register: __postgresql_machine_architecture_shell
   changed_when: false
 
-- name: Postgresql | Install Client | Add repository | Remove pgdg list file.
+- name: PostgreSQL | Install Client | Add Repository | Remove Pgdg List File
   ansible.builtin.file:
       path: /etc/apt/sources.list.d/pgdg.list
       state: absent
 
-- name: Postgresql | Install Client | Add repository | Add apt deb822_repository.
+- name: PostgreSQL | Install Client | Add Repository | Add APT Deb822 Repository
   ansible.builtin.deb822_repository:
       name: pgdg
       allow_downgrade_to_insecure: false
@@ -63,7 +63,7 @@
       # signed_by: /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
       signed_by: "{{ postgresql_pgp_asc_content }}"
       architectures:
-          - "{{ postgresql_machine_architecture_shell.stdout }}"
+          - "{{ __postgresql_machine_architecture_shell.stdout }}"
       suites:
           - "{{ ansible_facts.distribution_release }}-pgdg"
       uris:
@@ -79,6 +79,6 @@
       check_valid_until: true
       check_date: true
 
-- name: Postgresql | Install Client | Add repository | APT Update Cache.
+- name: PostgreSQL | Install Client | Add Repository | APT Update Cache
   ansible.builtin.apt:
       update_cache: true

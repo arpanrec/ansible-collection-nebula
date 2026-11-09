@@ -297,3 +297,7 @@ foo*
 .ansible/*
 roles/ssh_hardening/.vscode/settings.json
 dest
+.agents/*
+AGENTS.md
+.claude/*
+CLAUDE.md

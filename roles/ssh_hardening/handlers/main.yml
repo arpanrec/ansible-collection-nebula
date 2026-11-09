@@ -5,20 +5,20 @@
       name: sshd
       state: restarted
       enabled: true
-  register: ssh_hardening_rv_tmp_restart_sshd
+  register: __ssh_hardening_rv_tmp_restart_sshd
   failed_when: >
-      ssh_hardening_rv_init_system_systemd
+      __ssh_hardening_rv_init_system_systemd
       and
-      ssh_hardening_rv_tmp_restart_sshd.failed
+      __ssh_hardening_rv_tmp_restart_sshd.failed
 
 - name: SSHD Hardening | fail2ban | Restart fail2ban
   ansible.builtin.systemd_service:
       name: "{{ item }}"
       state: restarted
       enabled: true
-  register: ssh_hardening_rv_tmp_restart_fail2ban
-  loop: "{{ ssh_hardening_rv_fail2ban_services }}"
+  register: __ssh_hardening_rv_tmp_restart_fail2ban
+  loop: "{{ __ssh_hardening_rv_fail2ban_services }}"
   failed_when: >
-      ssh_hardening_rv_init_system_systemd
+      __ssh_hardening_rv_init_system_systemd
       and
-      ssh_hardening_rv_tmp_restart_fail2ban.failed
+      __ssh_hardening_rv_tmp_restart_fail2ban.failed

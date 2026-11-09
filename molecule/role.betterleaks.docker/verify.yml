@@ -1,0 +1,32 @@
+---
+- name: Betterleaks | Molecule | Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+      - name: Betterleaks | Molecule | Verify | Import Roles For Variables
+        ansible.builtin.import_role:
+            name: arpanrec.nebula.betterleaks
+            tasks_from: prerequisites
+
+      - name: Betterleaks | Molecule | Get Release
+        ansible.builtin.set_fact:
+            __betterleaks_version_details: "{{ lookup('arpanrec.nebula.version_db', 'betterleaks',
+                betterleaks_rv_version=betterleaks_rv_version) | ansible.builtin.from_json }}"
+
+      - name: Betterleaks | Molecule | Verify | Get Betterleaks Version From Shell
+        ansible.builtin.command:
+            argv:
+                - betterleaks
+                - --version
+        environment:
+            PATH: "{{ betterleaks_rv_executable_bin_path | ansible.builtin.dirname }}:{{ ansible_facts.env.PATH }}"
+        register: __betterleaks_rv_version_shell_result
+        changed_when: false
+
+      - name: Betterleaks | Molecule | Verify | Fail If Betterleaks Version Is Not Present
+        ansible.builtin.assert:
+            that: "__betterleaks_version_details.version == __betterleaks_rv_version_shell_result.stdout_lines[0] \
+                | ansible.builtin.split | ansible.builtin.last"
+            success_msg: Betterleaks Version {{ __betterleaks_version_details.version }} is installed
+            fail_msg: Betterleaks Version {{ __betterleaks_version_details.version }} is not installed,
+                Shell result {{ __betterleaks_rv_version_shell_result.stdout }}

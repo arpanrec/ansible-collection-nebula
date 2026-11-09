@@ -3,6 +3,6 @@
   hosts: all
   gather_facts: false
   tasks:
-      - name: Bitwarden Secrets Manager SDK | Molecule | Converge | Import role
+      - name: Bitwarden Secrets Manager SDK | Molecule | Converge | Import Role
         ansible.builtin.import_role:
             name: arpanrec.nebula.bws

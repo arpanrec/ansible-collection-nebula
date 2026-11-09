@@ -5,5 +5,5 @@
 - name: Application User | Checking Mandatory Variables
   ansible.builtin.import_tasks: 000-prerequisites.yml
 
-- name: Application User | Adding user
+- name: Application User | Adding User
   ansible.builtin.import_tasks: 100-adduser.yml

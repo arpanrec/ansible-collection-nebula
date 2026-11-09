@@ -1,17 +1,17 @@
 ---
 namespace: arpanrec
 name: nebula
-version: 1.14.73
+version: 1.25.0
 readme: README.md
 authors:
     - "Arpan <me@arpanrec.com>"
 description: common ansible resources
-repository: https://github.com/arpanrec/arpanrec.nebula.git
+repository: https://github.com/arpanrec/ansible-collection-nebula.git
 license_file: LICENSE
-issues: https://github.com/arpanrec/arpanrec.nebula/issues
+issues: https://github.com/arpanrec/ansible-collection-nebula/issues
 dependencies: {}
-homepage: "https://github.com/arpanrec/arpanrec.nebula"
-documentation: https://github.com/arpanrec/arpanrec.nebula/blob/main/README.md
+homepage: "https://github.com/arpanrec/ansible-collection-nebula"
+documentation: https://github.com/arpanrec/ansible-collection-nebula/blob/main/README.md
 build_ignore:
     - ".ansible-lint"
     - ".git"
@@ -39,6 +39,10 @@ build_ignore:
     - "requirements-dev.txt"
     - "requirements.txt"
     - "requirements.yml"
+    - "scripts"
+    - ".git-hooks"
+    - ".claude"
+    - ".agents"
     - "venv"
     - ".ansible"
     - "roles/geerlingguy.docker"

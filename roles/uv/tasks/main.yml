@@ -1,0 +1,70 @@
+---
+- name: Uv | Prerequisites
+  ansible.builtin.import_tasks: prerequisites.yml
+
+- name: Uv | Create Install Directory
+  ansible.builtin.file:
+      path: "{{ uv_rv_executable_bin_path | ansible.builtin.dirname }}"
+      state: directory
+      mode: "0700"
+
+- name: Uv | Get Release
+  ansible.builtin.set_fact:
+      __uv_version_details: "{{ lookup('arpanrec.nebula.version_db', 'uv',
+          uv_rv_version=uv_rv_version) | ansible.builtin.from_json }}"
+
+- name: Uv | Get Downloaded File Stat
+  ansible.builtin.stat:
+      path: "{{ __uv_rv_tarball_download_path }}"
+  register: __uv_rv_tmp_downloaded_file_stat
+
+- name: Uv | New Download
+  when: not __uv_rv_tmp_downloaded_file_stat.stat.exists
+  block:
+      - name: Uv | New Download | Create Download Directory
+        ansible.builtin.file:
+            path: "{{ uv_rv_tmp_download_dir }}"
+            state: directory
+            mode: "0700"
+
+      - name: "Uv | New Download | Download Tarball"
+        ansible.builtin.get_url:
+            url: "{{ __uv_version_details.download_link }}"
+            checksum: "{{ __uv_version_details.checksum | ansible.builtin.default(default_value=omit) }}"
+            dest: "{{ __uv_rv_tarball_download_path }}"
+            mode: "0700"
+
+  rescue:
+      - name: Uv | New Download | Fail | Cleanup
+        ansible.builtin.file:
+            path: "{{ __uv_rv_tarball_download_path }}"
+            state: absent
+
+      - name: Uv | New Download | Fail | Fail
+        ansible.builtin.fail:
+            msg: Something went wrong, check the errors above
+
+- name: Uv | Create Temporary Unarchive Directory
+  ansible.builtin.file:
+      path: "{{ __uv_rv_tmp_unarchive_dir }}"
+      state: directory
+      mode: "0750"
+
+- name: Uv | Unarchive The Tarball
+  ansible.builtin.unarchive:
+      src: "{{ __uv_rv_tarball_download_path }}"
+      dest: "{{ __uv_rv_tmp_unarchive_dir }}"
+      extra_opts:
+          - "--strip-components=1"
+      remote_src: true
+      mode: "0750"
+
+- name: Uv | Copy Binaries To Dest
+  ansible.builtin.copy:
+      src: "{{ __uv_rv_tmp_unarchive_dir }}/{{ item }}"
+      dest: "{{ uv_rv_executable_bin_path | ansible.builtin.dirname }}/{{ item }}"
+      mode: "0755"
+      remote_src: true
+  with_items:
+      - uv
+      - uvx

@@ -8,7 +8,7 @@ This role installs a postgresql server managed by systemd and pg_ctlcluster.
 
 | Variable                          | Type  | Required | Default | Description                       |
 | --------------------------------- | ----- | -------- | ------- | --------------------------------- |
-| `postgresql_version`              | `str` | `false`  | `17`    | Postgresql major version.         |
+| `postgresql_version`              | `str` | `false`  | `18`    | Postgresql major version.         |
 | `postgresql_cluster`              | `str` | `false`  | `main`  | Postgres cluster name.            |
 | `postgresql_port`                 | `int` | `false`  | `5432`  | Postgresql port.                  |
 | `postgresql_super_user_password`  | `str` | `false`  | None    | Root user password.               |

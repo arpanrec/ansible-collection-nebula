@@ -1,15 +1,12 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
 """
-Ansible Module for Search for the latest release in a GitHub repository.
+Lookup plugin that resolves version, download link and checksum details for a supported application.
 """
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type  # pylint: disable=invalid-name
+from __future__ import annotations
 
 import json
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from ansible.errors import AnsibleLookupError  # type: ignore
 from ansible.plugins.lookup import LookupBase  # type: ignore
@@ -28,7 +25,8 @@ short_description: Get download and version details for a supported application.
 description:
     - Resolve the version, download link, checksum and any extra details for a supported application.
     - One of V(bws), V(terraform), V(vault), V(go), V(java), V(nodejs), V(pulumi), V(gitea),
-      V(hadolint) or V(gitleaks) must be supplied as the single term.
+      V(hadolint), V(gitleaks), V(uv), V(rclone), V(bun), V(betterleaks) or V(pnpm) must be supplied as the
+      single term.
     - The result is returned as a one-element list containing a JSON encoded object.
 notes:
     - This lookup reads C(ansible_architecture) from the host variables to build architecture
@@ -69,12 +67,14 @@ class LookupModule(LookupBase):
     Lookup module that retrieves version details.
     """
 
-    def run(self, terms: List[str], variables: Optional[Dict[str, Any]] = None, **kwargs: Dict[str, Any]) -> List[str]:
+    def run(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, terms: list[str], variables: dict[str, Any] | None = None, **kwargs: dict[str, Any]
+    ) -> list[str]:
         """
         Run the lookup module.
         """
 
-        self.set_options(var_options=variables, direct=kwargs)
+        self.set_options(var_options=variables, direct=kwargs)  # pyright: ignore[reportUnknownMemberType]
 
         if not terms:
             raise AnsibleLookupError("No terms provided for lookup")
@@ -84,7 +84,9 @@ class LookupModule(LookupBase):
 
         version_details: VersionDetails
         try:
-            version_details = get_version(app_name=terms[0], variables=variables, **kwargs)
+            version_details = get_version(  # pyright: ignore[reportUnknownVariableType]
+                app_name=terms[0], variables=variables, **kwargs
+            )
         except Exception as e:
             raise AnsibleLookupError(f"Failed to get version details for {terms[0]}: {str(e)}") from e
 

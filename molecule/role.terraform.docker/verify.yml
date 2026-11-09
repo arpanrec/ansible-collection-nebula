@@ -3,27 +3,27 @@
   hosts: all
   gather_facts: true
   tasks:
-      - name: Terraform | Molecule | Verify | Import Roles for variables
+      - name: Terraform | Molecule | Verify | Import Roles For Variables
         ansible.builtin.import_role:
             name: arpanrec.nebula.terraform
             tasks_from: prerequisites
 
       - name: Terraform | Molecule | Verify | Get Version Details
         ansible.builtin.set_fact:
-            terraform_tmp_version_details: "{{ lookup('arpanrec.nebula.version_db', 'terraform',
-                terraform_rv_version=terraform_rv_version) | from_json }}"
+            __terraform_tmp_version_details: "{{ lookup('arpanrec.nebula.version_db', 'terraform',
+                terraform_rv_version=terraform_rv_version) | ansible.builtin.from_json }}"
 
-      - name: Terraform | Molecule | Verify | Get terraform version from shell
+      - name: Terraform | Molecule | Verify | Get Terraform Version From Shell
         ansible.builtin.command: terraform --version
         environment:
             PATH: "{{ terraform_rv_install_path }}:{{ ansible_facts.env.PATH }}"
-        register: terraform_rv_version_shell_result
+        register: __terraform_rv_version_shell_result
         changed_when: false
 
-      - name: Terraform | Molecule | Verify | Fail if terraform version is not present
+      - name: Terraform | Molecule | Verify | Fail If Terraform Version Is Not Present
         ansible.builtin.assert:
-            that: terraform_rv_version_shell_result.stdout_lines[0] == "Terraform v"
-                + terraform_tmp_version_details.version
-            success_msg: Terraform Version {{ terraform_tmp_version_details.version }} is installed
-            fail_msg: Terraform Version {{ terraform_tmp_version_details.version }} is not installed,
-                Shell result {{ terraform_rv_version_shell_result.stdout }}
+            that: __terraform_rv_version_shell_result.stdout_lines[0] == "Terraform v"
+                + __terraform_tmp_version_details.version
+            success_msg: Terraform Version {{ __terraform_tmp_version_details.version }} is installed
+            fail_msg: Terraform Version {{ __terraform_tmp_version_details.version }} is not installed,
+                Shell result {{ __terraform_rv_version_shell_result.stdout }}

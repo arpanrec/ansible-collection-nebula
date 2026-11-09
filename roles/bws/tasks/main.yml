@@ -4,25 +4,25 @@
 
 - name: Bitwarden Secrets Manager SDK | Get Version Details
   ansible.builtin.set_fact:
-      bws_sdk_version_details: "{{ lookup('arpanrec.nebula.version_db', 'bws',
-          bws_sdk_version_tag=bws_sdk_version_tag) | from_json }}"
+      __bws_sdk_version_details: "{{ lookup('arpanrec.nebula.version_db', 'bws',
+          bws_sdk_version_tag=bws_sdk_version_tag) | ansible.builtin.from_json }}"
 
-- name: Bitwarden Secrets Manager SDK | Get downloaded file stat
+- name: Bitwarden Secrets Manager SDK | Get Downloaded File Stat
   ansible.builtin.stat:
-      path: "{{ bws_sdk_tmp_zip_download_path }}"
-  register: bws_sdk_tmp_zip_file_stat
+      path: "{{ __bws_sdk_tmp_zip_download_path }}"
+  register: __bws_sdk_tmp_zip_file_stat
 
 - name: Bitwarden Secrets Manager SDK | New Install
-  when: not bws_sdk_tmp_zip_file_stat.stat.exists
+  when: not __bws_sdk_tmp_zip_file_stat.stat.exists
   block:
       - name: Bitwarden Secrets Manager SDK | New Install | Download
         ansible.builtin.get_url:
-            url: "{{ bws_sdk_version_details.download_link }}"
-            dest: "{{ bws_sdk_tmp_zip_download_path }}"
-            checksum: "{{ bws_sdk_version_details.checksum | default(omit) }}"
+            url: "{{ __bws_sdk_version_details.download_link }}"
+            dest: "{{ __bws_sdk_tmp_zip_download_path }}"
+            checksum: "{{ __bws_sdk_version_details.checksum | ansible.builtin.default(default_value=omit) }}"
             mode: "0700"
 
-      - name: Bitwarden Secrets Manager SDK | New Install | Remove old directory
+      - name: Bitwarden Secrets Manager SDK | New Install | Remove Old Directory
         ansible.builtin.file:
             path: "{{ item }}"
             state: absent
@@ -37,19 +37,19 @@
         with_items:
             - "{{ bws_sdk_bin_dir }}/bws"
             - "{{ bws_sdk_tmp_dir }}/bws"
-            - "{{ bws_sdk_tmp_zip_download_path }}"
+            - "{{ __bws_sdk_tmp_zip_download_path }}"
 
       - name: Bitwarden Secrets Manager SDK | New Install | Fail | Fail
         ansible.builtin.fail:
             msg: Something went wrong, check the errors above
 
-- name: Bitwarden Secrets Manager SDK | New Install | Extract to tmp directory
+- name: Bitwarden Secrets Manager SDK | New Install | Extract To Tmp Directory
   ansible.builtin.unarchive:
-      src: "{{ bws_sdk_tmp_zip_download_path }}"
+      src: "{{ __bws_sdk_tmp_zip_download_path }}"
       dest: "{{ bws_sdk_tmp_dir }}"
       remote_src: true
 
-- name: Bitwarden Secrets Manager SDK | New Install | bws_sdk_bin_dir | Create
+- name: Bitwarden Secrets Manager SDK | New Install | Bin Directory | Create
   ansible.builtin.file:
       path: "{{ bws_sdk_bin_dir }}"
       state: directory

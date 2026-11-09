@@ -1,7 +1,7 @@
 ---
 - name: Oracle JDK | Apache Groovy | New Install
   block:
-      - name: Oracle JDK | Apache Groovy | New Install | Remove old directory
+      - name: Oracle JDK | Apache Groovy | New Install | Remove Old Directory
         ansible.builtin.file:
             path: "{{ java_rv_jdk_groovy_install_path }}"
             state: absent
@@ -12,19 +12,19 @@
             state: directory
             mode: "0700"
 
-      - name: Oracle JDK | Apache Groovy | New Install | Copy new files
+      - name: Oracle JDK | Apache Groovy | New Install | Copy New Files
         ansible.builtin.copy:
-            src: "{{ java_rv_jdk_groovy_tmp_unzip_path }}/groovy-{{
-                oracle_jdk_tmp_version_details.extras.groovy.version }}/"
+            src: "{{ __java_rv_jdk_groovy_tmp_unzip_path }}/groovy-{{
+                __oracle_jdk_tmp_version_details.extras.groovy.version }}/"
             dest: "{{ java_rv_jdk_groovy_install_path }}/"
             remote_src: true
             mode: "0700"
   rescue:
-      - name: Oracle JDK | Apache Groovy | Remove the zip
+      - name: Oracle JDK | Apache Groovy | New Install | Remove The Zip
         ansible.builtin.file:
             path: "{{ item }}"
             state: absent
         with_items:
-            - "{{ java_rv_jdk_groovy_tmp_unzip_path }}/groovy-{{
-              oracle_jdk_tmp_version_details.extras.groovy.version }}/"
-            - "{{ java_rv_jdk_groovy_tarball_download_path }}"
+            - "{{ __java_rv_jdk_groovy_tmp_unzip_path }}/groovy-{{
+              __oracle_jdk_tmp_version_details.extras.groovy.version }}/"
+            - "{{ __java_rv_jdk_groovy_tarball_download_path }}"

@@ -1,18 +1,18 @@
 ---
-- name: SSHD Hardening | fail2ban | Import assert.yml
+- name: SSHD Hardening | Fail2ban | Import Assert.yml
   ansible.builtin.import_tasks:
       file: fail2ban-assert.yml
   run_once: true
   delegate_to: localhost
 
-- name: SSHD Hardening | fail2ban | Install fail2ban
+- name: SSHD Hardening | Fail2ban | Install Fail2ban
   ansible.builtin.apt:
-      name: "{{ ssh_hardening_rv_fail2ban_packages }}"
+      name: "{{ __ssh_hardening_rv_fail2ban_packages }}"
       state: present
       update_cache: true
       install_recommends: true
 
-- name: SSHD Hardening | fail2ban | Create filter.d directory
+- name: SSHD Hardening | Fail2ban | Create Filter.d Directory
   ansible.builtin.file:
       path: /etc/fail2ban/filter.d
       state: directory
@@ -20,7 +20,7 @@
       group: root
       mode: "0755"
 
-- name: SSHD Hardening | fail2ban | Copy filters in filter.d
+- name: SSHD Hardening | Fail2ban | Copy Filters In Filter.d
   ansible.builtin.copy:
       src: "{{ ssh_hardening_rv_fail2ban_filterd_path }}"
       dest: /etc/fail2ban/filter.d/
@@ -28,24 +28,24 @@
       group: root
       mode: "0640"
   when:
-      - ssh_hardening_rv_fail2ban_filterd_path is defined
+      - ssh_hardening_rv_fail2ban_filterd_path is ansible.builtin.defined
   notify:
       - SSHD Hardening | fail2ban | Restart fail2ban
 
-- name: SSHD Hardening | fail2ban | Configure fail2ban.local
+- name: SSHD Hardening | Fail2ban | Configure Fail2ban.local
   community.general.ini_file:
       path: /etc/fail2ban/fail2ban.local
       section: "{{ item.section }}"
       option: "{{ item.option }}"
       value: "{{ item.value }}"
       mode: "0640"
-  loop: "{{ ssh_hardening_rv_fail2ban_base_configuration + ssh_hardening_rv_fail2ban_configuration }}"
+  loop: "{{ __ssh_hardening_rv_fail2ban_base_configuration + ssh_hardening_rv_fail2ban_configuration }}"
   notify:
       - SSHD Hardening | fail2ban | Restart fail2ban
   loop_control:
       label: "{{ item.option }}"
 
-- name: SSHD Hardening | fail2ban | Create jail.d directory
+- name: SSHD Hardening | Fail2ban | Create Jail.d Directory
   ansible.builtin.file:
       path: /etc/fail2ban/jail.d
       state: directory
@@ -53,7 +53,7 @@
       group: root
       mode: "0755"
 
-- name: SSHD Hardening | fail2ban | Setup defaults-debian.conf, setup sshd
+- name: SSHD Hardening | Fail2ban | Setup Defaults-Debian.conf, Setup SSHD
   community.general.ini_file:
       path: /etc/fail2ban/jail.d/defaults-debian.conf
       section: "{{ item.section }}"
@@ -70,41 +70,41 @@
   notify:
       - SSHD Hardening | fail2ban | Restart fail2ban
 
-- name: SSHD Hardening | fail2ban | Configure jail.local
+- name: SSHD Hardening | Fail2ban | Configure Jail.local
   community.general.ini_file:
       path: /etc/fail2ban/jail.local
       section: "{{ item.section }}"
       option: "{{ item.option }}"
       value: "{{ item.value }}"
       mode: "0640"
-  loop: "{{ ssh_hardening_rv_fail2ban_base_jail_configuration + ssh_hardening_rv_fail2ban_jail_configuration }}"
+  loop: "{{ __ssh_hardening_rv_fail2ban_base_jail_configuration + ssh_hardening_rv_fail2ban_jail_configuration }}"
   notify:
       - SSHD Hardening | fail2ban | Restart fail2ban
   loop_control:
       label: "{{ item.option }}"
 
-- name: SSHD Hardening | fail2ban | Stat auth log file
+- name: SSHD Hardening | Fail2ban | Stat Auth Log File
   ansible.builtin.stat:
       path: /var/log/auth.log
-  register: ssh_hardening_rv_fail2ban_auth
+  register: __ssh_hardening_rv_fail2ban_auth
 
-- name: SSHD Hardening | fail2ban | Touch auth log file
+- name: SSHD Hardening | Fail2ban | Touch Auth Log File
   ansible.builtin.file:
       path: /var/log/auth.log
       state: touch
       mode: "0640"
   when:
-      - ssh_hardening_rv_fail2ban_auth.stat.exists is defined
-      - not ssh_hardening_rv_fail2ban_auth.stat.exists
+      - __ssh_hardening_rv_fail2ban_auth.stat.exists is ansible.builtin.defined
+      - not __ssh_hardening_rv_fail2ban_auth.stat.exists
 
-- name: SSHD Hardening | fail2ban | Start and enable fail2ban
+- name: SSHD Hardening | Fail2ban | Start And Enable Fail2ban
   ansible.builtin.systemd_service:
       name: "{{ item }}"
       state: started
       enabled: true
-  register: ssh_hardening_rv_tmp_start_fail2ban
-  loop: "{{ ssh_hardening_rv_fail2ban_services }}"
+  register: __ssh_hardening_rv_tmp_start_fail2ban
+  loop: "{{ __ssh_hardening_rv_fail2ban_services }}"
   failed_when: >
-      ssh_hardening_rv_init_system_systemd
+      __ssh_hardening_rv_init_system_systemd
       and
-      ssh_hardening_rv_tmp_start_fail2ban.failed
+      __ssh_hardening_rv_tmp_start_fail2ban.failed

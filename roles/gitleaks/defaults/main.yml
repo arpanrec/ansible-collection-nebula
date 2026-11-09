@@ -1,4 +1,4 @@
 ---
 gitleaks_rv_executable_bin_path: "{{ ansible_facts.user_dir }}/.local/bin/gitleaks"
-gitleaks_rv_tmp_download_dir: "{{ ansible_facts.user_dir }}/.tmp/gitleaks"
+gitleaks_rv_tmp_download_dir: "{{ ansible_facts.user_dir }}/.cache/gitleaks"
 gitleaks_rv_version: "fetch_latest_version"

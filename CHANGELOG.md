@@ -1,3 +1,143 @@
+# [1.25.0](https://github.com/arpanrec/ansible-collection-nebula/compare/1.24.0...1.25.0) (2026-11-08)
+
+
+### Features
+
+* **pnpm:** add pnpm role and stop nodejs role from installing pnpm ([#106](https://github.com/arpanrec/ansible-collection-nebula/issues/106)) ([8d81702](https://github.com/arpanrec/ansible-collection-nebula/commit/8d81702631547d2939881e15aa735875c5120b9d))
+
+# [1.24.0](https://github.com/arpanrec/ansible-collection-nebula/compare/1.23.0...1.24.0) (2026-10-30)
+
+
+### Features
+
+* **betterleaks:** add betterleaks role and skip pre-releases in version_db ([#105](https://github.com/arpanrec/ansible-collection-nebula/issues/105)) ([cf12f06](https://github.com/arpanrec/ansible-collection-nebula/commit/cf12f0665c648cef58f85fa7ba9c517ced10cd66))
+
+# [1.23.0](https://github.com/arpanrec/ansible-collection-nebula/compare/1.22.0...1.23.0) (2026-10-25)
+
+
+### Features
+
+* **nodejs:** Enhance Corepack management and version handling ([9577b9a](https://github.com/arpanrec/ansible-collection-nebula/commit/9577b9a9186957923123919755be01cc91fa1c2e))
+
+# [1.22.0](https://github.com/arpanrec/ansible-collection-nebula/compare/1.21.1...1.22.0) (2026-10-25)
+
+
+### Features
+
+* **nodejs:** Add task to download Pnpm native binary and check version ([a3c4626](https://github.com/arpanrec/ansible-collection-nebula/commit/a3c46260af6cf43b542420eb254771be78269007))
+
+## [1.21.1](https://github.com/arpanrec/ansible-collection-nebula/compare/1.21.0...1.21.1) (2026-10-25)
+
+
+### Bug Fixes
+
+* **nodejs:** Add task to prepare and activate Corepack for Pnpm ([e769df9](https://github.com/arpanrec/ansible-collection-nebula/commit/e769df9d4598c0dc35dc62750bd5e80804d41ab9))
+
+# [1.21.0](https://github.com/arpanrec/ansible-collection-nebula/compare/1.20.0...1.21.0) (2026-10-21)
+
+
+### Features
+
+* **bun:** Add Bun role for installation and management ([#100](https://github.com/arpanrec/ansible-collection-nebula/issues/100)) ([0d2ee37](https://github.com/arpanrec/ansible-collection-nebula/commit/0d2ee37500aeb607ff5689f646294679751f18e9))
+
+# [1.20.0](https://github.com/arpanrec/ansible-collection-nebula/compare/1.19.3...1.20.0) (2026-10-18)
+
+
+### Features
+
+* Install rclone in user apps. ([#99](https://github.com/arpanrec/ansible-collection-nebula/issues/99)) ([f22acdd](https://github.com/arpanrec/ansible-collection-nebula/commit/f22acddc5bfa03a2a9ce920d95e5a9ae92b3ff9b))
+
+## [1.19.3](https://github.com/arpanrec/ansible-collection-nebula/compare/1.19.2...1.19.3) (2026-10-14)
+
+
+### Bug Fixes
+
+* **user_add:** use ansible.builtin.password_hash for password hashing ([d22b1b7](https://github.com/arpanrec/ansible-collection-nebula/commit/d22b1b74ed9088510ca95952591107dee5af07d6))
+
+## [1.19.2](https://github.com/arpanrec/ansible-collection-nebula/compare/1.19.1...1.19.2) (2026-10-01)
+
+
+### Bug Fixes
+
+* remove unused prerequisite checks across roles and update release workflow versions ([#94](https://github.com/arpanrec/ansible-collection-nebula/issues/94)) ([6c3b379](https://github.com/arpanrec/ansible-collection-nebula/commit/6c3b379c08f3c0f44435ff4e3d547287ecf2184a))
+
+## [1.19.1](https://github.com/arpanrec/arpanrec.nebula/compare/1.19.0...1.19.1) (2026-09-27)
+
+
+### Bug Fixes
+
+* ansible standars for variable names and task names, no functional change. ([#93](https://github.com/arpanrec/arpanrec.nebula/issues/93)) ([bd35e1e](https://github.com/arpanrec/arpanrec.nebula/commit/bd35e1e9216caef40ee8d43435821f4780dae623))
+
+# [1.19.0](https://github.com/arpanrec/arpanrec.nebula/compare/1.18.1...1.19.0) (2026-09-20)
+
+
+### Features
+
+* Add san_list_transformer filter plugin for classifying SAN entries ([#90](https://github.com/arpanrec/arpanrec.nebula/issues/90)) ([75242df](https://github.com/arpanrec/arpanrec.nebula/commit/75242df1cc9e385fc25786917d88535e614ef17f))
+
+## [1.18.1](https://github.com/arpanrec/arpanrec.nebula/compare/1.18.0...1.18.1) (2026-09-08)
+
+
+### Bug Fixes
+
+* update temporary directories to use cache instead of tmp for various roles ([a67ff46](https://github.com/arpanrec/arpanrec.nebula/commit/a67ff462f38fada247939280ad6ba7640f3c88a9))
+
+# [1.18.0](https://github.com/arpanrec/arpanrec.nebula/compare/1.17.0...1.18.0) (2026-09-06)
+
+
+### Features
+
+* add Uv role with Molecule testing and version management ([#85](https://github.com/arpanrec/arpanrec.nebula/issues/85)) ([74fe536](https://github.com/arpanrec/arpanrec.nebula/commit/74fe536903b754f527de3ea1b0bedf3186352226))
+
+# [1.17.0](https://github.com/arpanrec/arpanrec.nebula/compare/1.16.0...1.17.0) (2026-09-01)
+
+
+### Features
+
+* Just release ([21e6fa6](https://github.com/arpanrec/arpanrec.nebula/commit/21e6fa698ff37746c3bf25d17a0f5a9a40c00bc5))
+
+# [1.16.0](https://github.com/arpanrec/arpanrec.nebula/compare/1.15.3...1.16.0) (2026-09-01)
+
+
+### Features
+
+* add py.typed files for module_utils and version_db to support type checking ([47cbe05](https://github.com/arpanrec/arpanrec.nebula/commit/47cbe05e763f8185b31b5fad8510fe76f192d147))
+
+## [1.15.3](https://github.com/arpanrec/arpanrec.nebula/compare/1.15.2...1.15.3) (2026-09-01)
+
+
+### Bug Fixes
+
+* update development notes to streamline setup instructions ([cd899c7](https://github.com/arpanrec/arpanrec.nebula/commit/cd899c7150ccc17da7468c59ff71be5434ae07a1))
+
+## [1.15.2](https://github.com/arpanrec/arpanrec.nebula/compare/1.15.1...1.15.2) (2026-09-01)
+
+
+### Bug Fixes
+
+* add type checking ignores for pyright in lookup plugins and models ([6ee8342](https://github.com/arpanrec/arpanrec.nebula/commit/6ee8342dd457a5efa781f2dac0a86248ca28db20))
+
+## [1.15.1](https://github.com/arpanrec/arpanrec.nebula/compare/1.15.0...1.15.1) (2026-09-01)
+
+
+### Bug Fixes
+
+* update community.general and community.docker versions in requirements.yml ([f4ac9d5](https://github.com/arpanrec/arpanrec.nebula/commit/f4ac9d55ce21a089d5f8a4c7b4ba3d83a1395d14))
+
+# [1.15.0](https://github.com/arpanrec/arpanrec.nebula/compare/1.14.74...1.15.0) (2026-09-01)
+
+
+### Features
+
+* Replace requests with httpx ([#83](https://github.com/arpanrec/arpanrec.nebula/issues/83)) ([de882e9](https://github.com/arpanrec/arpanrec.nebula/commit/de882e935681fce61b64e5e73d8c192639e85c7e))
+
+## [1.14.74](https://github.com/arpanrec/arpanrec.nebula/compare/1.14.73...1.14.74) (2026-08-07)
+
+
+### Bug Fixes
+
+* update dependencies ([7c9c4f0](https://github.com/arpanrec/arpanrec.nebula/commit/7c9c4f05ab5fa029b8dfc6c4aa96e2a0f6a1bea1))
+
 ## [1.14.73](https://github.com/arpanrec/arpanrec.nebula/compare/1.14.72...1.14.73) (2026-08-07)
 
 

@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
 """
 This module provides the `Java` class, which handles Java version details and fetches
 related software versions such as Maven, Gradle, Groovy, Kotlin compiler, and GraalVM.
@@ -28,8 +27,10 @@ Methods:
 
 """
 
+from __future__ import annotations
+
 # pylint: disable=E0401,E0611
-from typing import Any, Dict
+from typing import Any
 
 from ansible.utils.display import Display  # type: ignore
 from packaging.version import parse as parse_version
@@ -44,17 +45,17 @@ class Java(AppDetails):
     Class to handle Java version details.
     """
 
-    __jdk_architecture_map: Dict[str, str] = {
+    __jdk_architecture_map: dict[str, str] = {
         "x86_64": "x64",
         "aarch64": "aarch64",
     }
 
-    __graalvm_architecture_map: Dict[str, str] = {
+    __graalvm_architecture_map: dict[str, str] = {
         "x86_64": "x64",
         "aarch64": "aarch64",
     }
 
-    __java_download_map: Dict[str, Any] = {
+    __java_download_map: dict[str, Any] = {
         "jdk": {
             "25": {},
             "24": {},
@@ -136,7 +137,7 @@ class Java(AppDetails):
             "graalvm": self._fetch_graalvm_version(),
         }
 
-    def _fetch_maven_version(self) -> Dict[str, str]:
+    def _fetch_maven_version(self) -> dict[str, str]:
         """
         Fetch the latest Maven version.
         """
@@ -169,7 +170,7 @@ class Java(AppDetails):
             f"/apache-{_github_release_tag}-bin.tar.gz",
         }
 
-    def _fetch_gradle_version(self) -> Dict[str, str]:
+    def _fetch_gradle_version(self) -> dict[str, str]:
         """
         Fetch the latest Gradle version.
         """
@@ -193,7 +194,7 @@ class Java(AppDetails):
             "download_link": f"https://downloads.gradle.org/distributions/gradle-{_github_release_tag[1:]}-all.zip",
         }
 
-    def _fetch_groovy_version(self) -> Dict[str, str]:
+    def _fetch_groovy_version(self) -> dict[str, str]:
         """
         Fetch the latest Groovy version.
         """
@@ -218,7 +219,7 @@ class Java(AppDetails):
             f"/apache-groovy-sdk-{_github_release_tag}.zip",
         }
 
-    def _fetch_kotlinc_version(self) -> Dict[str, str]:
+    def _fetch_kotlinc_version(self) -> dict[str, str]:
         """
         Fetch the latest Kotlin compiler version.
         """
@@ -243,7 +244,7 @@ class Java(AppDetails):
             f"/{_github_release_tag}/kotlin-compiler-{_github_release_tag[1:]}.zip",
         }
 
-    def _fetch_graalvm_version(self) -> Dict[str, str]:
+    def _fetch_graalvm_version(self) -> dict[str, str]:
         """
         Fetch the latest GraalVM version.
         """

@@ -2,7 +2,7 @@
 - name: Linux Patching | Users | Checking Prerequisite
   ansible.builtin.import_tasks: prerequisite.yml
 
-- name: Linux Patching | Users | Disable laptop lid switch
+- name: Linux Patching | Users | Disable Laptop Lid Switch
   community.general.ini_file:
       path: /etc/systemd/logind.conf
       section: Login
@@ -21,21 +21,21 @@
       - option: HandleLidSwitchExternalPower
         value: ignore
 
-- name: Linux Patching | Users | Create home for new users
+- name: Linux Patching | Users | Create Home For New Users
   ansible.builtin.lineinfile:
       path: /etc/login.defs
       state: present
       regexp: "^CREATE_HOME"
       line: "CREATE_HOME  yes"
 
-- name: Linux Patching | Users | Create mail spool for new users
+- name: Linux Patching | Users | Create Mail Spool For New Users
   ansible.builtin.lineinfile:
       path: /etc/default/useradd
       state: present
       regexp: "^CREATE_MAIL_SPOOL"
       line: "CREATE_MAIL_SPOOL=yes"
 
-- name: Linux Patching | Users | Create wheel and sudo groups
+- name: Linux Patching | Users | Create Wheel And Sudo Groups
   ansible.builtin.group:
       name: "{{ item }}"
       state: present
@@ -44,7 +44,7 @@
       - wheel
       - sudo
 
-- name: Linux Patching | Users | Create Sudoers directory
+- name: Linux Patching | Users | Create Sudoers Directory
   ansible.builtin.file:
       path: /etc/sudoers.d
       state: directory
@@ -52,7 +52,7 @@
       owner: root
       group: root
 
-- name: Linux Patching | Users | Allow group permissions
+- name: Linux Patching | Users | Allow Group Permissions
   ansible.builtin.copy:
       dest: "/etc/sudoers.d/{{ item.file_loc }}"
       content: "{{ item.rule }}\n"

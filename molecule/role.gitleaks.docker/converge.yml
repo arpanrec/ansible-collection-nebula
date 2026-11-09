@@ -5,6 +5,6 @@
   any_errors_fatal: true
   become: false
   tasks:
-      - name: Gitleaks | Molecule | Converge | Include gitleaks role
+      - name: Gitleaks | Molecule | Converge | Include Gitleaks Role
         ansible.builtin.import_role:
             name: arpanrec.nebula.gitleaks

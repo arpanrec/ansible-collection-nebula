@@ -1,7 +1,7 @@
 ---
-gitea_systemd_service_name: gitea-{{ gitea_cluster_name }}.service
+__gitea_systemd_service_name: gitea-{{ gitea_cluster_name }}.service
 
-gitea_executable: /usr/local/bin/gitea-{{ gitea_version_details.version }}
+__gitea_executable: /usr/local/bin/gitea-{{ __gitea_version_details.version }}
 
 # yamllint disable-line rule:line-length
 # SSL Certs file should be exactly as it is, https://docs.gitea.com/installation/database-prep#postgresql-tls. (This doesn't work). These needs to be set via env variable PGSSLROOTCERT, PGSSLCERT, PGSSLKEY. https://github.com/go-gitea/gitea/issues/32635
@@ -10,29 +10,29 @@ gitea_config_db_pg_ssl_cert_file: "{{ gitea_service_user_home_directory }}/.post
 gitea_config_db_pg_ssl_key_file: "{{ gitea_service_user_home_directory }}/.postgresql/postgresql.key"
 
 # defaults to AppWorkPath/custom
-gitea_custom_directory: "{{ gitea_working_directory }}/custom"
+__gitea_custom_directory: "{{ gitea_working_directory }}/custom"
 # yamllint disable-line rule:line-length
 # For CustomConf https://docs.gitea.com/administration/config-cheat-sheet#use-environment-variables-to-setup-gitea, Don't change this path, so that we don't have to ever inject this file anywhere, it's default.
-gitea_app_ini_file: "{{ gitea_custom_directory }}/conf/app.ini"
+__gitea_app_ini_file: "{{ __gitea_custom_directory }}/conf/app.ini"
 
-gitea_http_key_pem_file: "{{ gitea_custom_directory }}/ssl_key.pem"
-gitea_http_cert_pem_file: "{{ gitea_custom_directory }}/ssl_cert.pem"
+__gitea_http_key_pem_file: "{{ __gitea_custom_directory }}/ssl_key.pem"
+__gitea_http_cert_pem_file: "{{ __gitea_custom_directory }}/ssl_cert.pem"
 
-gitea_secret_key_file: "{{ gitea_custom_directory }}/gitea_secret_key"
-gitea_internal_token_file: "{{ gitea_custom_directory }}/gitea_internal_token"
-gitea_oauth2_jwt_secret_file: "{{ gitea_custom_directory }}/gitea_oauth2_jwt_secret"
-gitea_lfs_jwt_secret_file: "{{ gitea_custom_directory }}/gitea_lfs_jwt_secret"
+__gitea_secret_key_file: "{{ __gitea_custom_directory }}/gitea_secret_key"
+__gitea_internal_token_file: "{{ __gitea_custom_directory }}/gitea_internal_token"
+__gitea_oauth2_jwt_secret_file: "{{ __gitea_custom_directory }}/gitea_oauth2_jwt_secret"
+__gitea_lfs_jwt_secret_file: "{{ __gitea_custom_directory }}/gitea_lfs_jwt_secret"
 
-gitea_app_data_directory: "{{ gitea_working_directory }}/data"
-gitea_lfs_directory: "{{ gitea_app_data_directory }}/lfs"
-gitea_repository_root_directory: "{{ gitea_app_data_directory }}/gitea-repositories"
-gitea_git_home_directory: "{{ gitea_app_data_directory }}/home"
-gitea_sqlite3_db_file: "{{ gitea_app_data_directory }}/sqlite3.db"
+__gitea_app_data_directory: "{{ gitea_working_directory }}/data"
+__gitea_lfs_directory: "{{ __gitea_app_data_directory }}/lfs"
+__gitea_repository_root_directory: "{{ __gitea_app_data_directory }}/gitea-repositories"
+__gitea_git_home_directory: "{{ __gitea_app_data_directory }}/home"
+__gitea_sqlite3_db_file: "{{ __gitea_app_data_directory }}/sqlite3.db"
 
-gitea_log_root_path: "{{ gitea_working_directory }}/log"
-gitea_log_file: "{{ gitea_log_root_path }}/gitea.log"
+__gitea_log_root_path: "{{ gitea_working_directory }}/log"
+__gitea_log_file: "{{ __gitea_log_root_path }}/gitea.log"
 
-gitea_teabot_gpg_key: |+
+__gitea_teabot_gpg_key: |+
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Comment: 7C9E 6815 2594 6888 62D6  2AF6 2D9A E806 EC15 92E2
     Comment: Teabot <teabot@gitea.io>
@@ -340,14 +340,14 @@ gitea_teabot_gpg_key: |+
     -----END PGP PUBLIC KEY BLOCK-----
 
 
-gitea_default_config:
+__gitea_default_config:
     - { section: DEFAULT, option: APP_NAME, value: "Gitea Easyiac" }
     - { section: DEFAULT, option: RUN_USER, value: "{{ gitea_service_user }}" }
     - { section: DEFAULT, option: RUN_MODE, value: "prod" }
     - { section: DEFAULT, option: WORK_PATH, value: "{{ gitea_working_directory }}" }
 
     - { section: server, option: PROTOCOL, value: "{{ gitea_protocol }}" }
-    - { section: server, option: APP_DATA_PATH, value: "{{ gitea_app_data_directory }}" }
+    - { section: server, option: APP_DATA_PATH, value: "{{ __gitea_app_data_directory }}" }
     - { section: server, option: DOMAIN, value: "{{ gitea_domain }}" }
     - { section: server, option: HTTP_PORT, value: "{{ gitea_http_port }}" }
     - { section: server, option: SSH_DOMAIN, value: "{{ gitea_ssh_domain }}" }
@@ -361,19 +361,19 @@ gitea_default_config:
     - { section: server, option: ROOT_URL, value: "{{ gitea_root_url }}" }
     - { section: server, option: LOCAL_ROOT_URL, value: "{{ gitea_local_root_url }}" }
     - { section: server, option: LFS_START_SERVER, value: "true" }
-    - { section: server, option: LFS_JWT_SECRET_URI, value: "file:{{ gitea_lfs_jwt_secret_file }}" }
+    - { section: server, option: LFS_JWT_SECRET_URI, value: "file:{{ __gitea_lfs_jwt_secret_file }}" }
     - { section: server, option: SSH_AUTHORIZED_KEYS_BACKUP, value: "true" }
     - { section: server, option: SSH_AUTHORIZED_PRINCIPALS_BACKUP, value: "true" }
 
-    - { section: lfs, option: PATH, value: "{{ gitea_lfs_directory }}" }
+    - { section: lfs, option: PATH, value: "{{ __gitea_lfs_directory }}" }
 
     - { section: security, option: INSTALL_LOCK, value: "true" }
-    - { section: security, option: SECRET_KEY_URI, value: "file:{{ gitea_secret_key_file }}" }
-    - { section: security, option: INTERNAL_TOKEN_URI, value: "file:{{ gitea_internal_token_file }}" }
+    - { section: security, option: SECRET_KEY_URI, value: "file:{{ __gitea_secret_key_file }}" }
+    - { section: security, option: INTERNAL_TOKEN_URI, value: "file:{{ __gitea_internal_token_file }}" }
     - { section: security, option: DISABLE_GIT_HOOKS, value: "false" }
 
     - { section: oauth2, option: ENABLED, value: "true" }
-    - { section: oauth2, option: JWT_SECRET_URI, value: "file:{{ gitea_oauth2_jwt_secret_file }}" }
+    - { section: oauth2, option: JWT_SECRET_URI, value: "file:{{ __gitea_oauth2_jwt_secret_file }}" }
 
     - { section: service, option: ENABLE_NOTIFY_MAIL, value: "true" }
     - { section: service, option: DISABLE_REGISTRATION, value: "true" }
@@ -394,13 +394,13 @@ gitea_default_config:
     - { section: actions, option: ENDLESS_TASK_TIMEOUT, value: 1h }
     - { section: actions, option: ABANDONED_JOB_TIMEOUT, value: 1h }
 
-    - { section: log, option: ROOT_PATH, value: "{{ gitea_log_root_path }}" }
+    - { section: log, option: ROOT_PATH, value: "{{ __gitea_log_root_path }}" }
     - { section: log, option: MODE, value: "console,file" }
     - { section: log, option: LEVEL, value: Warn }
     - { section: log, option: ENABLE_SSH_LOG, value: "true" }
     - { section: log, option: logger.access.MODE, value: "console,file" }
 
-    - { section: log.file, option: FILE_NAME, value: "{{ gitea_log_file }}" }
+    - { section: log.file, option: FILE_NAME, value: "{{ __gitea_log_file }}" }
 
     - { section: cron, option: ENABLED, value: "true" }
     - { section: cron, option: RUN_AT_START, value: "true" }
@@ -435,6 +435,6 @@ gitea_default_config:
     - section: repository
       option: DEFAULT_REPO_UNITS
       value: "repo.code,repo.releases,repo.issues,repo.pulls,repo.wiki,repo.projects,repo.packages"
-    - { section: repository, option: ROOT, value: "{{ gitea_repository_root_directory }}" }
+    - { section: repository, option: ROOT, value: "{{ __gitea_repository_root_directory }}" }
 
-    - { section: git, option: HOME_PATH, value: "{{ gitea_git_home_directory }}" }
+    - { section: git, option: HOME_PATH, value: "{{ __gitea_git_home_directory }}" }

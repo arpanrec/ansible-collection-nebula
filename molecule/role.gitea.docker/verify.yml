@@ -5,30 +5,31 @@
   gather_facts: false
   any_errors_fatal: false
   tasks:
-      - name: Gitea | Molecule | Verify | Import Roles for variables
+      - name: Gitea | Molecule | Verify | Import Roles For Variables
         ansible.builtin.import_role:
             name: arpanrec.nebula.gitea
             tasks_from: prerequisites.yml
 
-      - name: Gitea | Molecule | Verify | Get Release.
+      - name: Gitea | Molecule | Verify | Get Release
         ansible.builtin.set_fact:
-            gitea_version_details: "{{ lookup('arpanrec.nebula.version_db', 'gitea',
-                gitea_rv_version=gitea_rv_version) | from_json }}"
+            __gitea_version_details: "{{ lookup('arpanrec.nebula.version_db', 'gitea',
+                gitea_rv_version=gitea_rv_version) | ansible.builtin.from_json }}"
 
-      - name: Gitea | Molecule | Verify | Get version from shell
+      - name: Gitea | Molecule | Verify | Get Version From Shell
         ansible.builtin.command:
             argv:
-                - "{{ gitea_executable | basename }}"
+                - "{{ __gitea_executable | ansible.builtin.basename }}"
                 - "--version"
         environment:
-            PATH: "{{ gitea_executable | dirname }}:{{ ansible_facts.env.PATH }}"
-        register: gitea_rv_tmp_version_shell_result
+            PATH: "{{ __gitea_executable | ansible.builtin.dirname }}:{{ ansible_facts.env.PATH }}"
+        register: __gitea_rv_tmp_version_shell_result
         changed_when: false
 
-      - name: Gitea | Molecule | Verify | Assert version is as expected
+      - name: Gitea | Molecule | Verify | Assert Version Is As Expected
         ansible.builtin.assert:
             that:
-                - "gitea_version_details.version in gitea_rv_tmp_version_shell_result.stdout"
+                - "__gitea_version_details.version in __gitea_rv_tmp_version_shell_result.stdout"
             fail_msg: "Gitea version is not as expected.
-                Expected '{{ gitea_version_details.version }}' but got '{{ gitea_rv_tmp_version_shell_result.stdout }}'"
+                Expected '{{ __gitea_version_details.version }}'
+                but got '{{ __gitea_rv_tmp_version_shell_result.stdout }}'"
             success_msg: "Gitea version is as expected."

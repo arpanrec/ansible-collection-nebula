@@ -2,37 +2,37 @@
 - name: Linux Patching | Setup Host Date Time | Checking Prerequisite | Include Common Checks
   ansible.builtin.import_tasks: prerequisite.yml
 
-- name: Linux Patching | Setup Host Date Time | Set timezone as {{ linux_patching_rv_timezone }}
+- name: Linux Patching | Setup Host Date Time | Set Timezone
   community.general.timezone:
       name: "{{ linux_patching_rv_timezone }}"
       hwclock: local
   ignore_errors: true
-  register: linux_patching_rv_hw_settime_result
+  register: __linux_patching_rv_hw_settime_result
 
-- name: Linux Patching | Setup Host Date Time | Set timezone via softlink as {{ linux_patching_rv_timezone }}
+- name: Linux Patching | Setup Host Date Time | Set Timezone Via Softlink
   ansible.builtin.file:
       src: "/usr/share/zoneinfo/{{ linux_patching_rv_timezone }}"
       dest: /etc/localtime
       state: link
-  when: linux_patching_rv_hw_settime_result.failed
+  when: __linux_patching_rv_hw_settime_result.failed
 
-- name: Linux Patching | Setup Host Date Time | Ensure a locale exists as en_US.UTF-8
+- name: Linux Patching | Setup Host Date Time | Ensure A Locale Exists As en_US.UTF-8
   community.general.locale_gen:
       name: en_US.UTF-8
       state: present
   environment:
       PATH: /usr/sbin:{{ ansible_facts.env.PATH }}
-  register: linux_patching_rv_tmp_enus_utf_locale_gen
+  register: __linux_patching_rv_tmp_enus_utf_locale_gen
 
-- name: Linux Patching | Setup Host Date Time | Set default locale to en_US.UTF-8
+- name: Linux Patching | Setup Host Date Time | Set Default Locale To en_US.UTF-8
   ansible.builtin.shell: |+
       localectl set-locale LANG=en_US.UTF-8
       update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
   environment:
       PATH: /usr/sbin:{{ ansible_facts.env.PATH }}
-  register: linux_patching_rv_tmp_set_default_localectl
-  changed_when: linux_patching_rv_tmp_enus_utf_locale_gen.changed
+  register: __linux_patching_rv_tmp_set_default_localectl
+  changed_when: __linux_patching_rv_tmp_enus_utf_locale_gen.changed
   failed_when: >
-      linux_patching_rv_init_system_systemd
+      __linux_patching_rv_init_system_systemd
       and
-      linux_patching_rv_tmp_set_default_localectl.failed
+      __linux_patching_rv_tmp_set_default_localectl.failed

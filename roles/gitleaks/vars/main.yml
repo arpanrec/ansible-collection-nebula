@@ -1,4 +1,4 @@
 ---
-gitleaks_rv_tarball_download_path: "{{ gitleaks_rv_tmp_download_dir }}\
-    /gitleaks-{{ gitleaks_version_details.version }}.tar.gz"
-gitleaks_rv_tmp_unarchive_dir: "{{ gitleaks_rv_tmp_download_dir }}-{{ gitleaks_version_details.version }}"
+__gitleaks_rv_tarball_download_path: "{{ gitleaks_rv_tmp_download_dir }}\
+    /gitleaks-{{ __gitleaks_version_details.version }}.tar.gz"
+__gitleaks_rv_tmp_unarchive_dir: "{{ gitleaks_rv_tmp_download_dir }}-{{ __gitleaks_version_details.version }}"

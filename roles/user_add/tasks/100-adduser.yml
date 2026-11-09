@@ -1,46 +1,51 @@
 ---
-- name: Application User | Adding user | Adding the group
+- name: Application User | Adding User | Adding The Group
   ansible.builtin.group:
-      name: "{{ user_add_rv_user_primary_group | default(user_add_rv_username, true) }}"
-      gid: "{{ user_add_rv_user_primary_gid | default(omit) }}"
+      name: "{{ user_add_rv_user_primary_group
+          | ansible.builtin.default(default_value=user_add_rv_username, boolean=true) }}"
+      gid: "{{ user_add_rv_user_primary_gid | ansible.builtin.default(default_value=omit) }}"
       system: "{{ user_add_rv_is_system_user }}"
       state: present
 
-- name: Application User | Adding user | Generate password hash
+- name: Application User | Adding User | Generate Password Hash
   ansible.builtin.set_fact:
-      user_add_rv_password_hash_tmp: "{{ user_add_rv_password | password_hash('sha512') }}"
-  when: user_add_rv_password is defined and user_add_rv_password | length > 0
+      __user_add_rv_password_hash_tmp: "{{ user_add_rv_password | ansible.builtin.password_hash(hashtype='sha512') }}"
+  when: user_add_rv_password is ansible.builtin.defined and user_add_rv_password | ansible.builtin.length > 0
 
-- name: Application User | Adding user | Adding the user
+- name: Application User | Adding User | Adding The User
   ansible.builtin.user:
       name: "{{ user_add_rv_username }}"
       shell: "{{ user_add_rv_user_default_shell }}"
       system: "{{ user_add_rv_is_system_user }}"
       state: present
-      groups: "{{ (user_add_rv_user_extra_groups | length > 0) | ternary(user_add_rv_user_extra_groups, omit) }}"
-      append: "{{ (user_add_rv_user_extra_groups | length > 0) | ternary(true, omit) }}"
-      uid: "{{ user_add_rv_uid | default(omit) }}"
-      group: "{{ user_add_rv_user_primary_group | default(user_add_rv_username, true) }}"
+      groups: "{{ (user_add_rv_user_extra_groups | ansible.builtin.length > 0)
+          | ansible.builtin.ternary(true_val=user_add_rv_user_extra_groups, false_val=omit) }}"
+      append: "{{ (user_add_rv_user_extra_groups | ansible.builtin.length > 0)
+          | ansible.builtin.ternary(true_val=true, false_val=omit) }}"
+      uid: "{{ user_add_rv_uid | ansible.builtin.default(default_value=omit) }}"
+      group: "{{ user_add_rv_user_primary_group
+          | ansible.builtin.default(default_value=user_add_rv_username, boolean=true) }}"
       create_home: true
-      home: "{{ user_add_rv_user_home_dir | default(omit, True) }}"
+      home: "{{ user_add_rv_user_home_dir | ansible.builtin.default(default_value=omit, boolean=True) }}"
       expires: -1
-      password: "{{ user_add_rv_password_hash_tmp | default(omit) }}"
-      update_password: "{{ (user_add_rv_password_hash_tmp is defined and user_add_rv_password_hash_tmp | length > 0)
-          | ternary('always', omit) }}"
+      password: "{{ __user_add_rv_password_hash_tmp | ansible.builtin.default(default_value=omit) }}"
+      update_password: "{{ (__user_add_rv_password_hash_tmp is ansible.builtin.defined
+          and __user_add_rv_password_hash_tmp | ansible.builtin.length > 0)
+          | ansible.builtin.ternary(true_val='always', false_val=omit) }}"
 
-- name: Application User | Adding user | Deploying SSH Key
+- name: Application User | Adding User | Deploying SSH Key
   ansible.posix.authorized_key:
       user: "{{ user_add_rv_username }}"
       key: "{{ item }}"
       state: present
       comment: added by ansible automation
   with_items: "{{ user_add_rv_ssh_access_public_key_content_list }}"
-  when: user_add_rv_ssh_access_public_key_content_list | length > 0
+  when: user_add_rv_ssh_access_public_key_content_list | ansible.builtin.length > 0
 
-- name: Application User | Adding user | Adding user to the sudoers
-  when: user_add_rv_user_nopasswd_commands | length > 0
+- name: Application User | Adding User | Adding User To The Sudoers
+  when: user_add_rv_user_nopasswd_commands | ansible.builtin.length > 0
   ansible.builtin.lineinfile:
-      path: "{{ user_add_rv_sudoers_file }}"
+      path: "{{ __user_add_sudoers_file }}"
       line: "{{ user_add_rv_username }} ALL=(ALL) NOPASSWD: {{ item }}"
       create: true
       validate: /usr/sbin/visudo -cf %s

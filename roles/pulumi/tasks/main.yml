@@ -2,7 +2,7 @@
 - name: Pulumi | Prerequisites
   ansible.builtin.import_tasks: prerequisites.yml
 
-- name: Pulumi | Create install directory
+- name: Pulumi | Create Install Directory
   ansible.builtin.file:
       path: "{{ pulumi_rv_install_path }}"
       state: directory
@@ -10,42 +10,42 @@
 
 - name: Pulumi | Get Release
   ansible.builtin.set_fact:
-      pulumi_version_details: "{{ lookup('arpanrec.nebula.version_db', 'pulumi',
-          pulumi_rv_version=pulumi_rv_version) | from_json }}"
+      __pulumi_version_details: "{{ lookup('arpanrec.nebula.version_db', 'pulumi',
+          pulumi_rv_version=pulumi_rv_version) | ansible.builtin.from_json }}"
 
-- name: Pulumi | Get downloaded file stat
+- name: Pulumi | Get Downloaded File Stat
   ansible.builtin.stat:
-      path: "{{ pulumi_rv_tarball_download_path }}"
-  register: pulumi_rv_tmp_downloaded_file_stat
+      path: "{{ __pulumi_rv_tarball_download_path }}"
+  register: __pulumi_rv_tmp_downloaded_file_stat
 
 - name: Pulumi | New Download
-  when: not pulumi_rv_tmp_downloaded_file_stat.stat.exists
+  when: not __pulumi_rv_tmp_downloaded_file_stat.stat.exists
   block:
-      - name: Pulumi | New Download | Create download directory
+      - name: Pulumi | New Download | Create Download Directory
         ansible.builtin.file:
             path: "{{ pulumi_rv_tmp_install_cache_dir }}"
             state: directory
             mode: "0700"
 
-      - name: "Pulumi | New Download | Download tarball version: {{ pulumi_version_details.version }}"
+      - name: "Pulumi | New Download | Download Tarball"
         ansible.builtin.get_url:
-            url: "{{ pulumi_version_details.download_link }}"
-            checksum: "{{ pulumi_version_details.checksum | default(omit) }}"
-            dest: "{{ pulumi_rv_tarball_download_path }}"
+            url: "{{ __pulumi_version_details.download_link }}"
+            checksum: "{{ __pulumi_version_details.checksum | ansible.builtin.default(default_value=omit) }}"
+            dest: "{{ __pulumi_rv_tarball_download_path }}"
             mode: "0700"
   rescue:
       - name: Pulumi | New Download | Fail | Cleanup
         ansible.builtin.file:
-            path: "{{ pulumi_rv_tarball_download_path }}"
+            path: "{{ __pulumi_rv_tarball_download_path }}"
             state: absent
 
       - name: Pulumi | New Download | Fail | Fail
         ansible.builtin.fail:
             msg: Something went wrong, check the errors above
 
-- name: Pulumi | New Download | Unarchive the tarball
+- name: Pulumi | New Download | Unarchive The Tarball
   ansible.builtin.unarchive:
-      src: "{{ pulumi_rv_tarball_download_path }}"
+      src: "{{ __pulumi_rv_tarball_download_path }}"
       dest: "{{ pulumi_rv_install_path }}"
       extra_opts:
           - "--strip-components=1"

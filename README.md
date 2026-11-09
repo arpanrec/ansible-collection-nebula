@@ -20,6 +20,11 @@ This collection provides a set of roles to deploy and manage various services.
 - [PostgreSQL (postgresql)](/roles/postgresql/README.md)
 - [Hadolint (hadolint)](/roles/hadolint/README.md)
 - [Gitleaks (gitleaks)](/roles/gitleaks/README.md)
+- [Uv (uv)](/roles/uv/README.md)
+- [Rclone (rclone)](/roles/rclone/README.md)
+- [Bun (bun)](/roles/bun/README.md)
+- [Betterleaks (betterleaks)](/roles/betterleaks/README.md)
+- [Pnpm (pnpm)](/roles/pnpm/README.md)
 
 ## Playbooks
 
@@ -28,6 +33,10 @@ This collection provides a set of roles to deploy and manage various services.
 
 ## Plugins
 
+### Modules
+
+- [recursive_permissions](/plugins/modules/recursive_permissions.py)
+
 ### Lookups
 
 - [bitwarden](/plugins/lookup/bitwarden.py)
@@ -35,6 +44,7 @@ This collection provides a set of roles to deploy and manage various services.
 
 ### Filters
 
+- [san_list_transformer](/plugins/filter/san_list_transformer.py)
 - [split_certificates](/plugins/filter/split_certificates.py)
 
 ### Modules
@@ -44,11 +54,11 @@ This collection provides a set of roles to deploy and manage various services.
 ## Installation
 
 ```bash
-export NEBULA_VERSION=1.14.73
-curl "https://raw.githubusercontent.com/arpanrec/arpanrec.nebula/refs/tags/${NEBULA_VERSION}/requirements.yml" \
+export NEBULA_VERSION=1.25.0
+curl "https://raw.githubusercontent.com/arpanrec/ansible-collection-nebula/refs/tags/${NEBULA_VERSION}/requirements.yml" \
     -o "/tmp/requirements-${NEBULA_VERSION}.yml"
 ansible-galaxy install -r "/tmp/requirements-${NEBULA_VERSION}.yml"
-ansible-galaxy collection install "git+https://github.com/arpanrec/arpanrec.nebula.git,${NEBULA_VERSION}"
+ansible-galaxy collection install "git+https://github.com/arpanrec/ansible-collection-nebula.git,${NEBULA_VERSION}"
 ```
 
 ## [License](LICENSE)

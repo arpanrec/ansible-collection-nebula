@@ -5,6 +5,6 @@
   any_errors_fatal: true
   become: false
   tasks:
-      - name: Hadolint | Molecule | Converge | Include Hadolint role
+      - name: Hadolint | Molecule | Converge | Include Hadolint Role
         ansible.builtin.import_role:
             name: arpanrec.nebula.hadolint

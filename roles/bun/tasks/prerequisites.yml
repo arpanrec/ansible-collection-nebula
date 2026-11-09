@@ -1,0 +1,15 @@
+---
+- name: Bun | Prerequisites | Fail If Root User
+  ansible.builtin.command: whoami
+  register: __bun_sw_current_shelluser_shell_result
+  failed_when: __bun_sw_current_shelluser_shell_result.stdout == "root"
+  changed_when: false
+
+- name: Bun | Prerequisites | Packages Are Present
+  ansible.builtin.shell: "command -v {{ item }} >/dev/null 2>&1"
+  changed_when: false
+  with_items:
+      - unzip
+
+- name: Bun | Prerequisites | Gather Facts
+  ansible.builtin.setup:

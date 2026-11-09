@@ -1,2 +1,2 @@
 ---
-go_rv_tarball_download_path: "{{ go_rv_tmp_dir }}/go-{{ go_tmp_version_details.version }}.linux.tar.gz"
+__go_rv_tarball_download_path: "{{ go_rv_tmp_dir }}/go-{{ __go_tmp_version_details.version }}.linux.tar.gz"

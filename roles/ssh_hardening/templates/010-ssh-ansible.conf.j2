@@ -1,9 +1,9 @@
 Port {{ ssh_hardening_rv_ssh_port }}
-PasswordAuthentication {{ ssh_hardening_rv_ssh_security_password_authentication | ternary('yes', 'no') }}
-PermitRootLogin {{ ssh_hardening_rv_ssh_security_permit_root_login | ternary('yes', 'no') }}
-PermitEmptyPasswords {{ ssh_hardening_rv_ssh_security_permit_empty_passwords | ternary('yes', 'no') }}
+PasswordAuthentication {{ ssh_hardening_rv_ssh_security_password_authentication | ansible.builtin.ternary(true_val='yes', false_val='no') }}
+PermitRootLogin {{ ssh_hardening_rv_ssh_security_permit_root_login | ansible.builtin.ternary(true_val='yes', false_val='no') }}
+PermitEmptyPasswords {{ ssh_hardening_rv_ssh_security_permit_empty_passwords | ansible.builtin.ternary(true_val='yes', false_val='no') }}
 MaxAuthTries {{ ssh_hardening_rv_ssh_security_max_auth_tries }}
-X11Forwarding {{ ssh_hardening_rv_ssh_security_x11_forwarding | ternary('yes', 'no') }}
+X11Forwarding {{ ssh_hardening_rv_ssh_security_x11_forwarding | ansible.builtin.ternary(true_val='yes', false_val='no') }}
 ClientAliveInterval {{ ssh_hardening_rv_ssh_security_client_alive_interval }}
 ClientAliveCountMax {{ ssh_hardening_rv_ssh_security_client_alive_count_max }}
-ChallengeResponseAuthentication {{ ssh_hardening_rv_ssh_security_challenge_response_authentication | ternary('yes', 'no') }}
+ChallengeResponseAuthentication {{ ssh_hardening_rv_ssh_security_challenge_response_authentication | ansible.builtin.ternary(true_val='yes', false_val='no') }}

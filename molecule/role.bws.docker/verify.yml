@@ -4,27 +4,28 @@
   gather_facts: true
   become: false
   tasks:
-      - name: Bitwarden Secrets Manager SDK | Molecule | Verify | Import Roles for variables
+      - name: Bitwarden Secrets Manager SDK | Molecule | Verify | Import Roles For Variables
         ansible.builtin.import_role:
             name: arpanrec.nebula.bws
             tasks_from: prerequisites
 
       - name: Bitwarden Secrets Manager SDK | Get Version Details
         ansible.builtin.set_fact:
-            bws_sdk_version_details: "{{ lookup('arpanrec.nebula.version_db', 'bws',
-                bws_sdk_version_tag=bws_sdk_version_tag) | from_json }}"
+            __bws_sdk_version_details: "{{ lookup('arpanrec.nebula.version_db', 'bws',
+                bws_sdk_version_tag=bws_sdk_version_tag) | ansible.builtin.from_json }}"
 
-      - name: Bitwarden Secrets Manager SDK | Molecule | Verify | Get bw version from shell
+      - name: Bitwarden Secrets Manager SDK | Molecule | Verify | Get Bw Version From Shell
         ansible.builtin.command: bws --version
         environment:
             PATH: "{{ bws_sdk_bin_dir }}:{{ ansible_facts.env.PATH }}"
-        register: bws_sdk_cli_rv_tmp_version_shell_result
+        register: __bws_sdk_cli_tmp_version_shell_result
         changed_when: false
 
-      - name: Bitwarden Secrets Manager SDK | Molecule | Verify | Fail if bw version is not present
+      - name: Bitwarden Secrets Manager SDK | Molecule | Verify | Fail If Bw Version Is Not Present
         ansible.builtin.assert:
-            that: bws_sdk_cli_rv_tmp_version_shell_result.stdout is match("bws " + bws_sdk_version_details.version[5:] )
-            success_msg: BWS Version {{ bws_sdk_version_details.version }} is installed
+            that: __bws_sdk_cli_tmp_version_shell_result.stdout
+                is ansible.builtin.match(pattern="bws " + __bws_sdk_version_details.version[5:])
+            success_msg: BWS Version {{ __bws_sdk_version_details.version }} is installed
             fail_msg: >-
-                BWS Version {{ bws_sdk_version_details.version }} is not installed,
-                Shell result {{ bws_sdk_cli_rv_tmp_version_shell_result.stdout }}
+                BWS Version {{ __bws_sdk_version_details.version }} is not installed,
+                Shell result {{ __bws_sdk_cli_tmp_version_shell_result.stdout }}

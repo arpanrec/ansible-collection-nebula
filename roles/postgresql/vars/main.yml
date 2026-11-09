@@ -160,7 +160,7 @@ postgresql_conf_options:
       value: 100
 
     - option: unix_socket_directories
-      value: "'{{ postgresql_unix_socket_directories | join(',') }}'"
+      value: "'{{ postgresql_unix_socket_directories | ansible.builtin.join(d=',') }}'"
 
     - option: unix_socket_permissions
       value: "{{ postgresql_unix_socket_permissions }}"

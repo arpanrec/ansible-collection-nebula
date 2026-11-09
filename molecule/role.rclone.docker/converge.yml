@@ -1,0 +1,10 @@
+---
+- name: Rclone | Molecule | Converge
+  hosts: all
+  gather_facts: false
+  any_errors_fatal: true
+  become: false
+  tasks:
+      - name: Rclone | Molecule | Converge | Include Rclone Role
+        ansible.builtin.import_role:
+            name: arpanrec.nebula.rclone

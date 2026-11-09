@@ -4,11 +4,11 @@
 
 - name: Oracle JDK | Get Version Details
   ansible.builtin.set_fact:
-      oracle_jdk_tmp_version_details: "{{ lookup('arpanrec.nebula.version_db', 'java',
+      __oracle_jdk_tmp_version_details: "{{ lookup('arpanrec.nebula.version_db', 'java',
           java_rv_jdk_version=java_rv_jdk_version, java_rv_jdk_mvn_version=java_rv_jdk_mvn_version,
           java_rv_jdk_gradle_version=java_rv_jdk_gradle_version,
           java_rv_jdk_groovy_version=java_rv_jdk_groovy_version,
-          java_rv_jdk_kotlinc_version=java_rv_jdk_kotlinc_version) | from_json }}"
+          java_rv_jdk_kotlinc_version=java_rv_jdk_kotlinc_version) | ansible.builtin.from_json }}"
 
 - name: Oracle JDK | JDK
   ansible.builtin.import_tasks: jdk.yml
@@ -34,7 +34,7 @@
       dest: "{{ ansible_facts.user_dir }}/.jdk.env.sh"
       mode: "0700"
 
-- name: Oracle JDK | Ensure config alias is set in ~/.bashrc and ~/.zshrc
+- name: Oracle JDK | Ensure Config Alias Is Set In ~/.bashrc And ~/.zshrc
   ansible.builtin.lineinfile:
       path: "{{ item }}"
       line: "source {{ ansible_facts.user_dir }}/.jdk.env.sh"

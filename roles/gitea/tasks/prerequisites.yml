@@ -1,28 +1,34 @@
 ---
-- name: Gitea | Prerequisite | Gather root facts.
+- name: Gitea | Prerequisite | Gather Root Facts
   ansible.builtin.setup:
 
-- name: Gitea | Prerequisite | Get system 1 PID Details.
+- name: Gitea | Prerequisite | Get System 1 PID Details
   ansible.builtin.command: ps -p 1
-  register: gitea_rv_tmp_one_pid_shell_result
+  register: __gitea_rv_tmp_one_pid_shell_result
   changed_when: false
 
-- name: Gitea | Prerequisite | Assume system is not in systemd.
+- name: Gitea | Prerequisite | Assume System Is Not In Systemd
   ansible.builtin.set_fact:
-      gitea_rv_init_system_systemd: "{{ gitea_rv_tmp_one_pid_shell_result.stdout_lines[1] \
-          | split(' ') | last == 'systemd' }}"
+      __gitea_rv_init_system_systemd: "{{ __gitea_rv_tmp_one_pid_shell_result.stdout_lines[1] \
+          | ansible.builtin.split(sep=' ') | ansible.builtin.last == 'systemd' }}"
 
-- name: Gitea | Prerequisite | Write gpg key.
+- name: Gitea | Prerequisite | Packages Are Present
+  ansible.builtin.shell: "command -v {{ item }} >/dev/null 2>&1"
+  changed_when: false
+  with_items:
+      - gpg
+
+- name: Gitea | Prerequisite | Write GPG Key
   ansible.builtin.copy:
       dest: "/tmp/teabot-gpg.asc"
-      content: "{{ gitea_teabot_gpg_key }}"
+      content: "{{ __gitea_teabot_gpg_key }}"
       mode: "0644"
 
-- name: Gitea | Prerequisite | Import gpg key.
+- name: Gitea | Prerequisite | Import GPG Key
   ansible.builtin.command:
       argv:
           - gpg
           - --import
           - "/tmp/teabot-gpg.asc"
-  register: gitea_import_gpg_key_res
-  changed_when: "'imported' in gitea_import_gpg_key_res.stdout"
+  register: __gitea_import_gpg_key_res
+  changed_when: "'imported' in __gitea_import_gpg_key_res.stdout"

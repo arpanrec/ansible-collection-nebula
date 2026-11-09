@@ -1,63 +1,63 @@
 ---
-- name: Patch Cloud System
+- name: Cloud Init | Patch Cloud System
   hosts: cloudinit
   become: true
   become_user: root
   tasks:
-      - name: Patch Cloud System | Checking essential variables | pv_cloud_init_user
+      - name: Cloud Init | Fail | Validate | User Variable
         ansible.builtin.fail:
             msg: "pv_cloud_init_user is not defined or is None"
         when: pv_cloud_init_user is not defined or pv_cloud_init_user == "" or pv_cloud_init_user == None
 
-      - name: Patch Cloud System | Checking essential variables | pv_cloud_init_group
+      - name: Cloud Init | Fail | Validate | Group Variable
         ansible.builtin.fail:
             msg: "pv_cloud_init_group is not defined or is None"
         when: pv_cloud_init_group is not defined or pv_cloud_init_group == "" or pv_cloud_init_group == None
 
-      - name: Patch Cloud System | Checking essential variables | pv_cloud_init_authorized_keys
+      - name: Cloud Init | Fail | Validate | Authorized Keys Variable
         ansible.builtin.fail:
             msg: "pv_cloud_init_authorized_keys is not defined or is None"
         when: pv_cloud_init_authorized_keys is not defined
             or pv_cloud_init_authorized_keys == "" or pv_cloud_init_authorized_keys == None
 
-      - name: Patch Cloud System | Checking essential variables | pv_cloud_init_is_dev_machine
+      - name: Cloud Init | Fail | Validate | Is Dev Machine Variable
         ansible.builtin.fail:
             msg: "pv_cloud_init_is_dev_machine is not defined or is None"
         when: pv_cloud_init_is_dev_machine is not defined or pv_cloud_init_is_dev_machine == ""
             or pv_cloud_init_is_dev_machine == None
 
-      - name: Patch Cloud System | Checking essential variables | pv_cloud_init_hostname
+      - name: Cloud Init | Fail | Validate | Hostname Variable
         ansible.builtin.fail:
             msg: "pv_cloud_init_hostname is not defined or is None"
         when: pv_cloud_init_hostname is not defined or pv_cloud_init_hostname == ""
             or pv_cloud_init_hostname == None
 
-      - name: Patch Cloud System | Checking essential variables | pv_cloud_init_domain
+      - name: Cloud Init | Fail | Validate | Domain Variable
         ansible.builtin.fail:
             msg: "pv_cloud_init_domain is not defined or is None"
         when: pv_cloud_init_domain is not defined or pv_cloud_init_domain == ""
             or pv_cloud_init_domain == None
 
-      - name: Patch Cloud System | Checking essential variables | pv_cloud_init_install_docker
+      - name: Cloud Init | Fail | Validate | Install Docker Variable
         ansible.builtin.fail:
             msg: "pv_cloud_init_install_docker is not defined or is None"
         when: pv_cloud_init_install_docker is not defined or pv_cloud_init_install_docker == ""
             or pv_cloud_init_install_docker == None
 
-      - name: Patch Cloud System | Make sure bash is installed
+      - name: Cloud Init | APT | Install Bash
         ansible.builtin.apt:
             name: bash
             state: present
             update_cache: true
             install_recommends: true
 
-      - name: Patch Cloud System | Add wheel group
+      - name: Cloud Init | Group | Create Wheel Group
         ansible.builtin.group:
             name: wheel
             state: present
             system: true
 
-      - name: Patch Cloud System | Add application user
+      - name: Cloud Init | Include Role | Add Application User
         ansible.builtin.include_role:
             name: arpanrec.nebula.user_add
         vars:
@@ -69,20 +69,20 @@
             user_add_rv_is_system_user: false
             user_add_rv_user_extra_groups: ["wheel"]
 
-      - name: Patch Cloud System | Linux Patching
+      - name: Cloud Init | Include Role | Linux Patching
         ansible.builtin.include_role:
             name: arpanrec.nebula.linux_patching
         vars:
-            linux_patching_rv_install_devel_packages: "{{ pv_cloud_init_is_dev_machine | bool }}"
+            linux_patching_rv_install_devel_packages: "{{ pv_cloud_init_is_dev_machine | ansible.builtin.bool }}"
             linux_patching_rv_hostname: "{{ pv_cloud_init_hostname }}"
             linux_patching_rv_domain_name: "{{ pv_cloud_init_domain }}"
 
-      - name: Patch Cloud System | SSH Hardening
+      - name: Cloud Init | Include Role | SSH Hardening
         ansible.builtin.include_role:
             name: arpanrec.nebula.ssh_hardening
 
-      - name: Patch Cloud System | Install Docker
-        when: pv_cloud_init_install_docker | bool
+      - name: Cloud Init | Include Role | Install Docker
+        when: pv_cloud_init_install_docker | ansible.builtin.bool
         ansible.builtin.include_role:
             name: geerlingguy.docker
         vars:

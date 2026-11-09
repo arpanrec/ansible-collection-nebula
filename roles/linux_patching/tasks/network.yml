@@ -3,15 +3,16 @@
   ansible.builtin.import_tasks: prerequisite.yml
 
 - name: Linux Patching | Network | CA Certificate
-  when: linux_patching_rv_root_ca_pem_content is defined and linux_patching_rv_root_ca_pem_content | length > 1
+  when: linux_patching_rv_root_ca_pem_content is ansible.builtin.defined
+      and linux_patching_rv_root_ca_pem_content | ansible.builtin.length > 1
   block:
-      - name: Linux Patching | Network | CA Certificate | Make sure the CA certificate folder exists
+      - name: Linux Patching | Network | CA Certificate | Make Sure The CA Certificate Folder Exists
         ansible.builtin.file:
             path: /usr/local/share/ca-certificates
             state: directory
             mode: "0775"
 
-      - name: Linux Patching | Network | CA Certificate | Copy the certificate
+      - name: Linux Patching | Network | CA Certificate | Copy The Certificate
         ansible.builtin.copy:
             content: "{{ item }}"
             dest: "/usr/local/share/ca-certificates/root-ca-certificate\
@@ -27,16 +28,17 @@
                 - update-ca-certificates
                 # - --fresh
                 - --verbose
-        register: linux_patching_rv_update_ca_trust_shell_result
+        register: __linux_patching_rv_update_ca_trust_shell_result
         environment:
             PATH: /usr/sbin:{{ ansible_facts.env.PATH }}
-        changed_when: linux_patching_rv_update_ca_trust_shell_result.stdout_lines[1] is not match("0 added.*")
+        changed_when: __linux_patching_rv_update_ca_trust_shell_result.stdout_lines[1]
+            is not ansible.builtin.match(pattern="0 added.*")
 
       - name: Linux Patching | Network | CA Certificate | Debug CA Trust Update Result
         ansible.builtin.debug:
-            var: linux_patching_rv_update_ca_trust_shell_result
+            var: __linux_patching_rv_update_ca_trust_shell_result
 
-- name: Linux Patching | Network | Disable Wifi MAC randomization
+- name: Linux Patching | Network | Disable Wifi MAC Randomization
   community.general.ini_file:
       path: /etc/NetworkManager/NetworkManager.conf
       section: "{{ item.section }}"
@@ -61,19 +63,20 @@
         option: "wifi.powersave"
         value: 2
 
-- name: Linux Patching | Network | Disable IPv6 via sysctl
+- name: Linux Patching | Network | Disable IPv6 Via Sysctl
   ansible.posix.sysctl:
       sysctl_file: /etc/sysctl.d/70-disable-ipv6.conf
       name: "{{ item.name }}"
       value: "{{ item.value }}"
       state: present
       reload: true
-  register: linux_patching_rv_tmp_ipvsix_disable_sysctl
+  register: __linux_patching_rv_tmp_ipvsix_disable_sysctl
   when: false
   failed_when: >
-      linux_patching_rv_tmp_ipvsix_disable_sysctl.failed
+      __linux_patching_rv_tmp_ipvsix_disable_sysctl.failed
       and
-      linux_patching_rv_tmp_ipvsix_disable_sysctl.msg is not search('disable_ipv6: No such file or directory')
+      __linux_patching_rv_tmp_ipvsix_disable_sysctl.msg
+      is not ansible.builtin.search(pattern='disable_ipv6: No such file or directory')
   with_items:
       - name: net.ipv6.conf.all.disable_ipv6
         value: "1"
@@ -82,7 +85,7 @@
       - name: net.ipv6.conf.lo.disable_ipv6
         value: "1"
 
-- name: Linux Patching | Network | Create modprobe directory
+- name: Linux Patching | Network | Create Modprobe Directory
   ansible.builtin.file:
       path: /etc/modprobe.d
       state: directory
@@ -90,7 +93,7 @@
       group: root
       mode: "0755"
 
-- name: Linux Patching | Network | Disable IPv6 via modeprobe
+- name: Linux Patching | Network | Disable IPv6 Via Modeprobe
   when: false
   ansible.builtin.lineinfile:
       path: /etc/modprobe.d/70-disable-ipv6.conf
@@ -100,7 +103,7 @@
       create: true
       mode: "0644"
 
-- name: Linux Patching | Network | Disable ufw IPv6
+- name: Linux Patching | Network | Disable UFW IPv6
   when: false
   ansible.builtin.lineinfile:
       path: /etc/default/ufw
@@ -112,44 +115,44 @@
   ansible.builtin.hostname:
       name: "{{ linux_patching_rv_hostname }}"
       use: debian
-  register: linux_patching_rv_tmp_set_debian_hostname
+  register: __linux_patching_rv_tmp_set_debian_hostname
   failed_when: >
-      linux_patching_rv_init_system_systemd
+      __linux_patching_rv_init_system_systemd
       and
-      linux_patching_rv_tmp_set_debian_hostname.failed
+      __linux_patching_rv_tmp_set_debian_hostname.failed
 
-- name: Linux Patching | Network | Setup Host Network Information | Set hostname via sysctl
+- name: Linux Patching | Network | Setup Host Network Information | Set Hostname Via Sysctl
   ansible.posix.sysctl:
       name: "{{ item.name }}"
       value: "{{ item.value }}"
       state: present
       reload: true
       sysctl_file: /etc/sysctl.d/60-hostname.conf
-  register: linux_patching_rv_tmp_hostname_sysctl
+  register: __linux_patching_rv_tmp_hostname_sysctl
   failed_when: >
-      linux_patching_rv_init_system_systemd
+      __linux_patching_rv_init_system_systemd
       and
-      linux_patching_rv_tmp_hostname_sysctl.failed
+      __linux_patching_rv_tmp_hostname_sysctl.failed
   with_items:
       - name: kernel.hostname
         value: "{{ linux_patching_rv_hostname }}"
       - name: kernel.domainname
         value: "{{ linux_patching_rv_domain_name }}"
 
-- name: Linux Patching | Network | Setup Host Network Information | Set Host-Name via /etc/hostname
+- name: Linux Patching | Network | Setup Host Network Information | Set Host-Name Via /etc/hostname
   ansible.builtin.copy:
       content: "{{ linux_patching_rv_hostname }}\n"
       dest: /etc/hostname
       mode: "0644"
       owner: root
       group: root
-  register: linux_patching_rv_tmp_set_etc_hostname
+  register: __linux_patching_rv_tmp_set_etc_hostname
   failed_when: >
-      linux_patching_rv_init_system_systemd
+      __linux_patching_rv_init_system_systemd
       and
-      linux_patching_rv_tmp_set_etc_hostname.failed
+      __linux_patching_rv_tmp_set_etc_hostname.failed
 
-- name: Linux Patching | Network | Setup Host Network Information | Set Hosts file
+- name: Linux Patching | Network | Setup Host Network Information | Set Hosts File
   ansible.builtin.lineinfile:
       path: /etc/hosts
       owner: root
@@ -158,11 +161,11 @@
       line: "{{ item.line }}"
       state: present
       regexp: "{{ item.regexp }}"
-  register: linux_patching_rv_tmp_set_hosts_file_entry
+  register: __linux_patching_rv_tmp_set_hosts_file_entry
   failed_when: >
-      linux_patching_rv_init_system_systemd
+      __linux_patching_rv_init_system_systemd
       and
-      linux_patching_rv_tmp_set_hosts_file_entry.failed
+      __linux_patching_rv_tmp_set_hosts_file_entry.failed
   loop:
       - regexp: '^127\.0\.0\.1'
         line: "127.0.0.1 localhost"
@@ -170,26 +173,26 @@
         line: "127.0.1.1 {{ linux_patching_rv_hostname }}
             {{ linux_patching_rv_hostname }}.{{ linux_patching_rv_domain_name }}"
 
-- name: Linux Patching | Network | Setup Host Network Information | Enable network services
+- name: Linux Patching | Network | Setup Host Network Information | Enable Network Services
   ansible.builtin.systemd_service:
       name: "{{ item }}"
       enabled: true
       state: started
-  register: linux_patching_rv_tmp_enable_network_services
+  register: __linux_patching_rv_tmp_enable_network_services
   with_items: "{{ linux_patching_rv_net_time_services }}"
   failed_when: >
-      linux_patching_rv_init_system_systemd
+      __linux_patching_rv_init_system_systemd
       and
-      linux_patching_rv_tmp_enable_network_services.failed
+      __linux_patching_rv_tmp_enable_network_services.failed
 
 - name: Linux Patching | Network | Setup Host Network Information | Enable UFW
   ansible.builtin.command: /usr/sbin/ufw --force enable
-  register: linux_patching_rv_tmp_enable_ufw
+  register: __linux_patching_rv_tmp_enable_ufw
   changed_when: false
   failed_when: >
-      linux_patching_rv_init_system_systemd
+      __linux_patching_rv_init_system_systemd
       and
-      linux_patching_rv_tmp_enable_ufw.failed
+      __linux_patching_rv_tmp_enable_ufw.failed
 
 - name: Linux Patching | Network | Setup Host Network Information | Enable SSH Port
   community.general.ufw:
@@ -198,22 +201,22 @@
       proto: tcp
       state: enabled
       comment: "Allow SSH Port, Managed by Ansible arpanrec.nebula"
-  register: linux_patching_rv_ufw_ssh_port_result
+  register: __linux_patching_rv_ufw_ssh_port_result
   ignore_errors: true
   environment:
       PATH: /sbin:{{ ansible_facts.env.PATH }}
 
-- name: Linux Patching | Network | Setup Host Network Information | UFW Iptables legacy
-  when: linux_patching_rv_ufw_ssh_port_result.failed
+- name: Linux Patching | Network | Setup Host Network Information | UFW Iptables Legacy
+  when: __linux_patching_rv_ufw_ssh_port_result.failed
   block:
-      - name: Linux Patching | Network | Setup Host Network Information |
-            UFW Iptables legacy | Change iptables legacy for UFW
+      - name: Linux Patching | Network | Setup Host Network Information | UFW Iptables Legacy
+            | Change Iptables Legacy For UFW
         community.general.alternatives:
             name: iptables
             path: /usr/sbin/iptables-legacy
 
-      - name: Linux Patching | Network | Setup Host Network Information |
-            UFW Iptables legacy | Enable SSH Port with iptables legacy
+      - name: Linux Patching | Network | Setup Host Network Information | UFW Iptables Legacy
+            | Enable SSH Port With Iptables Legacy
         community.general.ufw:
             rule: allow
             port: "{{ linux_patching_rv_ssh_port }}"

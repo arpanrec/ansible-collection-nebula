@@ -1,0 +1,49 @@
+---
+dependency:
+    name: galaxy
+    enabled: true
+    options:
+        ignore-certs: false
+        ignore-errors: false
+        role-file: requirements.yml
+        requirements-file: requirements.yml
+driver:
+    name: docker
+platforms:
+    - name: debian_role_uv_docker
+      hostname: debian_role_uv_docker
+      image: "docker.io/library/debian:trixie"
+      dockerfile: Dockerfile.j2
+      pre_build_image: false
+provisioner:
+    name: ansible
+    playbooks:
+        converge: converge.yml
+        verify: verify.yml
+    vvv: false
+    env:
+        ANSIBLE_VERBOSITY: 1
+    inventory:
+        group_vars:
+            all:
+                ansible_python_interpreter: /usr/bin/python3
+scenario:
+    name: role.uv.docker
+    converge_sequence:
+        - converge
+    destroy_sequence:
+        - destroy
+    create_sequence:
+        - dependency
+        - create
+    test_sequence:
+        - syntax
+        - destroy
+        - dependency
+        - create
+        - converge
+        - verify
+        - idempotence
+        - destroy
+verifier:
+    name: ansible

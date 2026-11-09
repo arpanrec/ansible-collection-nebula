@@ -1,0 +1,3 @@
+---
+__betterleaks_rv_tarball_download_path: "{{ betterleaks_rv_tmp_download_dir }}\
+    /betterleaks-{{ __betterleaks_version_details.version }}.tar.gz"

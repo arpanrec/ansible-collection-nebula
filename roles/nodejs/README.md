@@ -7,19 +7,20 @@ This role installs Node.js runtime environment in user space along with popular 
 **Features:**
 
 - Latest Node.js version installation with automatic detection
-- Global package management (npm/yarn/pnpm)
+- Global npm packages, plus yarn managed through Corepack
+- pnpm is never installed by this role: it is removed from the global npm packages and from Corepack, and `pnpm` must not be listed in `nodejs_rv_global_packages`. Use the `arpanrec.nebula.pnpm` role instead.
 - Essential development tools (Bitwarden CLI, Neovim support, etc.)
 - User-space installation (no root privileges required)
 - Configurable package list for team consistency
 
 ## Variable
 
-| Variable                          | Type   | Required | Default                                              | Description                                                                                                                                                               |
-| --------------------------------- | ------ | -------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `nodejs_rv_install_path`          | `str`  | `false`  | `{{ ansible_facts.user_dir }}/.local/share/node`     | Install path for nodejs.                                                                                                                                                  |
-| `nodejs_rv_version`               | `str`  | `false`  | `fetch_latest_version`                               | Release version, like `v22.11.0`. If set to `fetch_latest_version`, it will fetch the latest version from the [NodeJS release index](https://nodejs.org/dist/index.json). |
-| `nodejs_rv_tmp_install_cache_dir` | `str`  | `false`  | `{{ ansible_facts.user_dir }}/.tmp/nodejs`           | Cache install directory.                                                                                                                                                  |
-| `nodejs_rv_global_packages`       | `list` | `false`  | `["@bitwarden/cli", "neovim", "semver", "corepack"]` | List of global packages to install.                                                                                                                                       |
+| Variable                          | Type   | Required | Default                                                          | Description                                                                                                                                                               |
+| --------------------------------- | ------ | -------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `nodejs_rv_install_path`          | `str`  | `false`  | `{{ ansible_facts.user_dir }}/.local/share/node`                 | Install path for nodejs.                                                                                                                                                  |
+| `nodejs_rv_version`               | `str`  | `false`  | `fetch_latest_version`                                           | Release version, like `v22.11.0`. If set to `fetch_latest_version`, it will fetch the latest version from the [NodeJS release index](https://nodejs.org/dist/index.json). |
+| `nodejs_rv_tmp_install_cache_dir` | `str`  | `false`  | `{{ ansible_facts.user_dir }}/.cache/nodejs`                     | Cache install directory.                                                                                                                                                  |
+| `nodejs_rv_global_packages`       | `list` | `false`  | `["@bitwarden/cli", "neovim", "semver", "corepack", "prettier"]` | List of global packages to install.                                                                                                                                       |
 
 ### Example Playbook NodeJS
 

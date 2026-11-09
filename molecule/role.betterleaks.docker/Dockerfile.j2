@@ -1,0 +1,16 @@
+FROM "{{ item.image }}"
+
+USER root
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get upgrade -y && apt-get install -y python3-venv wget curl unzip
+
+RUN useradd -m -s /bin/bash -d /home/molecule-user molecule-user \
+    && mkdir -p /home/molecule-user/.ansible /tmp/.ansible \
+    && chown -R molecule-user:molecule-user /home/molecule-user \
+    && chmod 777 -R /tmp
+
+WORKDIR /home/molecule-user
+
+USER molecule-user

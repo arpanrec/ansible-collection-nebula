@@ -5,6 +5,6 @@
   any_errors_fatal: true
   become: false
   tasks:
-      - name: Vault | Molecule | Converge | Include vault role
+      - name: Vault | Molecule | Converge | Include Vault Role
         ansible.builtin.import_role:
             name: arpanrec.nebula.vault

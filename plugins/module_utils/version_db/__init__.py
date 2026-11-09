@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
 """
 This module provides functionality to retrieve version details for various supported applications.
 
@@ -25,7 +24,7 @@ Functions:
 
 """
 
-from typing import Optional
+from __future__ import annotations
 
 from ansible.utils.display import Display  # type: ignore
 
@@ -38,7 +37,7 @@ def get_version(app_name: str, *args, **kwargs) -> VersionDetails:  # type: igno
     """
     Get the version details for the specified app.
     """
-    app_details: Optional[AppDetails] = None
+    app_details: AppDetails | None = None
 
     match app_name:
         case SupportedApps.BWS.value:
@@ -90,6 +89,31 @@ def get_version(app_name: str, *args, **kwargs) -> VersionDetails:  # type: igno
             from .gitleaks import Gitleaks  # pylint: disable=import-outside-toplevel
 
             app_details = Gitleaks(*args, **kwargs)  # type: ignore
+
+        case SupportedApps.UV.value:
+            from .uv import Uv  # pylint: disable=import-outside-toplevel
+
+            app_details = Uv(*args, **kwargs)  # type: ignore
+
+        case SupportedApps.RCLONE.value:
+            from .rclone import Rclone  # pylint: disable=import-outside-toplevel
+
+            app_details = Rclone(*args, **kwargs)  # type: ignore
+
+        case SupportedApps.BUN.value:
+            from .bun import Bun  # pylint: disable=import-outside-toplevel
+
+            app_details = Bun(*args, **kwargs)  # type: ignore
+
+        case SupportedApps.BETTERLEAKS.value:
+            from .betterleaks import Betterleaks  # pylint: disable=import-outside-toplevel
+
+            app_details = Betterleaks(*args, **kwargs)  # type: ignore
+
+        case SupportedApps.PNPM.value:
+            from .pnpm import Pnpm  # pylint: disable=import-outside-toplevel
+
+            app_details = Pnpm(*args, **kwargs)  # type: ignore
 
         case _:
             raise ValueError(f"Unsupported app: {app_name}")

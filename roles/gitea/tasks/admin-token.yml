@@ -1,33 +1,36 @@
 ---
-- name: Gitea | Admin token | Fail | gitea_admin_user_username
+- name: Gitea | Admin Token | Fail | Missing Admin Username
   ansible.builtin.fail:
       msg: "Variable `gitea_admin_user_username` is required to create admin token."
-  when: gitea_admin_user_username is not defined or gitea_admin_user_username is none
-      or gitea_admin_user_username | length == 0
+  when: gitea_admin_user_username is not ansible.builtin.defined
+      or gitea_admin_user_username is ansible.builtin.none
+      or gitea_admin_user_username | ansible.builtin.length == 0
 
-- name: Gitea | Admin token | Fail | gitea_admin_token_file_path
+- name: Gitea | Admin Token | Fail | Missing Admin Token File Path
   ansible.builtin.fail:
       msg: "Variable `gitea_admin_token_file_path` is required to create admin token."
-  when: gitea_admin_token_file_path is not defined or gitea_admin_token_file_path is none
-      or gitea_admin_token_file_path | length == 0
+  when: gitea_admin_token_file_path is not ansible.builtin.defined
+      or gitea_admin_token_file_path is ansible.builtin.none
+      or gitea_admin_token_file_path | ansible.builtin.length == 0
 
-- name: Gitea | Admin token | Get Release.
+- name: Gitea | Admin Token | Get Release
   ansible.builtin.set_fact:
-      gitea_version_details: "{{ lookup('arpanrec.nebula.version_db', 'gitea',
-          gitea_rv_version=gitea_rv_version) | from_json }}"
-  when: gitea_version_details is not defined or gitea_version_details is none
-      or gitea_version_details | length == 0
+      __gitea_version_details: "{{ lookup('arpanrec.nebula.version_db', 'gitea',
+          gitea_rv_version=gitea_rv_version) | ansible.builtin.from_json }}"
+  when: __gitea_version_details is not ansible.builtin.defined
+      or __gitea_version_details is ansible.builtin.none
+      or __gitea_version_details | ansible.builtin.length == 0
 
-- name: Gitea | Admin token | Get token.
+- name: Gitea | Admin Token | Get Token
   become: true
   become_user: "{{ gitea_service_user }}"
   ansible.builtin.command:
       argv:
-          - "{{ gitea_executable }}"
+          - "{{ __gitea_executable }}"
           - --config
-          - "{{ gitea_app_ini_file }}"
+          - "{{ __gitea_app_ini_file }}"
           - --custom-path
-          - "{{ gitea_custom_directory }}"
+          - "{{ __gitea_custom_directory }}"
           - --work-path
           - "{{ gitea_working_directory }}"
           - admin
@@ -40,22 +43,23 @@
           - --scopes
           - all
   changed_when: false
-  register: gitea_cli_res_admin_token
+  register: __gitea_cli_res_admin_token
   environment:
       PGSSLROOTCERT: "{{ gitea_config_db_pg_ssl_root_cert_file }}"
       PGSSLCERT: "{{ gitea_config_db_pg_ssl_cert_file }}"
       PGSSLKEY: "{{ gitea_config_db_pg_ssl_key_file }}"
-      GITEA_CUSTOM: "{{ gitea_custom_directory }}"
+      GITEA_CUSTOM: "{{ __gitea_custom_directory }}"
       GITEA_WORK_DIR: "{{ gitea_working_directory }}"
 
-- name: Gitea | Admin token | Write token to file.
+- name: Gitea | Admin Token | Write Token To File
   ansible.builtin.copy:
       dest: "{{ gitea_admin_token_file_path }}"
       owner: "root"
       group: "root"
       mode: "0600"
-      content: "{{ gitea_cli_res_admin_token.stdout_lines | first | split(' ') | last }}"
+      content: "{{ __gitea_cli_res_admin_token.stdout_lines | ansible.builtin.first
+          | ansible.builtin.split(sep=' ') | ansible.builtin.last }}"
 
-- name: Gitea | Admin token | Reset fact.
+- name: Gitea | Admin Token | Reset Fact
   ansible.builtin.set_fact:
       gitea_admin_token_file_path: ""

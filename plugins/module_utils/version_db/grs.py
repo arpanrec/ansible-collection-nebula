@@ -1,32 +1,52 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
 """
 Module to search GitHub repository releases for the latest matching release tag.
 """
 
-import os
-from typing import Dict, Optional
+from __future__ import annotations
 
-import requests
+import os
+import re
+
+import httpx
 from ansible.utils.display import Display  # type: ignore
 
 display = Display()
+
+# A hyphen right after a digit starts a semver pre-release suffix, e.g. "v2.0.0-rc.1" or "v27.0.0-alpha.0".
+# Prefix hyphens such as "bws-v1.0.0" or "bun-v1.2.3" don't follow a digit, so they don't match.
+_PRE_RELEASE_SUFFIX_PATTERN = re.compile(r"\d-[0-9A-Za-z]")
+
+
+def has_pre_release_suffix(version_tag: str) -> bool:
+    """
+    Check if a version tag carries a semver pre-release suffix (alpha, beta, rc, nightly, etc.).
+
+    Args:
+        version_tag (str): The version tag to check.
+
+    Returns:
+        bool: True if the tag has a pre-release suffix.
+    """
+    return bool(_PRE_RELEASE_SUFFIX_PATTERN.search(version_tag))
 
 
 # pylint: disable=R0912,R0913,R0914,R0915
 def github_release_tag_search(
     *,
     github_release_tag_search_repo: str,
-    github_release_tag_search_api_url: Optional[str],
-    github_release_tag_search_token: Optional[str],
-    github_release_tag_search_prefix: Optional[str] = None,
-    github_release_tag_search_suffix: Optional[str] = None,
-    github_release_tag_search_contains: Optional[str] = None,
-    github_release_tag_search_max_pages: Optional[int] = 100,
-    github_release_tag_search_timeout: Optional[int] = 10,
+    github_release_tag_search_api_url: str | None,
+    github_release_tag_search_token: str | None,
+    github_release_tag_search_prefix: str | None = None,
+    github_release_tag_search_suffix: str | None = None,
+    github_release_tag_search_contains: str | None = None,
+    github_release_tag_search_max_pages: int | None = 100,
+    github_release_tag_search_timeout: int | None = 10,
 ) -> str:
     """
     Search for the latest release in a GitHub repository.
+
+    Releases flagged as pre-release on GitHub, and tags with a semver pre-release suffix, are skipped.
 
     Args:
         github_release_tag_search_repo (str): The GitHub repository to search.
@@ -73,14 +93,14 @@ def github_release_tag_search(
     if not github_release_tag_search_timeout or github_release_tag_search_timeout < 1:
         github_release_tag_search_timeout = 10
 
-    tag_version: Optional[str] = None
+    tag_version: str | None = None
     url: str = f"{github_release_tag_search_api_url}/repos/{github_release_tag_search_repo}/releases"
-    headers: Dict[str, str] = {"Accept": "application/vnd.github.v3+json", "X-GitHub-Api-Version": "2022-11-28"}
+    headers: dict[str, str] = {"Accept": "application/vnd.github.v3+json", "X-GitHub-Api-Version": "2022-11-28"}
 
     if github_release_tag_search_token:
         headers["Authorization"] = f"Bearer {github_release_tag_search_token}"
 
-    params: Dict[str, str | int] = {
+    params: dict[str, str | int] = {
         "per_page": 50,
     }
     page_num: int = 0
@@ -89,7 +109,7 @@ def github_release_tag_search(
         page_num += 1
         params["page"] = page_num
 
-        response = requests.get(url, headers=headers, params=params, timeout=github_release_tag_search_timeout)
+        response = httpx.get(url, headers=headers, params=params, timeout=github_release_tag_search_timeout)
         response.raise_for_status()
         response_data = response.json()
         if len(response_data) == 0:
@@ -106,6 +126,10 @@ def github_release_tag_search(
             tag_name = release.get("tag_name")
 
             if tag_name:
+                if has_pre_release_suffix(tag_name):
+                    display.vvv(f"github_release_tag_search: Skipping pre-release tag: {tag_name}")
+                    continue
+
                 if github_release_tag_search_prefix and not tag_name.startswith(github_release_tag_search_prefix):
                     continue
 

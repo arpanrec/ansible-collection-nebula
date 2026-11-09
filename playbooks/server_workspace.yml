@@ -1,8 +1,8 @@
 ---
-- name: Installing apps in user $HOME directory
+- name: Server Workspace | Install Apps | User Home Directory
   hosts: server_workspace
   tasks:
-      - name: USERAPPS | NodeJS
+      - name: Server Workspace | Include Role | User Apps | NodeJS
         ansible.builtin.include_role:
             name: arpanrec.nebula.nodejs
         tags:
@@ -12,7 +12,7 @@
                 tags:
                     - nodejs
 
-      - name: USERAPPS | Go Language
+      - name: Server Workspace | Include Role | User Apps | Go Language
         ansible.builtin.include_role:
             name: arpanrec.nebula.go
         tags:
@@ -22,7 +22,7 @@
                 tags:
                     - go
 
-      - name: USERAPPS | Oracle Java
+      - name: Server Workspace | Include Role | User Apps | Oracle Java
         ansible.builtin.include_role:
             name: arpanrec.nebula.java
         tags:
@@ -32,7 +32,7 @@
                 tags:
                     - java
 
-      - name: USERAPPS | Terraform
+      - name: Server Workspace | Include Role | User Apps | Terraform
         ansible.builtin.include_role:
             name: arpanrec.nebula.terraform
         tags:
@@ -42,7 +42,7 @@
                 tags:
                     - terraform
 
-      - name: USERAPPS | Hashicorp Vault
+      - name: Server Workspace | Include Role | User Apps | Hashicorp Vault
         ansible.builtin.include_role:
             name: arpanrec.nebula.vault
         tags:
@@ -52,7 +52,7 @@
                 tags:
                     - vault
 
-      - name: USERAPPS | Pulumi
+      - name: Server Workspace | Include Role | User Apps | Pulumi
         ansible.builtin.include_role:
             name: arpanrec.nebula.pulumi
         tags:
@@ -62,7 +62,7 @@
                 tags:
                     - pulumi
 
-      - name: USERAPPS | Bitwarden SDK
+      - name: Server Workspace | Include Role | User Apps | Bitwarden SDK
         ansible.builtin.include_role:
             name: arpanrec.nebula.bws
         tags:
@@ -72,7 +72,7 @@
                 tags:
                     - bws
 
-      - name: USERAPPS | Hadolint
+      - name: Server Workspace | Include Role | User Apps | Hadolint
         ansible.builtin.include_role:
             name: arpanrec.nebula.hadolint
         tags:
@@ -82,7 +82,7 @@
                 tags:
                     - hadolint
 
-      - name: USERAPPS | gitleaks
+      - name: Server Workspace | Include Role | User Apps | Gitleaks
         ansible.builtin.include_role:
             name: arpanrec.nebula.gitleaks
         tags:
@@ -91,3 +91,53 @@
             apply:
                 tags:
                     - gitleaks
+
+      - name: Server Workspace | Include Role | User Apps | Uv
+        ansible.builtin.include_role:
+            name: arpanrec.nebula.uv
+        tags:
+            - uv
+        args:
+            apply:
+                tags:
+                    - uv
+
+      - name: Server Workspace | Include Role | User Apps | Rclone
+        ansible.builtin.include_role:
+            name: arpanrec.nebula.rclone
+        tags:
+            - rclone
+        args:
+            apply:
+                tags:
+                    - rclone
+
+      - name: Server Workspace | Include Role | User Apps | Bun
+        ansible.builtin.include_role:
+            name: arpanrec.nebula.bun
+        tags:
+            - bun
+        args:
+            apply:
+                tags:
+                    - bun
+
+      - name: Server Workspace | Include Role | User Apps | Betterleaks
+        ansible.builtin.include_role:
+            name: arpanrec.nebula.betterleaks
+        tags:
+            - betterleaks
+        args:
+            apply:
+                tags:
+                    - betterleaks
+
+      - name: Server Workspace | Include Role | User Apps | Pnpm
+        ansible.builtin.include_role:
+            name: arpanrec.nebula.pnpm
+        tags:
+            - pnpm
+        args:
+            apply:
+                tags:
+                    - pnpm

@@ -1,8 +1,10 @@
 ---
 go_rv_install_path: "{{ ansible_facts.user_dir }}/.local/share/go"
 go_rv_version: "fetch_latest_version"
-go_rv_tmp_dir: "{{ ansible_facts.user_dir }}/.tmp/go"
+go_rv_tmp_dir: "{{ ansible_facts.user_dir }}/.cache/go"
 go_rv_global_installs:
     - "golang.org/x/tools/gopls@latest"
     - "mvdan.cc/sh/v3/cmd/gosh@latest"
     - "github.com/jesseduffield/lazygit@latest"
+    - "github.com/cli/cli/v2/cmd/gh@latest"
+    - "github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest"

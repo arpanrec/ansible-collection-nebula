@@ -1,21 +1,21 @@
 ---
-java_rv_jdk_tarball_download_path: "{{ java_rv_jdk_tmp_dir }}\
-    /jdk-{{ oracle_jdk_tmp_version_details.version }}_linux-{{ ansible_facts.architecture }}_bin.tar.gz"
+__java_rv_jdk_tarball_download_path: "{{ java_rv_jdk_tmp_dir }}\
+    /jdk-{{ __oracle_jdk_tmp_version_details.version }}_linux-{{ ansible_facts.architecture }}_bin.tar.gz"
 
-java_rv_jdk_mvn_tarball_download_path: "{{ java_rv_jdk_tmp_dir }}/apache-maven-{{
-    oracle_jdk_tmp_version_details.extras.maven.version }}-bin.tar.gz"
+__java_rv_jdk_mvn_tarball_download_path: "{{ java_rv_jdk_tmp_dir }}/apache-maven-{{
+    __oracle_jdk_tmp_version_details.extras.maven.version }}-bin.tar.gz"
 
-java_rv_jdk_gradle_tmp_unzip_path: "{{ java_rv_jdk_tmp_dir }}"
-java_rv_jdk_gradle_tarball_download_path: "{{ java_rv_jdk_tmp_dir }}/gradle-{{
-    oracle_jdk_tmp_version_details.extras.gradle.version }}-all.zip"
+__java_rv_jdk_gradle_tmp_unzip_path: "{{ java_rv_jdk_tmp_dir }}"
+__java_rv_jdk_gradle_tarball_download_path: "{{ java_rv_jdk_tmp_dir }}/gradle-{{
+    __oracle_jdk_tmp_version_details.extras.gradle.version }}-all.zip"
 
-java_rv_jdk_groovy_tmp_unzip_path: "{{ java_rv_jdk_tmp_dir }}"
-java_rv_jdk_groovy_tarball_download_path: "{{ java_rv_jdk_tmp_dir }}\
-    /apache-groovy-sdk-{{ oracle_jdk_tmp_version_details.extras.groovy.version }}.zip"
+__java_rv_jdk_groovy_tmp_unzip_path: "{{ java_rv_jdk_tmp_dir }}"
+__java_rv_jdk_groovy_tarball_download_path: "{{ java_rv_jdk_tmp_dir }}\
+    /apache-groovy-sdk-{{ __oracle_jdk_tmp_version_details.extras.groovy.version }}.zip"
 
-java_rv_jdk_kotlinc_tarball_download_path: "{{ java_rv_jdk_tmp_dir }}\
-    /kotlin-compiler-{{ oracle_jdk_tmp_version_details.extras.kotlinc.version }}.zip"
+__java_rv_jdk_kotlinc_tarball_download_path: "{{ java_rv_jdk_tmp_dir }}\
+    /kotlin-compiler-{{ __oracle_jdk_tmp_version_details.extras.kotlinc.version }}.zip"
 
-java_rv_jdk_graalvm_tarball_download_path: "{{ java_rv_jdk_tmp_dir }}\
-    /graalvm-jdk-{{ oracle_jdk_tmp_version_details.extras.graalvm.version }}\
+__java_rv_jdk_graalvm_tarball_download_path: "{{ java_rv_jdk_tmp_dir }}\
+    /graalvm-jdk-{{ __oracle_jdk_tmp_version_details.extras.graalvm.version }}\
     _linux-{{ ansible_facts.architecture }}_bin.tar.gz"

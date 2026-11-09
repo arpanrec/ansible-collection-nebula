@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
 """
 This module provides functionality to fetch and manage Vault application details.
 
@@ -18,9 +17,11 @@ Methods:
 
 """
 
-from typing import Any, Dict, Optional
+from __future__ import annotations
 
-import requests
+from typing import Any
+
+import httpx
 from ansible.utils.display import Display  # type: ignore
 from packaging.version import Version
 
@@ -36,7 +37,7 @@ class Vault(AppDetails):  # pylint: disable=too-few-public-methods
 
     __vault_releases_url: str = "https://releases.hashicorp.com/vault/index.json"
 
-    __vault_ansible_architecture_map: Dict[str, str] = {"x86_64": "amd64", "aarch64": "arm64"}
+    __vault_ansible_architecture_map: dict[str, str] = {"x86_64": "amd64", "aarch64": "arm64"}
 
     def fetch_details(self) -> None:
         """
@@ -46,8 +47,8 @@ class Vault(AppDetails):  # pylint: disable=too-few-public-methods
         if not _vault_release_tag or _vault_release_tag == self._FETCH_LATEST_KEY:
             display.vvv(f"Fetching Vault version details from {self.__vault_releases_url}.")
             try:
-                _expected_version: Optional[str] = None
-                _vault_releases: Dict[str, Any] = requests.get(self.__vault_releases_url, timeout=10).json()["versions"]
+                _expected_version: str | None = None
+                _vault_releases: dict[str, Any] = httpx.get(self.__vault_releases_url, timeout=10).json()["versions"]
                 for key in list(_vault_releases.keys()):
                     # pylint: disable=R0801
                     if ("+" in key) or ("beta" in key) or ("rc" in key) or ("oci" in key) or ("alpha" in key):

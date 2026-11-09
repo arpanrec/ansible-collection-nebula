@@ -1,7 +1,7 @@
 ---
 - name: Oracle JDK | GraalVM | Install | Unarchive the tarball
   ansible.builtin.unarchive:
-      src: "{{ java_rv_jdk_graalvm_tarball_download_path }}"
+      src: "{{ __java_rv_jdk_graalvm_tarball_download_path }}"
       dest: "{{ java_rv_jdk_graalvm_install_path }}"
       extra_opts: [--strip-components=1]
       remote_src: true

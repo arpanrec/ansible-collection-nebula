@@ -3,6 +3,6 @@
   hosts: all
   gather_facts: false
   tasks:
-      - name: Application User | Molecule | Prepare | Bootstrap a host without python installed
+      - name: Application User | Molecule | Prepare | Bootstrap A Host Without Python Installed
         ansible.builtin.raw: apt update && apt install python3 -y
         changed_when: true

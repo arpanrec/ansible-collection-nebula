@@ -4,37 +4,36 @@
 
 - name: NodeJS | Get Version Details
   ansible.builtin.set_fact:
-      nodejs_version_details: "{{ lookup('arpanrec.nebula.version_db', 'nodejs',
-          nodejs_rv_version=nodejs_rv_version) | from_json }}"
+      __nodejs_version_details: "{{ lookup('arpanrec.nebula.version_db', 'nodejs',
+          nodejs_rv_version=nodejs_rv_version) | ansible.builtin.from_json }}"
 
-- name: NodeJS | Get downloaded file stat
+- name: NodeJS | Get Downloaded File Stat
   ansible.builtin.stat:
-      path: "{{ nodejs_rv_tarball_download_path }}"
-  register: nodejs_rv_tmp_downloaded_file_stat
+      path: "{{ __nodejs_rv_tarball_download_path }}"
+  register: __nodejs_rv_tmp_downloaded_file_stat
 
-- name: NodeJS | New Download | Create download directory
+- name: NodeJS | New Download | Create Download Directory
   ansible.builtin.file:
       path: "{{ nodejs_rv_tmp_install_cache_dir }}"
       state: directory
       mode: "0700"
 
 - name: NodeJS | New Download
-  when: not nodejs_rv_tmp_downloaded_file_stat.stat.exists
+  when: not __nodejs_rv_tmp_downloaded_file_stat.stat.exists
   block:
-      - name: NodeJS | New Download | Download tarball
+      - name: NodeJS | New Download | Download Tarball
         ansible.builtin.get_url:
-            url: "{{ nodejs_version_details.download_link }}"
-            checksum: "{{ nodejs_version_details.checksum | default(omit) }}"
-            dest: "{{ nodejs_rv_tarball_download_path }}"
+            url: "{{ __nodejs_version_details.download_link }}"
+            checksum: "{{ __nodejs_version_details.checksum | ansible.builtin.default(default_value=omit) }}"
+            dest: "{{ __nodejs_rv_tarball_download_path }}"
             mode: "0700"
             timeout: 300
         timeout: 300
 
-      - name: NodeJS | New Download | Remove old install directory
+      - name: NodeJS | New Download | Remove Old Install Directory
         ansible.builtin.file:
             path: "{{ nodejs_rv_install_path }}"
             state: absent
-
   rescue:
       - name: NodeJS | New Download | Fail | Cleanup
         ansible.builtin.file:
@@ -45,20 +44,26 @@
         ansible.builtin.fail:
             msg: Something went wrong, check the errors above
 
-- name: NodeJS | Create install directory
+- name: NodeJS | Create Install Directory
   ansible.builtin.file:
       path: "{{ nodejs_rv_install_path }}"
       state: directory
       mode: "0700"
 
-- name: NodeJS | Unarchive the tarball
+- name: NodeJS | Unarchive The Tarball
   ansible.builtin.unarchive:
-      src: "{{ nodejs_rv_tarball_download_path }}"
+      src: "{{ __nodejs_rv_tarball_download_path }}"
       dest: "{{ nodejs_rv_install_path }}"
       extra_opts: [--strip-components=1]
       remote_src: true
+  changed_when: false
 
-- name: NodeJS | Remove node.js npm global pnpm and yarn
+- name: NodeJS | Assert Pnpm Is Not In Global Packages
+  ansible.builtin.assert:
+      that: "'pnpm' not in nodejs_rv_global_packages"
+      fail_msg: pnpm is installed by the arpanrec.nebula.pnpm role, remove it from nodejs_rv_global_packages
+
+- name: NodeJS | Remove Node.js Npm Global Pnpm And Yarn
   community.general.npm:
       name: "{{ item }}"
       global: true
@@ -70,7 +75,36 @@
   environment:
       PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
 
-- name: NodeJS | Install node.js package globally.
+- name: NodeJS | Remove Bundled Corepack
+  ansible.builtin.file:
+      path: "{{ nodejs_rv_install_path }}/{{ item }}"
+      state: absent
+  loop:
+      - lib/node_modules/corepack
+      - bin/corepack
+      - bin/pnpm
+      - bin/pnpx
+      - bin/yarn
+      - bin/yarnpkg
+  changed_when: false
+
+- name: NodeJS | Install Latest Corepack
+  community.general.npm:
+      name: corepack
+      global: true
+      state: latest
+      executable: "{{ nodejs_rv_install_path }}/bin/npm"
+  changed_when: false
+  environment:
+      PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
+
+- name: NodeJS | Remove Corepack Pnpm Cache
+  ansible.builtin.file:
+      path: "{{ __nodejs_rv_corepack_home }}/v1/pnpm"
+      state: absent
+  changed_when: false
+
+- name: NodeJS | Install Node.js Package Globally
   community.general.npm:
       name: "{{ item }}"
       global: true
@@ -79,29 +113,47 @@
   environment:
       PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
 
-- name: NodeJS | Install corepack package managers pnpm & yarn
+- name: NodeJS | Install Corepack Package Manager Yarn
   ansible.builtin.command:
       argv:
           - "{{ nodejs_rv_install_path }}/bin/corepack"
           - install
           - -g
-          - "{{ item }}@latest"
+          - yarn@latest
   changed_when: false
   environment:
       PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
-  loop:
-      - pnpm
-      - yarn
 
-- name: NodeJS | Enable corepack package managers pnpm & yarn
+- name: NodeJS | Enable Corepack Package Manager Yarn
   ansible.builtin.command:
       argv:
           - "{{ nodejs_rv_install_path }}/bin/corepack"
           - enable
-          - "{{ item }}"
-      creates: "{{ nodejs_rv_install_path }}/bin/{{ item }}"
+          - yarn
+      creates: "{{ nodejs_rv_install_path }}/bin/yarn"
+  changed_when: false
   environment:
       PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
+
+- name: NodeJS | Remove Pnpm Shims Added By The Corepack Package
+  ansible.builtin.file:
+      path: "{{ nodejs_rv_install_path }}/bin/{{ item }}"
+      state: absent
   loop:
       - pnpm
-      - yarn
+      - pnpx
+  changed_when: false
+
+- name: NodeJS | Get Yarn Version
+  ansible.builtin.command:
+      argv:
+          - "{{ nodejs_rv_install_path }}/bin/yarn"
+          - --version
+  register: __nodejs_rv_yarn_version
+  changed_when: false
+  environment:
+      PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
+
+- name: NodeJS | Print Yarn Version
+  ansible.builtin.debug:
+      msg: "{{ __nodejs_rv_yarn_version.stdout }}"

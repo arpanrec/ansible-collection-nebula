@@ -3,30 +3,30 @@
   hosts: all
   gather_facts: false
   tasks:
-      - name: Hadolint | Molecule | Verify | Import Roles for variables
+      - name: Hadolint | Molecule | Verify | Import Roles For Variables
         ansible.builtin.import_role:
             name: arpanrec.nebula.hadolint
             tasks_from: prerequisites
 
       - name: Hadolint | Molecule | Get Release
         ansible.builtin.set_fact:
-            hadolint_version_details: "{{ lookup('arpanrec.nebula.version_db', 'hadolint',
-                hadolint_rv_version=hadolint_rv_version) | from_json }}"
+            __hadolint_version_details: "{{ lookup('arpanrec.nebula.version_db', 'hadolint',
+                hadolint_rv_version=hadolint_rv_version) | ansible.builtin.from_json }}"
 
-      - name: Hadolint | Molecule | Verify | Get hadolint version from shell
+      - name: Hadolint | Molecule | Verify | Get Hadolint Version From Shell
         ansible.builtin.command:
             argv:
                 - hadolint
                 - --version
         environment:
-            PATH: "{{ hadolint_rv_executable_bin_path | dirname }}:{{ ansible_facts.env.PATH }}"
-        register: hadolint_rv_version_shell_result
+            PATH: "{{ hadolint_rv_executable_bin_path | ansible.builtin.dirname }}:{{ ansible_facts.env.PATH }}"
+        register: __hadolint_rv_version_shell_result
         changed_when: false
 
-      - name: Hadolint | Molecule | Verify | Fail if hadolint version is not present
+      - name: Hadolint | Molecule | Verify | Fail If Hadolint Version Is Not Present
         ansible.builtin.assert:
-            that: "hadolint_version_details.version[1:] == hadolint_rv_version_shell_result.stdout_lines[0] \
-                | split | last"
-            success_msg: Hadolint Version {{ hadolint_version_details.version }} is installed
-            fail_msg: Hadolint Version {{ hadolint_version_details.version }} is not installed,
-                Shell result {{ hadolint_rv_version_shell_result.stdout }}
+            that: "__hadolint_version_details.version[1:] == __hadolint_rv_version_shell_result.stdout_lines[0] \
+                | ansible.builtin.split | ansible.builtin.last"
+            success_msg: Hadolint Version {{ __hadolint_version_details.version }} is installed
+            fail_msg: Hadolint Version {{ __hadolint_version_details.version }} is not installed,
+                Shell result {{ __hadolint_rv_version_shell_result.stdout }}

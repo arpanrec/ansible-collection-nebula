@@ -1,28 +1,26 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
 """
 Ansible lookup plugin to get secrets
 """
 
-from __future__ import absolute_import, division, print_function
+from __future__ import annotations
 
 import datetime
 import json
 import os
 import subprocess  # nosec B404
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from ansible.errors import AnsibleLookupError  # type: ignore
 from ansible.plugins.lookup import LookupBase  # type: ignore
 from ansible.utils.display import Display  # type: ignore
 
 try:
-    from cachier import cachier
+    from cachier import cachier  # pyright: ignore[reportUnknownVariableType]
 except ImportError as e:
     raise AnsibleLookupError("Please install cachier with 'pip install cachier'") from e
 
 # pylint: disable=invalid-name
-__metaclass__ = type
 
 DOCUMENTATION = """
 ---
@@ -135,15 +133,15 @@ class LookupModule(LookupBase):
     """
 
     __item: str
-    __ret: Optional[str] = None
+    __ret: str | None = None
     __search: str = "name"
     __cache_enabled: bool = False
-    __bw_session: Optional[str] = None
+    __bw_session: str | None = None
 
     def __get_custom_field(self, field_name: str) -> str:
         item_dict = json.loads(self.__bw_exec(["get", "item", self.__item]))
-        fields: List[Dict[str, Any]] = item_dict.get("fields", [])
-        value: Optional[str] = None
+        fields: list[dict[str, Any]] = item_dict.get("fields", [])
+        value: str | None = None
         for field in fields:
             if field["name"] == field_name:
                 if value is not None:
@@ -157,8 +155,8 @@ class LookupModule(LookupBase):
 
         return value
 
-    def __get_attachment(self, attachment_name: Optional[str], attachment_id: Optional[str]) -> str:
-        item_dict: Optional[Dict[str, Any]] = None
+    def __get_attachment(self, attachment_name: str | None, attachment_id: str | None) -> str:
+        item_dict: dict[str, Any] | None = None
         item_id: str
         if self.__search == "name":
             item_dict = dict(json.loads(self.__bw_exec(["get", "item", self.__item])))
@@ -174,7 +172,7 @@ class LookupModule(LookupBase):
             if not attachment_id and attachment_name:
                 if "attachments" not in item_dict:
                     raise AnsibleLookupError("No attachments found")
-                attachments: List[Dict[str, Any]] = item_dict["attachments"]
+                attachments: list[dict[str, Any]] = item_dict["attachments"]
                 for att in attachments:
                     if attachment_name and att["fileName"] == attachment_name:
                         if attachment_id is not None:
@@ -190,9 +188,9 @@ class LookupModule(LookupBase):
     @cachier(stale_after=datetime.timedelta(minutes=60))
     def __bw_exec_with_cache(
         self,
-        cmd: List[str],
+        cmd: list[str],
         ret_encoding: str = "UTF-8",
-        env_vars: Optional[Dict[str, str]] = None,
+        env_vars: dict[str, str] | None = None,
     ) -> str:
         """
         Executes a Bitwarden CLI command and returns the output as a string.
@@ -201,9 +199,9 @@ class LookupModule(LookupBase):
 
     def __bw_exec_without_cache(
         self,
-        cmd: List[str],
+        cmd: list[str],
         ret_encoding: str = "UTF-8",
-        env_vars: Optional[Dict[str, str]] = None,
+        env_vars: dict[str, str] | None = None,
     ) -> str:
         """
         Executes a Bitwarden CLI command and returns the output as a string.
@@ -212,9 +210,9 @@ class LookupModule(LookupBase):
 
     def __bw_exec_subprocess(
         self,
-        cmd: List[str],
+        cmd: list[str],
         ret_encoding: str = "UTF-8",
-        env_vars: Optional[Dict[str, str]] = None,
+        env_vars: dict[str, str] | None = None,
     ) -> str:
         """
         Executes a Bitwarden CLI command and returns the output as a string.
@@ -226,7 +224,7 @@ class LookupModule(LookupBase):
         # Copy the environment instead of aliasing os.environ, otherwise updates
         # (including BW_SESSION) would leak into the controller process and persist
         # across subsequent lookups.
-        cli_env_vars: Dict[str, str] = dict(os.environ)
+        cli_env_vars: dict[str, str] = dict(os.environ)
 
         if env_vars is not None:
             cli_env_vars.update(env_vars)
@@ -244,26 +242,30 @@ class LookupModule(LookupBase):
             )
         return command_out.stdout
 
+    @staticmethod
+    def __cache_dpath(cached_fn: Any) -> str:
+        return cached_fn.cache_dpath()  # pyright: ignore[reportAttributeAccessIssue, reportUnknownMemberType]
+
     def __bw_exec(
         self,
-        cmd: List[str],
+        cmd: list[str],
         ret_encoding: str = "UTF-8",
-        env_vars: Optional[Dict[str, str]] = None,
+        env_vars: dict[str, str] | None = None,
     ) -> str:
 
         if self.__cache_enabled:
+            cache_dpath = self.__cache_dpath(self.__bw_exec_with_cache)
             display.warning(
-                f"Using cache location: '{self.__bw_exec_with_cache.cache_dpath()}',"
-                " Make sure to remove the directory after execution.\n"
+                f"Using cache location: '{cache_dpath}', Make sure to remove the directory after execution.\n"
             )
             return self.__bw_exec_with_cache(cmd, ret_encoding, env_vars)
         display.vvv("No cache location provided")
         return self.__bw_exec_without_cache(cmd, ret_encoding, env_vars)
 
     # pylint: disable=too-many-branches
-    def run(
-        self, terms: Optional[List[str]], variables: Optional[Dict[str, Any]] = None, **kwargs: Optional[Dict[str, Any]]
-    ) -> List[str]:
+    def run(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, terms: list[str] | None, variables: dict[str, Any] | None = None, **kwargs: dict[str, Any] | None
+    ) -> list[str]:
         """
         get secrets
         """
@@ -273,12 +275,12 @@ class LookupModule(LookupBase):
         if len(terms) != 1:
             raise AnsibleLookupError("Only one term is allowed")
 
-        self.set_options(var_options=variables, direct=kwargs)
+        self.set_options(var_options=variables, direct=kwargs)  # pyright: ignore[reportUnknownMemberType]
 
         self.__item = terms[0]
-        field: Optional[str] = None
-        attachment_name: Optional[str] = None
-        attachment_id: Optional[str] = None
+        field: str | None = None
+        attachment_name: str | None = None
+        attachment_id: str | None = None
 
         if (
             variables

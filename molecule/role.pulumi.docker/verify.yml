@@ -3,26 +3,26 @@
   hosts: all
   gather_facts: false
   tasks:
-      - name: Pulumi | Molecule | Verify | Import Roles for variables
+      - name: Pulumi | Molecule | Verify | Import Roles For Variables
         ansible.builtin.import_role:
             name: arpanrec.nebula.pulumi
             tasks_from: prerequisites
 
       - name: Pulumi | Molecule | Get Release
         ansible.builtin.set_fact:
-            pulumi_version_details: "{{ lookup('arpanrec.nebula.version_db', 'pulumi',
-                pulumi_rv_version=pulumi_rv_version) | from_json }}"
+            __pulumi_version_details: "{{ lookup('arpanrec.nebula.version_db', 'pulumi',
+                pulumi_rv_version=pulumi_rv_version) | ansible.builtin.from_json }}"
 
-      - name: Pulumi | Molecule | Verify | Get pulumi version from shell
+      - name: Pulumi | Molecule | Verify | Get Pulumi Version From Shell
         ansible.builtin.command: pulumi version
         environment:
             PATH: "{{ pulumi_rv_install_path }}:{{ ansible_facts.env.PATH }}"
-        register: pulumi_rv_version_shell_result
+        register: __pulumi_rv_version_shell_result
         changed_when: false
 
-      - name: Pulumi | Molecule | Verify | Fail if pulumi version is not present
+      - name: Pulumi | Molecule | Verify | Fail If Pulumi Version Is Not Present
         ansible.builtin.assert:
-            that: pulumi_rv_version_shell_result.stdout_lines[0] == pulumi_version_details.version
-            success_msg: Pulumi Version {{ pulumi_version_details.version }} is installed
-            fail_msg: Pulumi Version {{ pulumi_version_details.version }} is not installed,
-                Shell result {{ pulumi_rv_version_shell_result.stdout }}
+            that: __pulumi_rv_version_shell_result.stdout_lines[0] == __pulumi_version_details.version
+            success_msg: Pulumi Version {{ __pulumi_version_details.version }} is installed
+            fail_msg: Pulumi Version {{ __pulumi_version_details.version }} is not installed,
+                Shell result {{ __pulumi_rv_version_shell_result.stdout }}

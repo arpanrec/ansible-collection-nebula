@@ -2,7 +2,7 @@
 - name: Vault | Prerequisites
   ansible.builtin.import_tasks: prerequisites.yml
 
-- name: Vault | Create install directory
+- name: Vault | Create Install Directory
   ansible.builtin.file:
       path: "{{ vault_rv_install_path }}"
       state: directory
@@ -10,41 +10,41 @@
 
 - name: Vault | Get Version Details
   ansible.builtin.set_fact:
-      vault_tmp_version_details: "{{ lookup('arpanrec.nebula.version_db', 'vault',
-          vault_rv_version=vault_rv_version) | from_json }}"
+      __vault_tmp_version_details: "{{ lookup('arpanrec.nebula.version_db', 'vault',
+          vault_rv_version=vault_rv_version) | ansible.builtin.from_json }}"
 
-- name: Vault | Get downloaded file stat
+- name: Vault | Get Downloaded File Stat
   ansible.builtin.stat:
-      path: "{{ vault_rv_tarball_download_path }}"
-  register: vault_rv_tmp_downloaded_file_stat
+      path: "{{ __vault_rv_tarball_download_path }}"
+  register: __vault_rv_tmp_downloaded_file_stat
 
-- name: Vault | New Download | Create download directory
+- name: Vault | New Download | Create Download Directory
   ansible.builtin.file:
       path: "{{ vault_rv_tmp_install_cache_dir }}"
       state: directory
       mode: "0700"
 
 - name: Vault | New Download
-  when: not vault_rv_tmp_downloaded_file_stat.stat.exists
+  when: not __vault_rv_tmp_downloaded_file_stat.stat.exists
   block:
-      - name: "Vault | New Download | Download tarball"
+      - name: "Vault | New Download | Download Tarball"
         ansible.builtin.get_url:
-            url: "{{ vault_tmp_version_details.download_link }}"
-            checksum: "{{ vault_tmp_version_details.checksum | default(omit) }}"
-            dest: "{{ vault_rv_tarball_download_path }}"
+            url: "{{ __vault_tmp_version_details.download_link }}"
+            checksum: "{{ __vault_tmp_version_details.checksum | ansible.builtin.default(default_value=omit) }}"
+            dest: "{{ __vault_rv_tarball_download_path }}"
             mode: "0700"
   rescue:
       - name: Vault | New Download | Fail | Cleanup
         ansible.builtin.file:
-            path: "{{ vault_rv_tarball_download_path }}"
+            path: "{{ __vault_rv_tarball_download_path }}"
             state: absent
 
       - name: Vault | New Download | Fail | Fail
         ansible.builtin.fail:
             msg: Something went wrong, check the errors above
 
-- name: Vault | New Download | Unarchive the tarball
+- name: Vault | New Download | Unarchive The Tarball
   ansible.builtin.unarchive:
-      src: "{{ vault_rv_tarball_download_path }}"
+      src: "{{ __vault_rv_tarball_download_path }}"
       dest: "{{ vault_rv_install_path }}"
       remote_src: true

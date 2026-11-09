@@ -1,24 +1,20 @@
 ---
-- name: Bitwarden Secrets Manager SDK | Prerequisites | Fail if Root User
+- name: Bitwarden Secrets Manager SDK | Prerequisites | Fail If Root User
   ansible.builtin.command: whoami
-  register: rl_sw_current_shelluser_shell_result
-  failed_when: rl_sw_current_shelluser_shell_result.stdout == "root"
+  register: __rl_sw_current_shelluser_shell_result
+  failed_when: __rl_sw_current_shelluser_shell_result.stdout == "root"
   changed_when: false
 
-- name: Bitwarden Secrets Manager SDK | Prerequisites | Packages are present
+- name: Bitwarden Secrets Manager SDK | Prerequisites | Packages Are Present
   ansible.builtin.shell: "command -v {{ item }} >/dev/null 2>&1"
   changed_when: false
   with_items:
-      - curl
-      - wget
-      - zip
-      - tar
       - unzip
 
 - name: Bitwarden Secrets Manager SDK | Prerequisites | Gather Facts
   ansible.builtin.setup:
 
-- name: Bitwarden Secrets Manager SDK | Prerequisites | Create a directory if it does not exist
+- name: Bitwarden Secrets Manager SDK | Prerequisites | Create A Directory If It Does Not Exist
   ansible.builtin.file:
       path: "{{ item }}"
       state: directory

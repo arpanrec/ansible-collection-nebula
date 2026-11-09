@@ -1,5 +1,5 @@
 ---
-- name: Gitea | Fail2ban | Write filter.
+- name: Gitea | Fail2ban | Write Filter
   ansible.builtin.copy:
       src: files/fail2ban-filter.ini
       dest: /etc/fail2ban/filter.d/gitea.conf
@@ -10,7 +10,7 @@
   notify:
       - Fail2ban | Restart service
 
-- name: Gitea | Fail2ban | Write jail local config.
+- name: Gitea | Fail2ban | Write Jail Local Config
   ansible.builtin.template:
       src: templates/fail2ban-gitea-local.ini.j2
       dest: /etc/fail2ban/jail.d/gitea.conf

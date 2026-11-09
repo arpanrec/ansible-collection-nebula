@@ -4,59 +4,59 @@
 
 - name: Golang | Get Latest Version
   ansible.builtin.set_fact:
-      go_tmp_version_details: "{{ lookup('arpanrec.nebula.version_db', 'go',
-          go_rv_version=go_rv_version) | from_json }}"
+      __go_tmp_version_details: "{{ lookup('arpanrec.nebula.version_db', 'go',
+          go_rv_version=go_rv_version) | ansible.builtin.from_json }}"
 
-- name: Golang | Get downloaded file stat
+- name: Golang | Get Downloaded File Stat
   ansible.builtin.stat:
-      path: "{{ go_rv_tarball_download_path }}"
-  register: pv_ua_golang_downloaded_file_stat
+      path: "{{ __go_rv_tarball_download_path }}"
+  register: __pv_ua_golang_downloaded_file_stat
 
-- name: Golang | Newly downloaded | Create Download Directory
+- name: Golang | Newly Downloaded | Create Download Directory
   ansible.builtin.file:
       path: "{{ go_rv_tmp_dir }}"
       state: directory
       mode: "0700"
 
-- name: Golang | Newly downloaded
-  when: not pv_ua_golang_downloaded_file_stat.stat.exists
+- name: Golang | Newly Downloaded
+  when: not __pv_ua_golang_downloaded_file_stat.stat.exists
   block:
-      - name: "Golang | Newly downloaded | Download tarball"
+      - name: "Golang | Newly Downloaded | Download Tarball"
         ansible.builtin.get_url:
-            url: "{{ go_tmp_version_details.download_link }}"
-            checksum: "{{ go_tmp_version_details.checksum | default(omit) }}"
-            dest: "{{ go_rv_tarball_download_path }}"
+            url: "{{ __go_tmp_version_details.download_link }}"
+            checksum: "{{ __go_tmp_version_details.checksum | ansible.builtin.default(default_value=omit) }}"
+            dest: "{{ __go_rv_tarball_download_path }}"
             mode: "0700"
 
-      - name: Golang | Newly downloaded | Remove old install directory
+      - name: Golang | Newly Downloaded | Remove Old Install Directory
         ansible.builtin.file:
             path: "{{ go_rv_install_path }}"
             state: absent
 
   rescue:
-      - name: Golang | Newly downloaded | Delete Tarball
+      - name: Golang | Newly Downloaded | Delete Tarball
         ansible.builtin.file:
-            path: "{{ go_rv_tarball_download_path }}"
+            path: "{{ __go_rv_tarball_download_path }}"
             state: absent
 
-      - name: Golang | Newly downloaded | Fail
+      - name: Golang | Newly Downloaded | Fail
         ansible.builtin.fail:
             msg: "Failed to download Golang tarball"
 
-- name: Golang | Create install directory
+- name: Golang | Create Install Directory
   ansible.builtin.file:
       path: "{{ go_rv_install_path }}"
       state: directory
       mode: "0700"
 
-- name: Golang | Newly downloaded | Unarchive the tarball
+- name: Golang | Newly Downloaded | Unarchive The Tarball
   ansible.builtin.unarchive:
-      src: "{{ go_rv_tarball_download_path }}"
+      src: "{{ __go_rv_tarball_download_path }}"
       dest: "{{ go_rv_install_path }}"
       extra_opts: [--strip-components=1]
       remote_src: true
 
-- name: Golang | Ensure GOPATH in ~/.bashrc and ~/.zshrc
+- name: Golang | Ensure GOPATH In ~/.bashrc And ~/.zshrc
   ansible.builtin.lineinfile:
       path: "{{ item }}"
       line: 'export GOPATH="${HOME}/.go"'
@@ -68,14 +68,14 @@
       - "{{ ansible_facts.user_dir }}/.bashrc"
       - "{{ ansible_facts.user_dir }}/.zshrc"
 
-- name: Golang | Install global packages
+- name: Golang | Install Global Packages
   ansible.builtin.command:
       cmd: "{{ go_rv_install_path }}/bin/go install {{ item }}"
       chdir: "{{ go_rv_install_path }}"
   loop: "{{ go_rv_global_installs }}"
-  when: go_rv_global_installs | length > 0
+  when: go_rv_global_installs | ansible.builtin.length > 0
   environment:
       PATH: "{{ go_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
       GOPATH: "{{ ansible_facts.user_dir }}/.go"
-  register: go_rv_global_installs_result
-  changed_when: go_rv_global_installs_result.stderr_lines | length != 0
+  register: __go_rv_global_installs_result
+  changed_when: __go_rv_global_installs_result.stderr_lines | ansible.builtin.length != 0

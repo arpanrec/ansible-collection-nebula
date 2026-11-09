@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
 """
 This module provides functionality to fetch and manage Terraform version details.
 
@@ -18,9 +17,11 @@ Attributes:
 
 """
 
-from typing import Any, Dict, Optional
+from __future__ import annotations
 
-import requests
+from typing import Any
+
+import httpx
 from ansible.utils.display import Display  # type: ignore
 from packaging.version import Version
 
@@ -36,7 +37,7 @@ class Terraform(AppDetails):  # pylint: disable=too-few-public-methods
 
     __terraform_releases_url: str = "https://releases.hashicorp.com/terraform/index.json"
 
-    __terraform_ansible_architecture_map: Dict[str, str] = {"x86_64": "amd64", "aarch64": "arm64"}
+    __terraform_ansible_architecture_map: dict[str, str] = {"x86_64": "amd64", "aarch64": "arm64"}
 
     def fetch_details(self) -> None:
         """
@@ -51,10 +52,10 @@ class Terraform(AppDetails):  # pylint: disable=too-few-public-methods
                 f"AppDetails Terraform: Fetching terraform version details from {self.__terraform_releases_url}."
             )
             try:
-                _terraform_releases: Dict[str, Any] = requests.get(self.__terraform_releases_url, timeout=10).json()[
+                _terraform_releases: dict[str, Any] = httpx.get(self.__terraform_releases_url, timeout=10).json()[
                     "versions"
                 ]
-                _expected_version: Optional[str] = None
+                _expected_version: str | None = None
                 for key in list(_terraform_releases.keys()):
                     # pylint: disable=R0801
                     if ("+" in key) or ("beta" in key) or ("rc" in key) or ("oci" in key) or ("alpha" in key):

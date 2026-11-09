@@ -1,0 +1,4 @@
+---
+uv_rv_executable_bin_path: "{{ ansible_facts.user_dir }}/.local/bin/uv"
+uv_rv_tmp_download_dir: "{{ ansible_facts.user_dir }}/.cache/uv"
+uv_rv_version: "fetch_latest_version"

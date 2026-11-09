@@ -8,7 +8,7 @@ java_rv_jdk_mvn_version: "fetch_latest_version"
 java_rv_jdk_gradle_install_path: "{{ ansible_facts.user_dir }}/.local/share/gradle"
 java_rv_jdk_gradle_version: "fetch_latest_version"
 
-java_rv_jdk_tmp_dir: "{{ ansible_facts.user_dir }}/.tmp/java"
+java_rv_jdk_tmp_dir: "{{ ansible_facts.user_dir }}/.cache/java"
 
 java_rv_jdk_groovy_install_path: "{{ ansible_facts.user_dir }}/.local/share/groovy"
 java_rv_jdk_groovy_version: "fetch_latest_version"

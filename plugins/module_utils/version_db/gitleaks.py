@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
 """
 This module provides the gitleaks class, which extends the AppDetails class to fetch
 gitleaks releases.
@@ -16,6 +15,8 @@ gitleaks class:
         fetch_details(): Fetches the gitleaks version details from GitHub or uses the provided version tag.
 
 """
+
+from __future__ import annotations
 
 from ansible.utils.display import Display  # type: ignore
 

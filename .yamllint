@@ -7,13 +7,12 @@ ignore:
     - .env
     - node_modules
     - .ansible
-    - .github
-    - /roles/geerlingguy.docker/*
-    - node_modules
+    - geerlingguy.docker
+    - pnpm-lock.yaml
 yaml-files:
     - "*.yaml"
     - "*.yml"
-    - ".yamllint"
+    - .yamllint
 rules:
     anchors: enable
     braces:

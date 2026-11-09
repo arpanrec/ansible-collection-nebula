@@ -1,19 +1,19 @@
 ---
 # vars file for fail2ban
 
-ssh_hardening_rv_fail2ban_packages:
+__ssh_hardening_rv_fail2ban_packages:
     - fail2ban
     - sendmail # Optional
     - rsyslog # Without rsyslog, fail2ban will not work because there is no log file to monitor
     - nftables
 
-ssh_hardening_rv_fail2ban_services:
+__ssh_hardening_rv_fail2ban_services:
     - fail2ban
     - sendmail
     - rsyslog
     - nftables
 
-ssh_hardening_rv_fail2ban_base_configuration:
+__ssh_hardening_rv_fail2ban_base_configuration:
     - option: loglevel
       value: "{{ ssh_hardening_rv_fail2ban_loglevel }}"
       section: Definition
@@ -21,7 +21,7 @@ ssh_hardening_rv_fail2ban_base_configuration:
       value: "{{ ssh_hardening_rv_fail2ban_logtarget }}"
       section: Definition
 
-ssh_hardening_rv_fail2ban_base_jail_configuration:
+__ssh_hardening_rv_fail2ban_base_jail_configuration:
     - option: ignoreself
       value: "{{ ssh_hardening_rv_fail2ban_ignoreself }}"
       section: DEFAULT
@@ -41,7 +41,7 @@ ssh_hardening_rv_fail2ban_base_jail_configuration:
       value: "{{ ssh_hardening_rv_fail2ban_sender }}"
       section: DEFAULT
     - option: ignoreip
-      value: "{{ ssh_hardening_rv_fail2ban_ignoreips | join(' ') }}"
+      value: "{{ ssh_hardening_rv_fail2ban_ignoreips | ansible.builtin.join(d=' ') }}"
       section: DEFAULT
     - option: banaction
       value: "{{ ssh_hardening_rv_fail2ban_banaction }}"

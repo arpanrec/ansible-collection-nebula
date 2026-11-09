@@ -1,7 +1,7 @@
 ---
-- name: Gitea | Post Install | Profile env variables.
+- name: Gitea | Post Install | Profile Env Variables
   ansible.builtin.set_fact:
-      gitea_service_user_profile_env_variables:
+      __gitea_service_user_profile_env_variables:
           - cert_env: PGSSLROOTCERT
             value: "{{ gitea_service_user_home_directory }}/.postgresql/root.crt"
           - cert_env: PGSSLCERT
@@ -9,21 +9,21 @@
           - cert_env: PGSSLKEY
             value: "{{ gitea_service_user_home_directory }}/.postgresql/postgresql.key"
           - cert_env: GITEA_CUSTOM
-            value: "{{ gitea_custom_directory }}"
+            value: "{{ __gitea_custom_directory }}"
           - cert_env: GITEA_WORK_DIR
             value: "{{ gitea_working_directory }}"
 
-- name: Gitea | Post Install | Get bashrc file status.
+- name: Gitea | Post Install | Get Bashrc File Status
   become: true
   become_user: "{{ gitea_service_user }}"
   ansible.builtin.stat:
       path: "{{ gitea_service_user_home_directory }}/.bashrc"
-  register: gitea_service_user_bashrc
+  register: __gitea_service_user_bashrc
 
-- name: Gitea | Post Install | Add postgresql cert environment to bashrc for gitea cli to work.
+- name: Gitea | Post Install | Add PostgreSQL Cert Environment To Bashrc For Gitea Cli To Work
   become: true
   become_user: "{{ gitea_service_user }}"
-  when: gitea_service_user_bashrc.stat.exists
+  when: __gitea_service_user_bashrc.stat.exists
   ansible.builtin.lineinfile:
       path: "{{ gitea_service_user_home_directory }}/.bashrc"
       regexp: '^(export\s+)?{{ item.cert_env }}=.*'
@@ -36,19 +36,19 @@
       state: present
       insertafter: EOF
       firstmatch: false
-  loop: "{{ gitea_service_user_profile_env_variables }}"
+  loop: "{{ __gitea_service_user_profile_env_variables }}"
 
-- name: Gitea | Post Install | Get zshrc file status.
+- name: Gitea | Post Install | Get Zshrc File Status
   become: true
   become_user: "{{ gitea_service_user }}"
   ansible.builtin.stat:
       path: "{{ gitea_service_user_home_directory }}/.zshrc"
-  register: gitea_service_user_zshrc
+  register: __gitea_service_user_zshrc
 
-- name: Gitea | Post Install | Add postgresql cert environment to zshrc for gitea cli to work.
+- name: Gitea | Post Install | Add PostgreSQL Cert Environment To Zshrc For Gitea Cli To Work
   become: true
   become_user: "{{ gitea_service_user }}"
-  when: gitea_service_user_zshrc.stat.exists
+  when: __gitea_service_user_zshrc.stat.exists
   ansible.builtin.lineinfile:
       path: "{{ gitea_service_user_home_directory }}/.zshrc"
       regexp: '^(export\s+)?{{ item.cert_env }}=.*'
@@ -61,84 +61,87 @@
       state: present
       insertafter: EOF
       firstmatch: false
-  loop: "{{ gitea_service_user_profile_env_variables }}"
+  loop: "{{ __gitea_service_user_profile_env_variables }}"
 
 - name: Gitea | Post Install | Migrate
   become: true
   become_user: "{{ gitea_service_user }}"
   ansible.builtin.command:
       argv:
-          - "{{ gitea_executable }}"
+          - "{{ __gitea_executable }}"
           - --config
-          - "{{ gitea_app_ini_file }}"
+          - "{{ __gitea_app_ini_file }}"
           - --custom-path
-          - "{{ gitea_custom_directory }}"
+          - "{{ __gitea_custom_directory }}"
           - --work-path
           - "{{ gitea_working_directory }}"
           - migrate
   changed_when: false
-  register: gitea_cli_res_migrate
+  register: __gitea_cli_res_migrate
 
-- name: Gitea | Post Install | Debug migrate
+- name: Gitea | Post Install | Debug Migrate
   ansible.builtin.debug:
-      var: gitea_cli_res_migrate
+      var: __gitea_cli_res_migrate
 
 - name: Gitea | Post Install | Admin User
-  when: gitea_admin_user_username is defined and gitea_admin_user_password is defined
+  when: gitea_admin_user_username is ansible.builtin.defined and gitea_admin_user_password is ansible.builtin.defined
   block:
-      - name: Gitea | Post Install | Admin User | List all users
+      - name: Gitea | Post Install | Admin User | List All Users
         become: true
         become_user: "{{ gitea_service_user }}"
         ansible.builtin.command:
             argv:
-                - "{{ gitea_executable }}"
+                - "{{ __gitea_executable }}"
                 - --config
-                - "{{ gitea_app_ini_file }}"
+                - "{{ __gitea_app_ini_file }}"
                 - --custom-path
-                - "{{ gitea_custom_directory }}"
+                - "{{ __gitea_custom_directory }}"
                 - --work-path
                 - "{{ gitea_working_directory }}"
                 - admin
                 - user
                 - list
         changed_when: false
-        register: gitea_cli_res_all_user_list
+        register: __gitea_cli_res_all_user_list
 
       # Stdout reference: DO NOT REMOVE THIS COMMENT
       # skipping: [remote] => (item=ID   Username Email          IsActive IsAdmin 2FA)
       # skipping: [remote] => (item=1    admin    x@x.x          true     true    false)
 
-      - name: Gitea | Post Install | Admin user | find row
+      - name: Gitea | Post Install | Admin User | Find Row
         ansible.builtin.set_fact:
-            gitea_admin_user_row_split: "{{ gitea_cli_res_user_row | split(' ') | reject('equalto', '') }}"
-        loop: "{{ gitea_cli_res_all_user_list.stdout_lines }}"
+            __gitea_admin_user_row_split: "{{ __gitea_cli_res_user_row
+                | ansible.builtin.split(sep=' ') | ansible.builtin.reject('equalto', '') }}"
+        loop: "{{ __gitea_cli_res_all_user_list.stdout_lines }}"
         loop_control:
-            loop_var: gitea_cli_res_user_row
-        when: gitea_admin_user_username == (gitea_cli_res_user_row | split(' ') | reject('equalto', ''))[1]
+            loop_var: __gitea_cli_res_user_row
+        when: gitea_admin_user_username == (__gitea_cli_res_user_row
+            | ansible.builtin.split(sep=' ') | ansible.builtin.reject('equalto', ''))[1]
 
-      - name: Gitea | Post Install | Admin user | search debug
-        when: gitea_admin_user_row_split is defined
+      - name: Gitea | Post Install | Admin User | Search Debug
+        when: __gitea_admin_user_row_split is ansible.builtin.defined
         ansible.builtin.debug:
-            var: gitea_admin_user_row_split
+            var: __gitea_admin_user_row_split
 
-      - name: Gitea | Post Install | Admin user | Fail if user exists, but not admin
+      - name: Gitea | Post Install | Admin User | Fail If User Exists, But Not Admin
         ansible.builtin.fail:
             msg: "User {{ gitea_admin_user_username }} exists, But not admin
                 Might have been created manually.
                 Either remove the user or rerun the role with changed admin user variable."
-        when: gitea_admin_user_row_split is defined and (not (gitea_admin_user_row_split[4] | bool))
+        when: __gitea_admin_user_row_split is ansible.builtin.defined
+            and (not (__gitea_admin_user_row_split[4] | ansible.builtin.bool))
 
-      - name: Gitea | Post Install | Admin user | Resetting the password.
-        when: gitea_admin_user_row_split is defined
+      - name: Gitea | Post Install | Admin User | Resetting The Password
+        when: __gitea_admin_user_row_split is ansible.builtin.defined
         become: true
         become_user: "{{ gitea_service_user }}"
         ansible.builtin.command:
             argv:
-                - "{{ gitea_executable }}"
+                - "{{ __gitea_executable }}"
                 - --config
-                - "{{ gitea_app_ini_file }}"
+                - "{{ __gitea_app_ini_file }}"
                 - --custom-path
-                - "{{ gitea_custom_directory }}"
+                - "{{ __gitea_custom_directory }}"
                 - --work-path
                 - "{{ gitea_working_directory }}"
                 - admin
@@ -150,37 +153,37 @@
                 - "{{ gitea_admin_user_password }}"
                 - --must-change-password=false
         changed_when: false # There is no way to know the current password.
-        register: gitea_cli_res_admin_password_reset
+        register: __gitea_cli_res_admin_password_reset
 
-      - name: Gitea | Post Install | Admin user | User password reset result.
-        when: gitea_cli_res_admin_password_reset is defined
+      - name: Gitea | Post Install | Admin User | User Password Reset Result
+        when: __gitea_cli_res_admin_password_reset is ansible.builtin.defined
             and
             (
-            gitea_cli_res_admin_password_reset['skipped'] is not defined
+            __gitea_cli_res_admin_password_reset['skipped'] is not ansible.builtin.defined
             or
-            not gitea_cli_res_admin_password_reset['skipped']
+            not __gitea_cli_res_admin_password_reset['skipped']
             )
         ansible.builtin.debug:
-            var: gitea_cli_res_admin_password_reset
+            var: __gitea_cli_res_admin_password_reset
 
-      - name: Gitea | Post Install | Admin user | email 'gitea_admin_user_email' missing.
-        when: gitea_admin_user_row_split is not defined
-            and gitea_admin_user_email is not defined
+      - name: Gitea | Post Install | Admin User | Missing Admin Email
+        when: __gitea_admin_user_row_split is not ansible.builtin.defined
+            and gitea_admin_user_email is not ansible.builtin.defined
         ansible.builtin.fail:
             msg: "No admin user found, need to create one but email var
                 `gitea_admin_user_email` not provided."
 
-      - name: Gitea | Post Install | Admin user | Admin user does not exists, Creating new user.
-        when: gitea_admin_user_row_split is not defined
+      - name: Gitea | Post Install | Admin User | Admin User Does Not Exists, Creating New User
+        when: __gitea_admin_user_row_split is not ansible.builtin.defined
         become: true
         become_user: "{{ gitea_service_user }}"
         ansible.builtin.command:
             argv:
-                - "{{ gitea_executable }}"
+                - "{{ __gitea_executable }}"
                 - --config
-                - "{{ gitea_app_ini_file }}"
+                - "{{ __gitea_app_ini_file }}"
                 - --custom-path
-                - "{{ gitea_custom_directory }}"
+                - "{{ __gitea_custom_directory }}"
                 - --work-path
                 - "{{ gitea_working_directory }}"
                 - admin
@@ -195,15 +198,15 @@
                 - --admin
                 - --must-change-password=false
         changed_when: true
-        register: gitea_cli_res_admin_new_user_create
+        register: __gitea_cli_res_admin_new_user_create
 
-      - name: Gitea | Post Install | Admin user | User create result.
-        when: gitea_cli_res_admin_new_user_create is defined
+      - name: Gitea | Post Install | Admin User | User Create Result
+        when: __gitea_cli_res_admin_new_user_create is ansible.builtin.defined
             and
             (
-            gitea_cli_res_admin_new_user_create['skipped'] is not defined
+            __gitea_cli_res_admin_new_user_create['skipped'] is not ansible.builtin.defined
             or
-            not gitea_cli_res_admin_new_user_create['skipped']
+            not __gitea_cli_res_admin_new_user_create['skipped']
             )
         ansible.builtin.debug:
-            var: gitea_cli_res_admin_new_user_create
+            var: __gitea_cli_res_admin_new_user_create

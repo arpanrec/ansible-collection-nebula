@@ -12,7 +12,7 @@ the Bash code inside RUN instructions.
 | ----------------------------------- | ----- | -------- | -------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `hadolint_rv_executable_bin_path`   | `str` | `false`  | `{{ ansible_facts.user_dir }}/.local/bin/hadolint` | -         | Install path for hadolint.                                                                                                                             |
 | `hadolint_rv_version`               | `str` | `false`  | `fetch_latest_version`                             | `v2.13.1` | Release version. If set to `fetch_latest_version`, it will fetch latest release from [Github releases](https://github.com/hadolint/hadolint/releases). |
-| `hadolint_rv_tmp_install_cache_dir` | `str` | `false`  | `{{ ansible_facts.user_dir }}/.tmp/hadolint`       | -         | Cache install directory.                                                                                                                               |
+| `hadolint_rv_tmp_install_cache_dir` | `str` | `false`  | `{{ ansible_facts.user_dir }}/.cache/hadolint`     | -         | Cache install directory.                                                                                                                               |
 
 ### Example Playbook Hadolint
 

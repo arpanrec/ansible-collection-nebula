@@ -1,48 +1,49 @@
 ---
-- name: Oracle JDK | Apache Groovy | Get downloaded file stat
+- name: Oracle JDK | Apache Groovy | Get Downloaded File Stat
   ansible.builtin.stat:
-      path: "{{ java_rv_jdk_groovy_tarball_download_path }}"
-  register: java_rv_jdk_groovy_tarball_stat
+      path: "{{ __java_rv_jdk_groovy_tarball_download_path }}"
+  register: __java_rv_jdk_groovy_tarball_stat
 
 - name: Oracle JDK | Apache Groovy | New Download
-  when: not java_rv_jdk_groovy_tarball_stat.stat.exists
+  when: not __java_rv_jdk_groovy_tarball_stat.stat.exists
   block:
-      - name: Oracle JDK | Apache Groovy | Download tarball
+      - name: Oracle JDK | Apache Groovy | New Download | Download Tarball
         ansible.builtin.get_url:
-            url: "{{ oracle_jdk_tmp_version_details.extras.groovy.download_link }}"
-            checksum: "{{ oracle_jdk_tmp_version_details.extras.groovy.checksum | default(omit) }}"
-            dest: "{{ java_rv_jdk_groovy_tarball_download_path }}"
+            url: "{{ __oracle_jdk_tmp_version_details.extras.groovy.download_link }}"
+            checksum: "{{ __oracle_jdk_tmp_version_details.extras.groovy.checksum
+                | ansible.builtin.default(default_value=omit) }}"
+            dest: "{{ __java_rv_jdk_groovy_tarball_download_path }}"
             mode: "0700"
   rescue:
-      - name: Oracle JDK | Apache Groovy | Remove tarball
+      - name: Oracle JDK | Apache Groovy | New Download | Remove Tarball
         ansible.builtin.file:
-            path: "{{ java_rv_jdk_groovy_tarball_download_path }}"
+            path: "{{ __java_rv_jdk_groovy_tarball_download_path }}"
             state: absent
 
-      - name: Oracle JDK | Apache Groovy | Remove temporary unzip directory
+      - name: Oracle JDK | Apache Groovy | New Download | Remove Temporary Unzip Directory
         ansible.builtin.file:
-            path: "{{ java_rv_jdk_groovy_tmp_unzip_path }}"
+            path: "{{ __java_rv_jdk_groovy_tmp_unzip_path }}"
             state: absent
 
-      - name: Oracle JDK | Apache Groovy | Fail
+      - name: Oracle JDK | Apache Groovy | New Download | Fail
         ansible.builtin.fail:
             msg: |+
-                Failed to download {{ oracle_jdk_tmp_version_details.extras.groovy.download_link }} to
-                   {{ java_rv_jdk_groovy_tarball_download_path }}
+                Failed to download {{ __oracle_jdk_tmp_version_details.extras.groovy.download_link }} to
+                   {{ __java_rv_jdk_groovy_tarball_download_path }}
                 Check the errors above and try again.
 
-- name: Oracle JDK | Apache Groovy | Create temporary unzip directory
+- name: Oracle JDK | Apache Groovy | Create Temporary Unzip Directory
   ansible.builtin.file:
-      path: "{{ java_rv_jdk_groovy_tmp_unzip_path }}"
+      path: "{{ __java_rv_jdk_groovy_tmp_unzip_path }}"
       state: directory
       mode: "0700"
 
-- name: Oracle JDK | Apache Groovy | Unarchive the zip
+- name: Oracle JDK | Apache Groovy | Unarchive The Zip
   ansible.builtin.unarchive:
-      src: "{{ java_rv_jdk_groovy_tarball_download_path }}"
-      dest: "{{ java_rv_jdk_groovy_tmp_unzip_path }}"
+      src: "{{ __java_rv_jdk_groovy_tarball_download_path }}"
+      dest: "{{ __java_rv_jdk_groovy_tmp_unzip_path }}"
       remote_src: true
   notify: Oracle JDK | Apache Groovy | New Install
 
-- name: Oracle JDK | Apache Groovy | Flush handlers
+- name: Oracle JDK | Apache Groovy | Flush Handlers
   ansible.builtin.meta: flush_handlers

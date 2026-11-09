@@ -1,8 +1,8 @@
 ---
-- name: Postgresql | Install Client | Add repository.
+- name: PostgreSQL | Install Client | Add Repository
   ansible.builtin.import_tasks: add-repo.yml
 
-- name: Postgresql | Install Client | Install packages.
+- name: PostgreSQL | Install Client | Install Packages
   ansible.builtin.apt:
       name:
           - postgresql-client-{{ postgresql_version }}

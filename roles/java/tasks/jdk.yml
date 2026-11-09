@@ -2,19 +2,20 @@
 - name: Oracle JDK | JDK | Install
   when: not java_rv_jdk_graalvm_is_install
   block:
-      - name: Oracle JDK | JDK | Install | Get downloaded file stat
+      - name: Oracle JDK | JDK | Install | Get Downloaded File Stat
         ansible.builtin.stat:
-            path: "{{ java_rv_jdk_tarball_download_path }}"
-        register: pv_ua_jdk_downloaded_file_stat
+            path: "{{ __java_rv_jdk_tarball_download_path }}"
+        register: __pv_ua_jdk_downloaded_file_stat
 
       - name: Oracle JDK | JDK | Install | Newly Downloaded
-        when: not pv_ua_jdk_downloaded_file_stat.stat.exists
+        when: not __pv_ua_jdk_downloaded_file_stat.stat.exists
         block:
-            - name: Oracle JDK | JDK | Install | Newly Downloaded | Download tarball
+            - name: Oracle JDK | JDK | Install | Newly Downloaded | Download Tarball
               ansible.builtin.get_url:
-                  url: "{{ oracle_jdk_tmp_version_details.download_link }}"
-                  checksum: "{{ oracle_jdk_tmp_version_details.checksum | default(omit) }}"
-                  dest: "{{ java_rv_jdk_tarball_download_path }}"
+                  url: "{{ __oracle_jdk_tmp_version_details.download_link }}"
+                  checksum: "{{ __oracle_jdk_tmp_version_details.checksum
+                      | ansible.builtin.default(default_value=omit) }}"
+                  dest: "{{ __java_rv_jdk_tarball_download_path }}"
                   mode: "0700"
 
             - name: Oracle JDK | JDK | Install | Newly Downloaded | Remove Old Install Directory
@@ -22,24 +23,24 @@
                   path: "{{ java_rv_jdk_install_path }}"
                   state: absent
         rescue:
-            - name: Oracle JDK | JDK | Install | Newly Downloaded | Delete Downloaded tarball
+            - name: Oracle JDK | JDK | Install | Newly Downloaded | Delete Downloaded Tarball
               ansible.builtin.file:
-                  path: "{{ java_rv_jdk_tarball_download_path }}"
+                  path: "{{ __java_rv_jdk_tarball_download_path }}"
                   state: absent
 
             - name: Oracle JDK | JDK | Install | Newly Downloaded | Fail
               ansible.builtin.fail:
                   msg: "Failed to download JDK tarball. Check the above errors."
 
-      - name: Oracle JDK | JDK | Install | Create install directory
+      - name: Oracle JDK | JDK | Install | Create Install Directory
         ansible.builtin.file:
             path: "{{ java_rv_jdk_install_path }}"
             state: directory
             mode: "0700"
 
-      - name: Oracle JDK | JDK | Install | Newly Downloaded | Unarchive the tarball
+      - name: Oracle JDK | JDK | Install | Newly Downloaded | Unarchive The Tarball
         ansible.builtin.unarchive:
-            src: "{{ java_rv_jdk_tarball_download_path }}"
+            src: "{{ __java_rv_jdk_tarball_download_path }}"
             dest: "{{ java_rv_jdk_install_path }}"
             extra_opts: [--strip-components=1]
             remote_src: true

@@ -3,40 +3,69 @@
   hosts: all
   gather_facts: false
   tasks:
-      - name: NodeJS | Molecule | Verify | Import Roles for variables
+      - name: NodeJS | Molecule | Verify | Import Roles For Variables
         ansible.builtin.import_role:
             name: arpanrec.nebula.nodejs
             tasks_from: prerequisites
 
-      - name: NodeJS | Molecule | Verify | Set nodejs version details
+      - name: NodeJS | Molecule | Verify | Set Nodejs Version Details
         ansible.builtin.set_fact:
-            nodejs_version_details: "{{ lookup('arpanrec.nebula.version_db', 'nodejs',
-                nodejs_rv_version=nodejs_rv_version) | from_json }}"
+            __nodejs_version_details: "{{ lookup('arpanrec.nebula.version_db', 'nodejs',
+                nodejs_rv_version=nodejs_rv_version) | ansible.builtin.from_json }}"
 
-      - name: NodeJS | Molecule | Verify | Get node version from shell
+      - name: NodeJS | Molecule | Verify | Get Node Version From Shell
         ansible.builtin.command: node --version
         environment:
             PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
-        register: nodejs_rv_version_shell_result
+        register: __nodejs_rv_version_shell_result
         changed_when: false
 
-      - name: NodeJS | Molecule | Verify | Fail if nodejs version is not present
+      - name: NodeJS | Molecule | Verify | Fail If Nodejs Version Is Not Present
         ansible.builtin.assert:
-            that: nodejs_rv_version_shell_result.stdout == nodejs_version_details.version
-            success_msg: NodeJS Version {{ nodejs_version_details.version }} is installed
-            fail_msg: "NodeJS Version {{ nodejs_version_details.version }} is not installed, \
-                Shell result {{ nodejs_rv_version_shell_result.stdout }}"
+            that: __nodejs_rv_version_shell_result.stdout == __nodejs_version_details.version
+            success_msg: NodeJS Version {{ __nodejs_version_details.version }} is installed
+            fail_msg: "NodeJS Version {{ __nodejs_version_details.version }} is not installed, \
+                Shell result {{ __nodejs_rv_version_shell_result.stdout }}"
 
-      - name: "NodeJS | Molecule | Verify | Check corepack package managers (pnpm & yarn) exists in path"
+      - name: NodeJS | Molecule | Verify | Check Yarn Exists In Path
         ansible.builtin.command:
             argv:
-                - "{{ item }}"
+                - yarn
                 - --version
         environment:
             PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
-        register: nodejs_rv_extra_package_manager_exists
         changed_when: false
+
+      - name: NodeJS | Molecule | Verify | Get Pnpm Shims In Install Path
+        ansible.builtin.stat:
+            path: "{{ nodejs_rv_install_path }}/bin/{{ item }}"
+        register: __nodejs_rv_pnpm_shim_stat
         loop:
             - pnpm
-            - yarn
-        failed_when: nodejs_rv_extra_package_manager_exists.rc != 0
+            - pnpx
+
+      - name: NodeJS | Molecule | Verify | Fail If Pnpm Is Provided By Node.js Or Corepack
+        ansible.builtin.assert:
+            that: not item.stat.exists
+            fail_msg: "{{ item.item }} must not exist in {{ nodejs_rv_install_path }}/bin"
+        loop: "{{ __nodejs_rv_pnpm_shim_stat.results }}"
+        loop_control:
+            label: "{{ item.item }}"
+
+      - name: NodeJS | Molecule | Verify | List Npm Global Packages
+        ansible.builtin.command:
+            argv:
+                - "{{ nodejs_rv_install_path }}/bin/npm"
+                - ls
+                - -g
+                - --depth=0
+                - --parseable
+        environment:
+            PATH: "{{ nodejs_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
+        register: __nodejs_rv_npm_global_list
+        changed_when: false
+
+      - name: NodeJS | Molecule | Verify | Fail If Pnpm Is An Npm Global Package
+        ansible.builtin.assert:
+            that: __nodejs_rv_npm_global_list.stdout_lines | ansible.builtin.select('search', pattern='/pnpm$')
+                | ansible.builtin.list | ansible.builtin.length == 0

@@ -21,6 +21,9 @@ name: Molecule Test Role GraalVM
             - "uv.lock"
             - "pyproject.toml"
 
+permissions:
+    contents: read
+
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
     cancel-in-progress: true
@@ -31,20 +34,21 @@ env:
 
 jobs:
     molecule_test_role_graalvm:
+        if: github.server_url == 'https://github.com' && github.repository == 'arpanrec/ansible-collection-nebula'
         timeout-minutes: 60
-        runs-on: ubuntu-24.04
+        runs-on: ubuntu-26.04
         strategy:
             fail-fast: false
             matrix:
-                python-version: ["3.12.13", "3.13.13", "3.14.5"]
+                python-version: ["3.12.14", "3.13.16", "3.14.8"]
         steps:
             - name: Checkout
               uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-            - name: Install uv 0.11.19
+            - name: Install uv 0.13.1
               uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
               with:
-                  version: 0.11.19
+                  version: 0.13.1
                   python-version: "${{ matrix.python-version }}"
                   enable-cache: true
                   cache-suffix: python-${{ matrix.python-version }}
@@ -60,11 +64,11 @@ jobs:
                   key: ansible-cache-py.${{ matrix.python-version }}-${{ hashFiles('**/requirements.yml') }}
 
             - name: Install dependencies
-              run: uv sync --extra dev
+              run: uv sync --all-extras --all-packages --no-progress
               env:
                   UV_PYTHON: ${{ matrix.python-version }}
 
             - name: Run Molecule Test
-              run: uv run molecule test -s role.graalvm.docker
+              run: uv --offline run --no-sync --no-progress molecule test -s role.graalvm.docker
               env:
                   UV_PYTHON: ${{ matrix.python-version }}

@@ -2,17 +2,17 @@
 - name: Linux Patching | Prerequisite | Gather Facts
   ansible.builtin.setup:
 
-- name: Linux Patching | Prerequisite | Checking platform compatibility
+- name: Linux Patching | Prerequisite | Checking Platform Compatibility
   ansible.builtin.fail:
       msg: "{{ ansible_facts.distribution }} is not supported by this role"
   when: ansible_facts.distribution not in ['Debian']
 
-- name: Linux Patching | Prerequisite | Get system 1 PID Details
+- name: Linux Patching | Prerequisite | Get System 1 PID Details
   ansible.builtin.command: ps -p 1
-  register: linux_patching_rv_tmp_one_pid_shell_result
+  register: __linux_patching_rv_tmp_one_pid_shell_result
   changed_when: false
 
-- name: Linux Patching | Prerequisite | Assume system is not in systemd
+- name: Linux Patching | Prerequisite | Assume System Is Not In Systemd
   ansible.builtin.set_fact:
-      linux_patching_rv_init_system_systemd: "{{ linux_patching_rv_tmp_one_pid_shell_result.stdout_lines[1] \
-          | split(' ') | last == 'systemd' }}"
+      __linux_patching_rv_init_system_systemd: "{{ __linux_patching_rv_tmp_one_pid_shell_result.stdout_lines[1] \
+          | ansible.builtin.split(sep=' ') | ansible.builtin.last == 'systemd' }}"

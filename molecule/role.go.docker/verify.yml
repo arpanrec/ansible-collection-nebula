@@ -3,27 +3,27 @@
   hosts: all
   gather_facts: false
   tasks:
-      - name: Golang | Molecule | Verify | Import Roles for variables
+      - name: Golang | Molecule | Verify | Import Roles For Variables
         ansible.builtin.import_role:
             name: arpanrec.nebula.go
             tasks_from: prerequisites
 
       - name: Golang | Molecule | Verify | Get Latest Version
         ansible.builtin.set_fact:
-            go_tmp_version_details: "{{ lookup('arpanrec.nebula.version_db', 'go',
-                go_rv_version=go_rv_version) | from_json }}"
+            __go_tmp_version_details: "{{ lookup('arpanrec.nebula.version_db', 'go',
+                go_rv_version=go_rv_version) | ansible.builtin.from_json }}"
 
-      - name: Golang | Molecule | Verify | Get go version from shell
+      - name: Golang | Molecule | Verify | Get Go Version From Shell
         ansible.builtin.command: go version
         environment:
             PATH: "{{ go_rv_install_path }}/bin:{{ ansible_facts.env.PATH }}"
-        register: go_rv_tmp_version_shell_result
+        register: __go_rv_tmp_version_shell_result
         changed_when: false
 
-      - name: Golang | Molecule | Verify | Fail if Go version is not present
+      - name: Golang | Molecule | Verify | Fail If Go Version Is Not Present
         ansible.builtin.assert:
-            that: go_rv_tmp_version_shell_result.stdout is match("go version "
-                + go_tmp_version_details.version + ".*")
-            success_msg: Go Version {{ go_tmp_version_details.version }} is installed
-            fail_msg: Go Version {{ go_tmp_version_details.version }} is not installed,
-                Shell result {{ go_rv_tmp_version_shell_result.stdout }}
+            that: __go_rv_tmp_version_shell_result.stdout is ansible.builtin.match(pattern="go version "
+                + __go_tmp_version_details.version + ".*")
+            success_msg: Go Version {{ __go_tmp_version_details.version }} is installed
+            fail_msg: Go Version {{ __go_tmp_version_details.version }} is not installed,
+                Shell result {{ __go_rv_tmp_version_shell_result.stdout }}

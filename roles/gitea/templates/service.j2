@@ -12,38 +12,38 @@ Group={{ gitea_service_group }}
 
 #RuntimeDirectory=gitea
 
-ExecStart={{ gitea_executable }} web --config {{ gitea_app_ini_file }} --custom-path {{ gitea_custom_directory }} --work-path {{ gitea_working_directory }}
+ExecStart={{ __gitea_executable }} web --config {{ __gitea_app_ini_file }} --custom-path {{ __gitea_custom_directory }} --work-path {{ gitea_working_directory }}
 
 Restart=always
 
 Environment=GITEA_WORK_DIR={{ gitea_working_directory }}
-Environment=GITEA_CUSTOM={{ gitea_custom_directory }}
+Environment=GITEA_CUSTOM={{ __gitea_custom_directory }}
 Environment=USER={{ gitea_service_user }}
 Environment=HOME={{ gitea_service_user_home_directory }}
 Environment=PATH={{ gitea_service_user_home_directory }}/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 
-{% if gitea_config_db_postgresql is defined
-    and gitea_config_db_postgresql is not none
-    and gitea_config_db_postgresql | length > 1
+{% if gitea_config_db_postgresql is ansible.builtin.defined
+    and gitea_config_db_postgresql is not ansible.builtin.none
+    and gitea_config_db_postgresql | ansible.builtin.length > 1
     and 'pg_ssl_root_cert_pem_content' in gitea_config_db_postgresql
-    and gitea_config_db_postgresql['pg_ssl_root_cert_pem_content'] | length > 1 %}
+    and gitea_config_db_postgresql['pg_ssl_root_cert_pem_content'] | ansible.builtin.length > 1 %}
 Environment=PGSSLROOTCERT={{ gitea_config_db_pg_ssl_root_cert_file }}
 {% endif %}
 
-{%  if gitea_config_db_postgresql is defined
-    and gitea_config_db_postgresql is not none
-    and gitea_config_db_postgresql | length > 1
+{%  if gitea_config_db_postgresql is ansible.builtin.defined
+    and gitea_config_db_postgresql is not ansible.builtin.none
+    and gitea_config_db_postgresql | ansible.builtin.length > 1
     and 'pg_ssl_client_cert_pem_content' in gitea_config_db_postgresql
-    and gitea_config_db_postgresql['pg_ssl_client_cert_pem_content'] | length > 1 %}
+    and gitea_config_db_postgresql['pg_ssl_client_cert_pem_content'] | ansible.builtin.length > 1 %}
 Environment=PGSSLCERT={{ gitea_config_db_pg_ssl_cert_file }}
 {% endif %}
 
-{%  if gitea_config_db_postgresql is defined
-    and gitea_config_db_postgresql is not none
-    and gitea_config_db_postgresql | length > 1
+{%  if gitea_config_db_postgresql is ansible.builtin.defined
+    and gitea_config_db_postgresql is not ansible.builtin.none
+    and gitea_config_db_postgresql | ansible.builtin.length > 1
     and 'pg_ssl_client_key_pem_content' in gitea_config_db_postgresql
-    and gitea_config_db_postgresql['pg_ssl_client_key_pem_content'] | length > 1 %}
+    and gitea_config_db_postgresql['pg_ssl_client_key_pem_content'] | ansible.builtin.length > 1 %}
 Environment=PGSSLKEY={{ gitea_config_db_pg_ssl_key_file }}
 {% endif %}
 

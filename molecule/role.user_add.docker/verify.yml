@@ -5,7 +5,7 @@
   hosts: all
   gather_facts: false
   tasks:
-      - name: Application User | Molecule | Verify | Get user details
+      - name: Application User | Molecule | Verify | Get User Details
         ansible.builtin.command: "id {{ user_add_rv_username }}"
         register: userdetails
         changed_when: false

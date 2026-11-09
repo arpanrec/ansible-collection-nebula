@@ -1,7 +1,7 @@
 ---
-- name: Gitea | Database | Postgresql | set DB_TYPE to postgres
+- name: Gitea | Database | PostgreSQL | Set DB_TYPE To PostgreSQL
   community.general.ini_file:
-      path: "{{ gitea_app_ini_file }}"
+      path: "{{ __gitea_app_ini_file }}"
       owner: "{{ gitea_service_user }}"
       group: "{{ gitea_service_group }}"
       mode: "0640"
@@ -14,9 +14,9 @@
   notify:
       - Gitea | Restart systemd service
 
-- name: Gitea | Database | Postgresql | set HOST of postgres
+- name: Gitea | Database | PostgreSQL | Set HOST Of PostgreSQL
   community.general.ini_file:
-      path: "{{ gitea_app_ini_file }}"
+      path: "{{ __gitea_app_ini_file }}"
       owner: "{{ gitea_service_user }}"
       group: "{{ gitea_service_group }}"
       mode: "0640"
@@ -29,9 +29,9 @@
   notify:
       - Gitea | Restart systemd service
 
-- name: Gitea | Database | Postgresql | set NAME of postgres
+- name: Gitea | Database | PostgreSQL | Set NAME Of PostgreSQL
   community.general.ini_file:
-      path: "{{ gitea_app_ini_file }}"
+      path: "{{ __gitea_app_ini_file }}"
       owner: "{{ gitea_service_user }}"
       group: "{{ gitea_service_group }}"
       mode: "0640"
@@ -44,9 +44,9 @@
   notify:
       - Gitea | Restart systemd service
 
-- name: Gitea | Database | Postgresql | set USER of postgres
+- name: Gitea | Database | PostgreSQL | Set USER Of PostgreSQL
   community.general.ini_file:
-      path: "{{ gitea_app_ini_file }}"
+      path: "{{ __gitea_app_ini_file }}"
       owner: "{{ gitea_service_user }}"
       group: "{{ gitea_service_group }}"
       mode: "0640"
@@ -59,12 +59,12 @@
   notify:
       - Gitea | Restart systemd service
 
-- name: Gitea | Database | Postgresql | set PASSWD of postgres
-  when: gitea_config_db_postgresql['passwd'] is defined
+- name: Gitea | Database | PostgreSQL | Set PASSWD Of PostgreSQL
+  when: gitea_config_db_postgresql['passwd'] is ansible.builtin.defined
       and gitea_config_db_postgresql['passwd'] != None
-      and gitea_config_db_postgresql['passwd'] | length > 1
+      and gitea_config_db_postgresql['passwd'] | ansible.builtin.length > 1
   community.general.ini_file:
-      path: "{{ gitea_app_ini_file }}"
+      path: "{{ __gitea_app_ini_file }}"
       owner: "{{ gitea_service_user }}"
       group: "{{ gitea_service_group }}"
       mode: "0640"
@@ -77,12 +77,12 @@
   notify:
       - Gitea | Restart systemd service
 
-- name: Gitea | Database | Postgresql | remove PASSWD of postgres
-  when: gitea_config_db_postgresql['passwd'] is not defined
+- name: Gitea | Database | PostgreSQL | Remove PASSWD Of PostgreSQL
+  when: gitea_config_db_postgresql['passwd'] is not ansible.builtin.defined
       or gitea_config_db_postgresql['passwd'] == None
-      or gitea_config_db_postgresql['passwd'] | length < 1
+      or gitea_config_db_postgresql['passwd'] | ansible.builtin.length < 1
   community.general.ini_file:
-      path: "{{ gitea_app_ini_file }}"
+      path: "{{ __gitea_app_ini_file }}"
       owner: "{{ gitea_service_user }}"
       group: "{{ gitea_service_group }}"
       mode: "0640"
@@ -95,12 +95,12 @@
   notify:
       - Gitea | Restart systemd service
 
-- name: Gitea | Database | Postgresql | set SCHEMA of postgres
-  when: gitea_config_db_postgresql['schema'] is defined
+- name: Gitea | Database | PostgreSQL | Set SCHEMA Of PostgreSQL
+  when: gitea_config_db_postgresql['schema'] is ansible.builtin.defined
       and gitea_config_db_postgresql['schema'] != None
-      and gitea_config_db_postgresql['schema'] | length > 1
+      and gitea_config_db_postgresql['schema'] | ansible.builtin.length > 1
   community.general.ini_file:
-      path: "{{ gitea_app_ini_file }}"
+      path: "{{ __gitea_app_ini_file }}"
       owner: "{{ gitea_service_user }}"
       group: "{{ gitea_service_group }}"
       mode: "0640"
@@ -113,12 +113,12 @@
   notify:
       - Gitea | Restart systemd service
 
-- name: Gitea | Database | Postgresql | remove SCHEMA of postgres
-  when: gitea_config_db_postgresql['schema'] is not defined
+- name: Gitea | Database | PostgreSQL | Remove SCHEMA Of PostgreSQL
+  when: gitea_config_db_postgresql['schema'] is not ansible.builtin.defined
       or gitea_config_db_postgresql['schema'] == None
-      or gitea_config_db_postgresql['schema'] | length < 1
+      or gitea_config_db_postgresql['schema'] | ansible.builtin.length < 1
   community.general.ini_file:
-      path: "{{ gitea_app_ini_file }}"
+      path: "{{ __gitea_app_ini_file }}"
       owner: "{{ gitea_service_user }}"
       group: "{{ gitea_service_group }}"
       mode: "0640"
@@ -131,16 +131,16 @@
   notify:
       - Gitea | Restart systemd service
 
-- name: Gitea | Database | Postgresql | Verify ssl mode
+- name: Gitea | Database | PostgreSQL | Verify SSL Mode
   ansible.builtin.fail:
       msg: '"ssl_mode" should be one of ["disable", "require", "verify-ca", "verify-full"]'
-  when: gitea_config_db_postgresql['ssl_mode'] is not defined
+  when: gitea_config_db_postgresql['ssl_mode'] is not ansible.builtin.defined
       or gitea_config_db_postgresql['ssl_mode'] == None
       or gitea_config_db_postgresql['ssl_mode'] not in ['disable', 'require', 'verify-ca', 'verify-full']
 
-- name: Gitea | Database | Postgresql | set SSL_MODE of postgres
+- name: Gitea | Database | PostgreSQL | Set SSL_MODE Of PostgreSQL
   community.general.ini_file:
-      path: "{{ gitea_app_ini_file }}"
+      path: "{{ __gitea_app_ini_file }}"
       owner: "{{ gitea_service_user }}"
       group: "{{ gitea_service_group }}"
       mode: "0640"
@@ -153,14 +153,14 @@
   notify:
       - Gitea | Restart systemd service
 
-- name: Gitea | Database | Postgresql | SSL Root Cert.
-  when: gitea_config_db_postgresql['pg_ssl_root_cert_pem_content'] is defined
+- name: Gitea | Database | PostgreSQL | SSL Root Cert
+  when: gitea_config_db_postgresql['pg_ssl_root_cert_pem_content'] is ansible.builtin.defined
       and gitea_config_db_postgresql['pg_ssl_root_cert_pem_content'] != None
-      and gitea_config_db_postgresql['pg_ssl_root_cert_pem_content'] | length > 1
+      and gitea_config_db_postgresql['pg_ssl_root_cert_pem_content'] | ansible.builtin.length > 1
   block:
-      - name: Gitea | Database | Postgresql | SSL Root Cert | Create directory.
+      - name: Gitea | Database | PostgreSQL | SSL Root Cert | Create Directory
         ansible.builtin.file:
-            path: "{{ gitea_config_db_pg_ssl_root_cert_file | dirname }}"
+            path: "{{ gitea_config_db_pg_ssl_root_cert_file | ansible.builtin.dirname }}"
             owner: "{{ gitea_service_user }}"
             group: "{{ gitea_service_group }}"
             mode: "0755"
@@ -168,7 +168,7 @@
         notify:
             - Gitea | Restart systemd service
 
-      - name: Gitea | Database | Postgresql | SSL Root Cert | Write certificate.
+      - name: Gitea | Database | PostgreSQL | SSL Root Cert | Write Certificate
         ansible.builtin.copy:
             dest: "{{ gitea_config_db_pg_ssl_root_cert_file }}"
             owner: "{{ gitea_service_user }}"
@@ -178,14 +178,14 @@
         notify:
             - Gitea | Restart systemd service
 
-- name: Gitea | Database | Postgresql | SSL Cert.
-  when: gitea_config_db_postgresql['pg_ssl_client_cert_pem_content'] is defined
+- name: Gitea | Database | PostgreSQL | SSL Cert
+  when: gitea_config_db_postgresql['pg_ssl_client_cert_pem_content'] is ansible.builtin.defined
       and gitea_config_db_postgresql['pg_ssl_client_cert_pem_content'] != None
-      and gitea_config_db_postgresql['pg_ssl_client_cert_pem_content'] | length > 1
+      and gitea_config_db_postgresql['pg_ssl_client_cert_pem_content'] | ansible.builtin.length > 1
   block:
-      - name: Gitea | Database | Postgresql | SSL Cert | Create directory.
+      - name: Gitea | Database | PostgreSQL | SSL Cert | Create Directory
         ansible.builtin.file:
-            path: "{{ gitea_config_db_pg_ssl_cert_file | dirname }}"
+            path: "{{ gitea_config_db_pg_ssl_cert_file | ansible.builtin.dirname }}"
             owner: "{{ gitea_service_user }}"
             group: "{{ gitea_service_group }}"
             mode: "0755"
@@ -193,7 +193,7 @@
         notify:
             - Gitea | Restart systemd service
 
-      - name: Gitea | Database | Postgresql | SSL Cert | Write certificate.
+      - name: Gitea | Database | PostgreSQL | SSL Cert | Write Certificate
         ansible.builtin.copy:
             dest: "{{ gitea_config_db_pg_ssl_cert_file }}"
             owner: "{{ gitea_service_user }}"
@@ -203,14 +203,14 @@
         notify:
             - Gitea | Restart systemd service
 
-- name: Gitea | Database | Postgresql | SSL Priv Key.
-  when: gitea_config_db_postgresql['pg_ssl_client_key_pem_content'] is defined
+- name: Gitea | Database | PostgreSQL | SSL Priv Key
+  when: gitea_config_db_postgresql['pg_ssl_client_key_pem_content'] is ansible.builtin.defined
       and gitea_config_db_postgresql['pg_ssl_client_key_pem_content'] != None
-      and gitea_config_db_postgresql['pg_ssl_client_key_pem_content'] | length > 1
+      and gitea_config_db_postgresql['pg_ssl_client_key_pem_content'] | ansible.builtin.length > 1
   block:
-      - name: Gitea | Database | Postgresql | SSL Priv Key | Create directory.
+      - name: Gitea | Database | PostgreSQL | SSL Priv Key | Create Directory
         ansible.builtin.file:
-            path: "{{ gitea_config_db_pg_ssl_key_file | dirname }}"
+            path: "{{ gitea_config_db_pg_ssl_key_file | ansible.builtin.dirname }}"
             owner: "{{ gitea_service_user }}"
             group: "{{ gitea_service_group }}"
             mode: "0755"
@@ -218,7 +218,7 @@
         notify:
             - Gitea | Restart systemd service
 
-      - name: Gitea | Database | Postgresql | SSL Priv Key | Write certificate.
+      - name: Gitea | Database | PostgreSQL | SSL Priv Key | Write Certificate
         ansible.builtin.copy:
             dest: "{{ gitea_config_db_pg_ssl_key_file }}"
             owner: "{{ gitea_service_user }}"

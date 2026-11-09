@@ -2,50 +2,50 @@
 - name: Hadolint | Prerequisites
   ansible.builtin.import_tasks: prerequisites.yml
 
-- name: Hadolint | Create install directory
+- name: Hadolint | Create Install Directory
   ansible.builtin.file:
-      path: "{{ hadolint_rv_executable_bin_path | dirname }}"
+      path: "{{ hadolint_rv_executable_bin_path | ansible.builtin.dirname }}"
       state: directory
       mode: "0700"
 
 - name: Hadolint | Get Release
   ansible.builtin.set_fact:
-      hadolint_version_details: "{{ lookup('arpanrec.nebula.version_db', 'hadolint',
-          hadolint_rv_version=hadolint_rv_version) | from_json }}"
+      __hadolint_version_details: "{{ lookup('arpanrec.nebula.version_db', 'hadolint',
+          hadolint_rv_version=hadolint_rv_version) | ansible.builtin.from_json }}"
 
-- name: Hadolint | Get downloaded file stat
+- name: Hadolint | Get Downloaded File Stat
   ansible.builtin.stat:
-      path: "{{ hadolint_rv_tmp_executable_download_path }}"
-  register: hadolint_rv_tmp_downloaded_file_stat
+      path: "{{ __hadolint_rv_tmp_executable_download_path }}"
+  register: __hadolint_rv_tmp_downloaded_file_stat
 
 - name: Hadolint | New Download
-  when: not hadolint_rv_tmp_downloaded_file_stat.stat.exists
+  when: not __hadolint_rv_tmp_downloaded_file_stat.stat.exists
   block:
-      - name: Hadolint | New Download | Create download directory
+      - name: Hadolint | New Download | Create Download Directory
         ansible.builtin.file:
-            path: "{{ hadolint_rv_tmp_executable_download_path | dirname }}"
+            path: "{{ __hadolint_rv_tmp_executable_download_path | ansible.builtin.dirname }}"
             state: directory
             mode: "0700"
 
-      - name: "Hadolint | New Download | Download tarball version: {{ hadolint_version_details.version }}"
+      - name: "Hadolint | New Download | Download Binary"
         ansible.builtin.get_url:
-            url: "{{ hadolint_version_details.download_link }}"
-            checksum: "{{ hadolint_version_details.checksum | default(omit) }}"
-            dest: "{{ hadolint_rv_tmp_executable_download_path }}"
+            url: "{{ __hadolint_version_details.download_link }}"
+            checksum: "{{ __hadolint_version_details.checksum | ansible.builtin.default(default_value=omit) }}"
+            dest: "{{ __hadolint_rv_tmp_executable_download_path }}"
             mode: "0700"
   rescue:
       - name: Hadolint | New Download | Fail | Cleanup
         ansible.builtin.file:
-            path: "{{ hadolint_rv_tmp_executable_download_path }}"
+            path: "{{ __hadolint_rv_tmp_executable_download_path }}"
             state: absent
 
       - name: Hadolint | New Download | Fail | Fail
         ansible.builtin.fail:
             msg: Something went wrong, check the errors above
 
-- name: Hadolint | New Download | Copy to dest
+- name: Hadolint | New Download | Copy To Dest
   ansible.builtin.copy:
-      src: "{{ hadolint_rv_tmp_executable_download_path }}"
+      src: "{{ __hadolint_rv_tmp_executable_download_path }}"
       dest: "{{ hadolint_rv_executable_bin_path }}"
       mode: "0755"
       remote_src: true

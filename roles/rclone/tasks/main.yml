@@ -1,0 +1,65 @@
+---
+- name: Rclone | Prerequisites
+  ansible.builtin.import_tasks: prerequisites.yml
+
+- name: Rclone | Create Install Directory
+  ansible.builtin.file:
+      path: "{{ rclone_rv_executable_bin_path | ansible.builtin.dirname }}"
+      state: directory
+      mode: "0700"
+
+- name: Rclone | Get Release
+  ansible.builtin.set_fact:
+      __rclone_version_details: "{{ lookup('arpanrec.nebula.version_db', 'rclone',
+          rclone_rv_version=rclone_rv_version) | ansible.builtin.from_json }}"
+
+- name: Rclone | Get Downloaded File Stat
+  ansible.builtin.stat:
+      path: "{{ __rclone_rv_zip_download_path }}"
+  register: __rclone_rv_tmp_downloaded_file_stat
+
+- name: Rclone | New Download
+  when: not __rclone_rv_tmp_downloaded_file_stat.stat.exists
+  block:
+      - name: Rclone | New Download | Create Download Directory
+        ansible.builtin.file:
+            path: "{{ rclone_rv_tmp_download_dir }}"
+            state: directory
+            mode: "0700"
+
+      - name: Rclone | New Download | Download Zip
+        ansible.builtin.get_url:
+            url: "{{ __rclone_version_details.download_link }}"
+            checksum: "{{ __rclone_version_details.checksum | ansible.builtin.default(default_value=omit) }}"
+            dest: "{{ __rclone_rv_zip_download_path }}"
+            mode: "0700"
+
+  rescue:
+      - name: Rclone | New Download | Fail | Cleanup
+        ansible.builtin.file:
+            path: "{{ __rclone_rv_zip_download_path }}"
+            state: absent
+
+      - name: Rclone | New Download | Fail | Fail
+        ansible.builtin.fail:
+            msg: Something went wrong, check the errors above
+
+- name: Rclone | Create Temporary Unarchive Directory
+  ansible.builtin.file:
+      path: "{{ __rclone_rv_tmp_unarchive_dir }}"
+      state: directory
+      mode: "0750"
+
+- name: Rclone | Unarchive The Zip
+  ansible.builtin.unarchive:
+      src: "{{ __rclone_rv_zip_download_path }}"
+      dest: "{{ __rclone_rv_tmp_unarchive_dir }}"
+      remote_src: true
+      creates: "{{ __rclone_rv_tmp_unarchive_dir }}/{{ __rclone_version_details.extras.archive_dir }}/rclone"
+
+- name: Rclone | Copy Binary To Dest
+  ansible.builtin.copy:
+      src: "{{ __rclone_rv_tmp_unarchive_dir }}/{{ __rclone_version_details.extras.archive_dir }}/rclone"
+      dest: "{{ rclone_rv_executable_bin_path }}"
+      mode: "0755"
+      remote_src: true

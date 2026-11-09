@@ -3,27 +3,27 @@
   hosts: all
   gather_facts: false
   tasks:
-      - name: Vault | Molecule | Verify | Import Roles for variables
+      - name: Vault | Molecule | Verify | Import Roles For Variables
         ansible.builtin.import_role:
             name: arpanrec.nebula.vault
             tasks_from: prerequisites
 
       - name: Vault | Molecule | Verify | Get Version Details
         ansible.builtin.set_fact:
-            vault_tmp_version_details: "{{ lookup('arpanrec.nebula.version_db', 'vault',
-                vault_rv_version=vault_rv_version) | from_json }}"
+            __vault_tmp_version_details: "{{ lookup('arpanrec.nebula.version_db', 'vault',
+                vault_rv_version=vault_rv_version) | ansible.builtin.from_json }}"
 
-      - name: Vault | Molecule | Verify | Get vault version from shell
+      - name: Vault | Molecule | Verify | Get Vault Version From Shell
         ansible.builtin.command: vault --version
         environment:
             PATH: "{{ vault_rv_install_path }}:{{ ansible_facts.env.PATH }}"
-        register: vault_rv_version_shell_result
+        register: __vault_tmp_version_shell_result
         changed_when: false
 
-      - name: Vault | Molecule | Verify | Fail if vault version is not present
+      - name: Vault | Molecule | Verify | Fail If Vault Version Is Not Present
         ansible.builtin.assert:
-            that: vault_rv_version_shell_result.stdout_lines[0]
-                is match('Vault v' + vault_tmp_version_details.version + '.*')
-            success_msg: Vault Version {{ vault_tmp_version_details.version }} is installed
-            fail_msg: Vault Version {{ vault_tmp_version_details.version }} is not installed,
-                Shell result {{ vault_rv_version_shell_result.stdout }}
+            that: __vault_tmp_version_shell_result.stdout_lines[0]
+                is ansible.builtin.match(pattern='Vault v' + __vault_tmp_version_details.version + '.*')
+            success_msg: Vault Version {{ __vault_tmp_version_details.version }} is installed
+            fail_msg: Vault Version {{ __vault_tmp_version_details.version }} is not installed,
+                Shell result {{ __vault_tmp_version_shell_result.stdout }}

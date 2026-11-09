@@ -1,0 +1,5 @@
+---
+pnpm_rv_install_path: "{{ ansible_facts.user_dir }}/.local/share/pnpm"
+pnpm_rv_executable_bin_path: "{{ ansible_facts.user_dir }}/.local/bin/pnpm"
+pnpm_rv_tmp_download_dir: "{{ ansible_facts.user_dir }}/.cache/pnpm-release"
+pnpm_rv_version: "fetch_latest_version"

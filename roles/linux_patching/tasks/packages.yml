@@ -2,7 +2,7 @@
 - name: Linux Patching | Install Packages | Checking Prerequisite | Include Common Checks
   ansible.builtin.import_tasks: prerequisite.yml
 
-- name: Linux Patching | Install Packages | Purge to resolve conflicts with timesyncd
+- name: Linux Patching | Install Packages | Purge To Resolve Conflicts With Timesyncd
   ansible.builtin.apt:
       name: ntp
       state: absent
@@ -10,39 +10,40 @@
       update_cache: true
       install_recommends: true
 
-- name: Linux Patching | Install Packages | Update apt cache
+- name: Linux Patching | Install Packages | Update APT Cache
   ansible.builtin.apt:
       update_cache: true
       install_recommends: true
 
-- name: Linux Patching | Install Packages | Install specific essential packages in Debian
+- name: Linux Patching | Install Packages | Install Specific Essential Packages In Debian
   ansible.builtin.apt:
-      name: "{{ linux_patching_rv_packages + linux_patching_rv_extra_packages | default([]) }}"
+      name: "{{ linux_patching_rv_packages
+          + linux_patching_rv_extra_packages | ansible.builtin.default(default_value=[]) }}"
       state: present
       update_cache: true
       install_recommends: true
-  register: linux_patching_rv_extra_install
+  register: __linux_patching_rv_extra_install
 
 - name: Linux Patching | Install Packages | Reboot After Packages Install
-  when: linux_patching_rv_extra_install.changed and linux_patching_rv_init_system_systemd
+  when: __linux_patching_rv_extra_install.changed and __linux_patching_rv_init_system_systemd
   ansible.builtin.import_tasks:
       file: reboot.yml
 
-- name: Linux Patching | Install Packages | Install specific devel packages in Debian
+- name: Linux Patching | Install Packages | Install Specific Devel Packages In Debian
   ansible.builtin.apt:
-      name: "{{ linux_patching_rv_devel_packages | default([]) }}"
+      name: "{{ linux_patching_rv_devel_packages | ansible.builtin.default(default_value=[]) }}"
       state: present
       update_cache: true
       install_recommends: true
-  register: linux_patching_rv_extra_devel_install
+  register: __linux_patching_rv_extra_devel_install
   when: linux_patching_rv_install_devel_packages
 
 - name: Linux Patching | Install Packages | Reboot After Devel Packages Install
-  when: linux_patching_rv_extra_devel_install.changed and linux_patching_rv_init_system_systemd
+  when: __linux_patching_rv_extra_devel_install.changed and __linux_patching_rv_init_system_systemd
   ansible.builtin.import_tasks:
       file: reboot.yml
 
-- name: Linux Patching | Install Packages | Install headers linux-headers-{{ ansible_facts.kernel }}
+- name: Linux Patching | Install Packages | Install Kernel Headers
   ansible.builtin.apt:
       name: "linux-headers-{{ ansible_facts.kernel }}"
       state: present
@@ -50,27 +51,27 @@
       install_recommends: true
   when: linux_patching_rv_install_devel_packages
   ignore_errors: true
-  register: linux_patching_rv_install_devel_packages_tmp_kernel_version_installed
+  register: __linux_patching_rv_install_devel_packages_tmp_kernel_version_installed
 
-- name: Linux Patching | Install Packages | Install generic headers linux-headers
+- name: Linux Patching | Install Packages | Install Generic Headers Linux-Headers
   ansible.builtin.apt:
       name: "linux-headers"
       state: present
       update_cache: true
       install_recommends: true
   when: linux_patching_rv_install_devel_packages
-      and linux_patching_rv_install_devel_packages_tmp_kernel_version_installed.failed
-  register: linux_patching_rv_install_generic_headers_tmp_kernel_version_installed
+      and __linux_patching_rv_install_devel_packages_tmp_kernel_version_installed.failed
+  register: __linux_patching_rv_install_generic_headers_tmp_kernel_version_installed
   ignore_errors: true
 
-- name: Linux Patching | Install Packages | Reboot after kernel install
+- name: Linux Patching | Install Packages | Reboot After Kernel Install
   ansible.builtin.import_tasks:
       file: reboot.yml
   when: >
-      linux_patching_rv_init_system_systemd
+      __linux_patching_rv_init_system_systemd
       and
       (
-        linux_patching_rv_install_generic_headers_tmp_kernel_version_installed.changed
+        __linux_patching_rv_install_generic_headers_tmp_kernel_version_installed.changed
         or
-        linux_patching_rv_install_devel_packages_tmp_kernel_version_installed.changed
+        __linux_patching_rv_install_devel_packages_tmp_kernel_version_installed.changed
       )

@@ -4,6 +4,10 @@ name: Ansible Lint
 "on":
     workflow_dispatch:
     pull_request:
+    push:
+
+permissions:
+    contents: read
 
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
@@ -15,21 +19,22 @@ env:
 
 jobs:
     ansible-lint:
+        if: github.server_url == 'https://github.com' && github.repository == 'arpanrec/ansible-collection-nebula'
         timeout-minutes: 60
-        runs-on: ubuntu-24.04
+        runs-on: ubuntu-26.04
         strategy:
             fail-fast: false
             matrix:
-                python-version: ["3.12.13", "3.13.13", "3.14.5"]
+                python-version: ["3.12.14", "3.13.16", "3.14.8"]
         name: ansible-lint
         steps:
             - name: Checkout
               uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-            - name: Install uv 0.11.19
+            - name: Install uv 0.13.1
               uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
               with:
-                  version: 0.11.19
+                  version: 0.13.1
                   python-version: "${{ matrix.python-version }}"
                   enable-cache: true
                   cache-suffix: python-${{ matrix.python-version }}
@@ -46,12 +51,12 @@ jobs:
 
             - name: Install dependencies
               run: |+
-                  uv sync --extra dev
-                  uv run ansible-galaxy install -r requirements.yml
+                  uv sync --all-extras --all-packages --no-progress
+                  uv --offline run --no-sync --no-progress ansible-galaxy install -r requirements.yml
               env:
                   UV_PYTHON: ${{ matrix.python-version }}
 
             - name: Analyzing the code with ansible-lint
-              run: uv run ansible-lint
+              run: uv --offline run --no-sync --no-progress ansible-lint
               env:
                   UV_PYTHON: ${{ matrix.python-version }}

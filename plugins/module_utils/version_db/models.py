@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
 """
 This module defines the models for version database management in the Nebula plugin.
 
@@ -21,6 +20,11 @@ Classes Details:
             - GITEA: Represents the 'gitea' application.
             - HADOLINT: Represents the 'hadolint' application.
             - GITLEAKS: Represents the 'gitleaks' application.
+            - UV: Represents the 'uv' application.
+            - RCLONE: Represents the 'rclone' application.
+            - BUN: Represents the 'bun' application.
+            - BETTERLEAKS: Represents the 'betterleaks' application.
+            - PNPM: Represents the 'pnpm' application.
 
     VersionDetails:
         A dictionary to store version details of an application.
@@ -48,10 +52,12 @@ Classes Details:
 
 """
 
+from __future__ import annotations
+
 import abc
 import enum
 import json
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 
 from ansible.utils.display import Display  # type: ignore
 
@@ -73,9 +79,14 @@ class SupportedApps(enum.Enum):
     GITEA = "gitea"
     HADOLINT = "hadolint"
     GITLEAKS = "gitleaks"
+    UV = "uv"
+    RCLONE = "rclone"
+    BUN = "bun"
+    BETTERLEAKS = "betterleaks"
+    PNPM = "pnpm"
 
 
-class VersionDetails(Dict[str, Any]):
+class VersionDetails(dict[str, Any]):
     """
     Version details.
     """
@@ -88,13 +99,13 @@ class AppDetails(abc.ABC):
 
     __metaclass__ = abc.ABCMeta
 
-    _variables: Optional[Dict[str, Any]]
+    _variables: dict[str, Any] | None
     _download_link: str
     _version: str
-    _args: Tuple[Any, ...]
-    _extras: Optional[Dict[str, Any]] = None
-    _kwargs: Dict[str, Any]
-    _checksum: Optional[str] = None
+    _args: tuple[Any, ...]
+    _extras: dict[str, Any] | None = None
+    _kwargs: dict[str, Any]
+    _checksum: str | None = None
     _FETCH_LATEST_KEY = "fetch_latest_version"
 
     def __init__(self, *args, **kwargs) -> None:  # type: ignore
@@ -102,7 +113,7 @@ class AppDetails(abc.ABC):
         Constructor.
         """
 
-        self._variables = kwargs.get("variables")
+        self._variables = kwargs.get("variables")  # pyright: ignore[reportUnknownMemberType]
         self._args = args
         self._kwargs = kwargs
 
@@ -112,7 +123,7 @@ class AppDetails(abc.ABC):
         Get the version details for the app.
         """
 
-    def _get_ansible_architecture(self, ansible_to_expected: Optional[Dict[str, str]] = None) -> str:
+    def _get_ansible_architecture(self, ansible_to_expected: dict[str, str] | None = None) -> str:
         """
         Get the architecture from the Ansible facts.
         """

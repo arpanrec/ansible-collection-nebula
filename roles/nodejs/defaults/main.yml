@@ -1,9 +1,10 @@
 ---
 nodejs_rv_install_path: "{{ ansible_facts.user_dir }}/.local/share/node"
-nodejs_rv_tmp_install_cache_dir: "{{ ansible_facts.user_dir }}/.tmp/nodejs"
+nodejs_rv_tmp_install_cache_dir: "{{ ansible_facts.user_dir }}/.cache/nodejs"
 nodejs_rv_version: "fetch_latest_version"
 nodejs_rv_global_packages:
     - "@bitwarden/cli"
     - "neovim"
     - "semver"
     - "corepack"
+    - "prettier"

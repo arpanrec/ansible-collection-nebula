@@ -3,5 +3,5 @@
   hosts: all
   gather_facts: false
   tasks:
-      - name: SSHD Hardening | Molecule | Verify | Check if connection still works
+      - name: SSHD Hardening | Molecule | Verify | Check If Connection Still Works
         ansible.builtin.ping:

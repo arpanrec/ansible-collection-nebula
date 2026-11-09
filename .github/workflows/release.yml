@@ -12,6 +12,7 @@ env:
 
 jobs:
     release:
+        if: github.server_url == 'https://github.com' && github.repository == 'arpanrec/ansible-collection-nebula'
         timeout-minutes: 500
         name: release
         runs-on: ubuntu-26.04

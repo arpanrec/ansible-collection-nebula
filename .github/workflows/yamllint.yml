@@ -25,6 +25,7 @@ env:
 
 jobs:
     yamllint:
+        if: github.server_url == 'https://github.com' && github.repository == 'arpanrec/ansible-collection-nebula'
         timeout-minutes: 60
         runs-on: ubuntu-26.04
         strategy:

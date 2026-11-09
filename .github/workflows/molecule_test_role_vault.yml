@@ -33,6 +33,7 @@ env:
 
 jobs:
     molecule_test_role_vault:
+        if: github.server_url == 'https://github.com' && github.repository == 'arpanrec/ansible-collection-nebula'
         timeout-minutes: 60
         runs-on: ubuntu-26.04
         strategy:

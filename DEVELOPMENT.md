@@ -40,3 +40,17 @@ rm -rf "$(pwd)/.venv/lib/python3.14/site-packages/ansible_collections/arpanrec"
 mkdir -p "$(pwd)/.venv/lib/python3.14/site-packages/ansible_collections/arpanrec/nebula"
 ln -s "$(pwd)/plugins" "$(pwd)/.venv/lib/python3.14/site-packages/ansible_collections/arpanrec/nebula/plugins"
 ```
+
+## Releasing
+
+Cut a release from a clean `main`:
+
+```bash
+scripts/release.sh 1.26.0
+git push origin main 1.26.0
+```
+
+The script writes the version into `galaxy.yml`, `pyproject.toml`, `uv.lock` and the install example in `README.md`,
+regenerates `requirements.txt` and `requirements-dev.txt`, then commits `chore(release): <version>` and tags it. Pushing
+the tag runs the release workflow. It creates the GitHub release, checks that the tag matches the `galaxy.yml` version,
+publishes the collection to Ansible Galaxy and attaches the archive to the release.

@@ -39,7 +39,7 @@ docker==7.2.0
 docutils==0.22.4 ; python_full_version < '3.13'
 docutils==0.23 ; python_full_version >= '3.13'
 enrich==1.2.7
-filelock==4.2.9
+filelock==4.2.10
 frozenlist==1.8.0
 graphemeu==0.11.0
 greenlet==3.5.6 ; platform_python_implementation != 'PyPy'
@@ -110,7 +110,7 @@ sphinxcontrib-serializinghtml==2.0.0
 subprocess-tee==0.4.2
 tomlkit==0.15.2
 twiggy==0.5.1
-typer==0.28.0
+typer==0.29.0
 types-pyyaml==6.0.12.20261103
 typing-extensions==4.16.0
 typing-inspection==0.4.5

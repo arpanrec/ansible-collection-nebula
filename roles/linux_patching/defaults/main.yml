@@ -52,7 +52,6 @@ linux_patching_rv_devel_packages:
     - fd-find
     - fzf
     - shfmt
-    - gh
     - libglib2.0-dev
     - libssl-dev
     - libffi-dev

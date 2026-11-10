@@ -41,6 +41,18 @@ linux_patching_rv_devel_packages:
     - gcc
     - g++
     - clang
+    - llvm
+    - lld
+    - pkg-config
+    - meson
+    - libtool
+    - libtool-bin
+    - perl
+    - ripgrep
+    - fd-find
+    - fzf
+    - shfmt
+    - gh
     - libglib2.0-dev
     - libssl-dev
     - libffi-dev

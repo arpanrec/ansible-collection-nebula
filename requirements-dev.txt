@@ -111,7 +111,7 @@ subprocess-tee==0.4.2
 tomlkit==0.15.2
 twiggy==0.5.1
 typer==0.29.0
-types-pyyaml==6.0.12.20261103
+types-pyyaml==6.0.12.20261113
 typing-extensions==4.16.0
 typing-inspection==0.4.5
 urllib3==2.8.0
